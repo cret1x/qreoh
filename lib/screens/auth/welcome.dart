@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:qreoh/screens/login.dart';
-import 'package:qreoh/screens/register.dart';
+import 'package:qreoh/screens/auth/login.dart';
+import 'package:qreoh/screens/auth/register.dart';
+
+import '../../firebase_functions/auth.dart';
 
 class WelcomeWidget extends StatelessWidget {
   const WelcomeWidget({super.key});

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../firebase_functions/auth.dart';
+
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
 
@@ -9,7 +11,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
   final _obscurePassword = RestorableBool(true);
-  final _loginController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +30,7 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
 
   @override
   void dispose() {
-    _loginController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -51,16 +53,16 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                        controller: _loginController,
+                        controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Login is required";
+                            return "Email is required";
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Enter your login')),
+                            labelText: 'Enter your email')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -96,20 +98,44 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        print('i forgot click!');
+                      },
+                      child: const Text('I forgot'),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(64),
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("Register failed!"),
-                          ));
+                          loginUser(_emailController.text,
+                                  _passwordController.text)
+                              .then((value) {
+                            if (value != null) {
+                              if (value == "OK") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("Login success")));
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(value)));
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("Error occurred")));
+                            }
+                          });
                         }
                       },
                       child: const Text(
-                        "Register",
+                        "Login",
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

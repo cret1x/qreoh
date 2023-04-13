@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../firebase_functions/auth.dart';
 
 class RegisterWidget extends StatefulWidget {
   const RegisterWidget({super.key});
@@ -15,25 +16,7 @@ class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
   final _passwordController = TextEditingController();
   final _passwordCheckController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  Future<String?> registerUser() async {
-    try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
+  var _isLoading = false;
 
   @override
   String? get restorationId => "password_field";
@@ -174,12 +157,43 @@ class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
                         minimumSize: const Size.fromHeight(64),
                       ),
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+                          registerUser(_loginController.text, _emailController.text, _passwordController.text).then((value) {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            if (value != null) {
+                              if (value == "OK") {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Account created!")));
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error occurred")));
+                            }
+                          });
+                        }
                       },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(fontSize: 20),
-                      ),
+                      child: ElevatedButton.icon(
+                        onPressed: (){},
+                        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
+                        icon: _isLoading
+                            ? Container(
+                          width: 24,
+                          height: 24,
+                          padding: const EdgeInsets.all(2.0),
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 3,
+                          ),
+                        )
+                            : const Icon(Icons.feedback),
+                        label: const Text('Register'),
+                      )
                     ),
                   ),
                 ],
