@@ -3,28 +3,74 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:qreoh/screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qreoh/screens/friends/add_friend.dart';
+import 'package:qreoh/screens/friends/friend_requests.dart';
 import 'package:qreoh/screens/friends/friends.dart';
 import 'package:qreoh/screens/profile/profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
 import 'package:qreoh/screens/tasks/tasks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'firebase_options.dart';
-import '/firebase_functions/auth.dart';
+
+final appThemeProvider = Provider((ref) {
+
+});
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const ProviderScope(
+    child: MyApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
+class AppTheme extends StateNotifier<bool> {
+  AppTheme(this.ref): super(false);
+  final Ref ref;
+
+  void changeTheme(bool isDark) {
+
+  }
+}
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>()!;
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrefs();
+  }
+
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _themeMode =
+          (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,7 +83,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: _themeMode,
       home: const AppMainScreen(title: 'Qreoh Home Page'),
     );
   }
@@ -61,6 +107,12 @@ class _AppMainScreenState extends State<AppMainScreen> {
     ProfileWidget(),
     FriendsWidget(),
     SettingsWidget()
+  ];
+  static const List<String> _titles = [
+    'Tasks',
+    'Profile',
+    'Friends',
+    'Settings'
   ];
 
   Future<void> _loadPrefs() async {
@@ -95,7 +147,28 @@ class _AppMainScreenState extends State<AppMainScreen> {
     if (_isAuth) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(_titles.elementAt(_navbarSelectedIndex)),
+          actions: _navbarSelectedIndex == 2
+              ? [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const AddFriendWidget()));
+                      },
+                      icon: const Icon(Icons.person_add)),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const FriendRequestWidget()));
+                      },
+                      icon: const Icon(Icons.notifications)),
+                ]
+              : [],
         ),
         body: PageView(
           controller: _pageController,
@@ -108,9 +181,11 @@ class _AppMainScreenState extends State<AppMainScreen> {
           onTap: _onNavbarItemTapped,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),
-            BottomNavigationBarItem(icon: Icon(Icons.account_circle_rounded), label: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle_rounded), label: 'Profile'),
             BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Settings'),
           ],
         ),
       );
