@@ -152,11 +152,8 @@ class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(64),
-                      ),
-                      onPressed: () {
+                    child: ElevatedButton.icon(
+                      onPressed: (){
                         if (_formKey.currentState!.validate()) {
                           setState(() {
                             _isLoading = true;
@@ -178,22 +175,19 @@ class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
                           });
                         }
                       },
-                      child: ElevatedButton.icon(
-                        onPressed: (){},
-                        style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
-                        icon: _isLoading
-                            ? Container(
-                          width: 24,
-                          height: 24,
-                          padding: const EdgeInsets.all(2.0),
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
-                          ),
-                        )
-                            : const Icon(Icons.feedback),
-                        label: const Text('Register'),
+                      style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(64),),
+                      icon: _isLoading
+                          ? Container(
+                        width: 24,
+                        height: 24,
+                        padding: const EdgeInsets.all(2.0),
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
                       )
+                          : const Icon(Icons.feedback),
+                      label: const Text('Register'),
                     ),
                   ),
                 ],

@@ -3,6 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import '../../common_widgets/friend_item.dart';
+import '../../entities/user_entity.dart';
+import '../../firebase_functions/friends.dart';
+
 const List<String> _sortTypes = <String>['A - Z', 'Z - A', 'fav'];
 
 class FriendsWidget extends StatefulWidget {
@@ -14,22 +18,10 @@ class FriendsWidget extends StatefulWidget {
 
 class _FriendsWidgetState extends State<FriendsWidget> {
   String _dropdownValue = _sortTypes.first;
-  List<FriendItem> _friends = [];
-
+  bool _descending = false;
   @override
   void initState() {
     super.initState();
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    DatabaseReference starCountRef =
-        FirebaseDatabase.instance.ref('users/$uid/friends');
-    starCountRef.onValue.listen((DatabaseEvent event) {
-      final data = event.snapshot.children;
-      if (data != null) {
-        setState(() {
-          _friends = data.map((e) => FriendItem(login: (e.value as Map)['login'], tag: (e.value as Map)['tag'])).toList();
-        });
-      }
-    });
   }
 
   @override
@@ -63,15 +55,13 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                 onChanged: (String? value) {
                   setState(() {
                     _dropdownValue = value!;
-                    _friends.sort((a, b) {
-                      if (value == _sortTypes[0]) {
-                        return a.login.toLowerCase().compareTo(b.login.toLowerCase());
-                      } else if (value == _sortTypes[1]) {
-                        return b.login.toLowerCase().compareTo(a.login.toLowerCase());
-                      } else {
-                        return a.login.toLowerCase().compareTo(b.login.toLowerCase());
-                      }
-                    });
+                    if (value == _sortTypes[0]) {
+                      _descending = false;
+                    } else if (value == _sortTypes[1]) {
+                      _descending = true;
+                    } else {
+                      _descending = false;
+                    }
                   });
                 },
                 items: _sortTypes.map<DropdownMenuItem<String>>((String value) {
@@ -87,11 +77,24 @@ class _FriendsWidgetState extends State<FriendsWidget> {
             ),
           ),
           Expanded(
-            child: _friends.isNotEmpty
-                ? ListView(
-                    children: _friends,
-                  )
-                : Center(
+            child: FutureBuilder(
+              future: getAllFriends(_descending),
+              builder: (context, data) {
+                if (data.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (data.hasData) {
+                  return ListView.builder(
+                      itemCount: data.data!.length,
+                      itemBuilder: (context, index) {
+                        return FriendItem(
+                            login: data.data!.elementAt(index).login,
+                            tag: data.data!.elementAt(index).tag);
+                      });
+                } else {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
@@ -101,34 +104,13 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                         ),
                       ],
                     ),
-                  ),
+                  );
+                }
+              },
+            )
           ),
         ],
       ),
-    );
-  }
-}
-
-class FriendItem extends StatelessWidget {
-  final String login;
-  final int tag;
-
-  const FriendItem({super.key, required this.login, required this.tag});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {},
-      leading: CircleAvatar(
-        backgroundColor: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-            .withOpacity(1.0),
-        radius: 32,
-      ),
-      title: Text(
-        login,
-        style: const TextStyle(fontSize: 22),
-      ),
-      subtitle: Text("#$tag"),
     );
   }
 }
