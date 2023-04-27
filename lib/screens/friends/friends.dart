@@ -19,6 +19,7 @@ class FriendsWidget extends StatefulWidget {
 class _FriendsWidgetState extends State<FriendsWidget> {
   String _dropdownValue = _sortTypes.first;
   bool _descending = false;
+
   @override
   void initState() {
     super.initState();
@@ -77,38 +78,35 @@ class _FriendsWidgetState extends State<FriendsWidget> {
             ),
           ),
           Expanded(
-            child: FutureBuilder(
-              future: getAllFriends(_descending),
-              builder: (context, data) {
-                if (data.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (data.hasData) {
-                  return ListView.builder(
-                      itemCount: data.data!.length,
-                      itemBuilder: (context, index) {
-                        return FriendItem(
-                            login: data.data!.elementAt(index).login,
-                            tag: data.data!.elementAt(index).tag);
-                      });
-                } else {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "You have no fiends",
-                          style: TextStyle(fontSize: 32),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
-            )
-          ),
+              child: FutureBuilder(
+            future: getAllFriends(_descending),
+            builder: (context, data) {
+              if (data.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (data.hasData && data.data!.isNotEmpty) {
+                return ListView.builder(
+                    itemCount: data.data!.length,
+                    itemBuilder: (context, index) {
+                      return FriendItem(data.data!.elementAt(index));
+                    });
+              } else {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "You have no friends",
+                        style: TextStyle(fontSize: 32),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          )),
         ],
       ),
     );

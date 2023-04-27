@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,26 +9,24 @@ import 'package:qreoh/screens/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
+import 'global_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
-
-  static _MyAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>()!;
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
   @override
@@ -36,22 +35,14 @@ class _MyAppState extends State<MyApp> {
     _loadPrefs();
   }
 
-  void changeTheme(ThemeMode themeMode) {
-    setState(() {
-      _themeMode = themeMode;
-    });
-  }
-
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _themeMode =
-          (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light;
-    });
+    ref.read(appThemeProvider.notifier).update((state) => (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
   Widget build(BuildContext context) {
+    _themeMode = ref.watch(appThemeProvider);
     return MaterialApp(
       title: 'Qreoh app',
       theme: ThemeData(

@@ -113,9 +113,10 @@ class _AddFriendWidgetState extends State<AddFriendWidget> {
               itemBuilder: (context, id) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: FriendItem(
-                      login: _foundFriend.first.login,
-                      tag: _foundFriend.first.tag),
+                  child: FriendItem.withAction(_foundFriend.first, () {
+                    sendFriendRequest(_foundFriend.first);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Send request")));
+                  }, null),
                 );
               },
             ),

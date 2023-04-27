@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../firebase_functions/auth.dart';
-import '../../main.dart';
 
-class SettingsWidget extends StatefulWidget {
+class SettingsWidget extends ConsumerStatefulWidget {
   const SettingsWidget({super.key});
 
   @override
-  State<SettingsWidget> createState() => _SettingsWidgetState();
+  ConsumerState<SettingsWidget> createState() => _SettingsWidgetState();
 }
 
-class _SettingsWidgetState extends State<SettingsWidget>
+class _SettingsWidgetState extends ConsumerState<SettingsWidget>
     with AutomaticKeepAliveClientMixin<SettingsWidget> {
   bool _isDarkTheme = false;
 
@@ -23,7 +24,7 @@ class _SettingsWidgetState extends State<SettingsWidget>
   }
 
   Future<void> _updateMode(bool value) async {
-    MyApp.of(context).changeTheme(value ? ThemeMode.dark : ThemeMode.light);
+    ref.read(appThemeProvider.notifier).update((state) => value ? ThemeMode.dark : ThemeMode.light);
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isDarkTheme = value;
@@ -39,6 +40,7 @@ class _SettingsWidgetState extends State<SettingsWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,

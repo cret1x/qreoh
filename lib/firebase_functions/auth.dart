@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 Future<String?> registerUser(String login, String email, String password) async{
   try {
@@ -49,17 +49,11 @@ Future<void> signOutUser() async{
 }
 
 Future<void> createUserInDatabase(String uid, String login) async {
-  final ref = FirebaseDatabase.instance.ref();
-  final snapshot = await ref.child('users_count').get();
-  if (snapshot.exists) {
-    int tag = snapshot.value as int;
-    ref.update({
-      "users_count": tag + 1
-    });
-    final usersRef = FirebaseDatabase.instance.ref("users/$uid");
-    await usersRef.set({
-      "tag": tag,
-      "login": login,
-    });
-  }
+  final usersRef = FirebaseFirestore.instance.collection('users');
+  final snapshot = await usersRef.count().get();
+  int tag = snapshot.count;
+  usersRef.doc(uid).set({
+    'login': login,
+    'tag': tag
+  });
 }

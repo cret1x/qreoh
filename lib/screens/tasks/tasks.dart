@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class TasksWidget extends StatelessWidget {
@@ -5,6 +6,6 @@ class TasksWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Tasks");
+    return const Text('tasks');
   }
 }
