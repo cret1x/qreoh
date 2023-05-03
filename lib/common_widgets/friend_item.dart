@@ -25,7 +25,7 @@ class FriendItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: null,
+      onTap: () {},
       leading: CircleAvatar(
         backgroundColor: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
             .withOpacity(1.0),
@@ -40,15 +40,37 @@ class FriendItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (actionAccept != null)
-            IconButton(
-              onPressed: actionAccept,
-              icon: const Icon(Icons.person_add),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadiusDirectional.circular(12)),
+                child: Center(
+                  child: IconButton(
+                    onPressed: actionAccept,
+                    icon: const Icon(Icons.person_add),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           if (actionDeny != null)
-            IconButton(
-              onPressed: actionDeny,
-              icon: const Icon(Icons.block),
-            )
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadiusDirectional.circular(12)),
+                child: Center(
+                  child: IconButton(
+                    onPressed: actionDeny,
+                    icon: const Icon(Icons.block),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

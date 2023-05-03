@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/common_widgets/buttons.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +25,9 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
   }
 
   Future<void> _updateMode(bool value) async {
-    ref.read(appThemeProvider.notifier).update((state) => value ? ThemeMode.dark : ThemeMode.light);
+    ref
+        .read(appThemeProvider.notifier)
+        .update((state) => value ? ThemeMode.dark : ThemeMode.light);
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isDarkTheme = value;
@@ -54,17 +57,21 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
             secondary: const Icon(Icons.lightbulb_outline),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  minimumSize: const Size.fromHeight(48)),
-              onPressed: () {
-                signOutUser();
-              },
-              child: const Text('Sign out')),
-        )
+        const Spacer(),
+        const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ButtonDanger(
+              buttonText: "Sign out",
+              warningText: "Are u sure?",
+              action: signOutUser,
+            )),
+        const Padding(
+            padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
+            child: ButtonDanger(
+              buttonText: "Delete Account",
+              warningText: "Are u sure?",
+              action: null,
+            ))
       ],
     );
   }

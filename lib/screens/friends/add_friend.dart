@@ -99,7 +99,7 @@ class _AddFriendWidgetState extends State<AddFriendWidget> {
                     icon: const Icon(Icons.search),
                     label: const Text('Search'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrangeAccent,
+                     // backgroundColor: Colors.blue,
                       minimumSize: const Size.fromHeight(48),
                     ),
                   ),
