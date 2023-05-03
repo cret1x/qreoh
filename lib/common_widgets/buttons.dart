@@ -25,7 +25,12 @@ class ButtonDanger extends StatelessWidget {
                 title: Text(buttonText),
                 content: Text(warningText),
                 actions: [
-                  TextButton(onPressed: action, child: const Text("Yes")),
+                  TextButton(onPressed: () {
+                    Navigator.of(context).pop();
+                    if (action != null) {
+                      action!();
+                    }
+                  }, child: const Text("Yes")),
                   TextButton(
                       onPressed: Navigator.of(context).pop,
                       child: const Text("No")),
