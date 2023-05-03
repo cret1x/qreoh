@@ -1,0 +1,651 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'task_manager_widget.dart';
+import '../../entities/tag.dart';
+import '../../entities/folder.dart';
+import '../../entities/task.dart';
+
+class EditCreateTaskWidget extends StatefulWidget {
+  final TaskManagerWidget _parent;
+  late Folder _folder;
+  Task? _task;
+  String? _name;
+  DateTime? _deadline;
+  bool _haveTime = false;
+  Duration? _timeRequired;
+  int _daysRequired = 0;
+  Priority _priority = Priority.none;
+  String? _location;
+  String? _description;
+  final List<Tag> _chosenTags = [];
+
+  EditCreateTaskWidget(this._parent, this._folder, {super.key}) {
+    _task = null;
+  }
+
+  EditCreateTaskWidget.edit(this._parent, Task task, {super.key}) {
+    _task = task;
+    _folder = task.getParent();
+    _name = task.getName();
+    _deadline = task.getDeadline();
+    _haveTime = task.getHaveTime();
+    _daysRequired =
+        task.getTimeRequired() == null ? 0 : task.getTimeRequired()!.inDays;
+    _timeRequired = task.getTimeRequired() == null
+        ? null
+        : task.getTimeRequired()! - Duration(days: _daysRequired);
+    _priority = task.getPriority();
+    _location = task.getLocation();
+    _description = task.getDescription();
+    for (Tag tag in task.getTags()) {
+      _chosenTags.add(tag);
+    }
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    return EditCreateTaskWidgetState();
+  }
+}
+
+class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
+  String _durationToString(Duration? duration) {
+    if (duration == null) {
+      return "Add";
+    }
+    StringBuffer stringBuffer = StringBuffer();
+    if (duration.inHours == 0) {
+      stringBuffer.write('0');
+    }
+    stringBuffer.write(duration.toString());
+    return stringBuffer.toString().substring(0, stringBuffer.length - 10);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    SizedBox(
+                        height: 70,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadiusDirectional.circular(12)),
+                          child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: TextFormField(
+                                  maxLength: 30,
+                                  initialValue: widget._name,
+                                  onChanged: (String? value) {
+                                    widget._name = value;
+                                  },
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: const InputDecoration(
+                                    counterText: "",
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white)),
+                                    labelText: 'Task name',
+                                  ),
+                                ),
+                              )),
+                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                            child: Container(
+                                height: 40,
+                                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue[100],
+                                        borderRadius:
+                                            BorderRadiusDirectional.circular(
+                                                12)),
+                                    child: Center(
+                                        child: Text(widget._folder.getName(),
+                                            style: const TextStyle(
+                                                color: Colors.black)))))),
+                        SizedBox(
+                            height: 40,
+                            child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius:
+                                        BorderRadiusDirectional.circular(12)),
+                                child: Center(
+                                    child: IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.folder_open),
+                                  color: Colors.white,
+                                ))))
+                      ],
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Deadline",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54)),
+                          Row(
+                            children: [
+                              TextButton(
+                                child: Text(
+                                  widget._deadline == null
+                                      ? "Add"
+                                      : widget._deadline.toString().substring(
+                                          0, widget._haveTime ? 16 : 10),
+                                ),
+                                onPressed: () async {
+                                  widget._deadline = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime.now()
+                                        .add(const Duration(days: 2 * 365)),
+                                  );
+                                  if (widget._deadline == null) {
+                                    return;
+                                  }
+                                  TimeOfDay? time = await showTimePicker(
+                                      context: context,
+                                      initialTime:
+                                          const TimeOfDay(hour: 0, minute: 0),
+                                      cancelText: "SKIP");
+                                  widget._haveTime = time != null;
+                                  if (time != null) {
+                                    widget._deadline = widget._deadline!.add(
+                                        Duration(
+                                            hours: time.hour,
+                                            minutes: time.minute));
+                                  }
+                                  setState(() {});
+                                },
+                              ),
+                              Visibility(
+                                  visible: widget._deadline != null,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.cancel_outlined,
+                                      color: Colors.blue,
+                                    ),
+                                    iconSize: 20,
+                                    onPressed: () {
+                                      widget._haveTime = false;
+                                      widget._deadline = null;
+                                      setState(() {});
+                                    },
+                                  ))
+                            ],
+                          )
+                        ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Required time",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54)),
+                        Row(children: [
+                          Visibility(
+                              visible: widget._timeRequired == null,
+                              child: TextButton(
+                                child: const Text("Add"),
+                                onPressed: () {
+                                  widget._timeRequired = Duration.zero;
+                                  setState(() {});
+                                },
+                              )),
+                          Visibility(
+                            visible: widget._timeRequired != null,
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  child: Text("${widget._daysRequired} days"),
+                                  onPressed: () {
+                                    showCupertinoModalPopup(
+                                        context: context,
+                                        builder: (context) => Container(
+                                              height: 216,
+                                              padding: const EdgeInsets.only(
+                                                  top: 6.0),
+                                              // The bottom margin is provided to align the popup above the system
+                                              // navigation bar.
+                                              margin: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom,
+                                              ),
+                                              // Provide a background color for the popup.
+                                              color: CupertinoColors
+                                                  .systemBackground
+                                                  .resolveFrom(context),
+                                              // Use a SafeArea widget to avoid system overlaps.
+                                              child: SafeArea(
+                                                top: false,
+                                                child: CupertinoPicker(
+                                                  scrollController:
+                                                      FixedExtentScrollController(
+                                                          initialItem: widget
+                                                              ._daysRequired),
+                                                  itemExtent: 32,
+                                                  onSelectedItemChanged:
+                                                      (int value) {
+                                                    widget._daysRequired =
+                                                        value;
+                                                    setState(() {});
+                                                  },
+                                                  children: List<
+                                                          Widget>.generate(
+                                                      61,
+                                                      (index) => Center(
+                                                          child: Text(index
+                                                              .toString()))),
+                                                ),
+                                              ),
+                                            ));
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                      _durationToString(widget._timeRequired)),
+                                  onPressed: () {
+                                    showCupertinoModalPopup(
+                                        context: context,
+                                        builder: (context) => Container(
+                                              height: 216,
+                                              padding: const EdgeInsets.only(
+                                                  top: 6.0),
+                                              // The bottom margin is provided to align the popup above the system
+                                              // navigation bar.
+                                              margin: EdgeInsets.only(
+                                                bottom: MediaQuery.of(context)
+                                                    .viewInsets
+                                                    .bottom,
+                                              ),
+                                              // Provide a background color for the popup.
+                                              color: CupertinoColors
+                                                  .systemBackground
+                                                  .resolveFrom(context),
+                                              // Use a SafeArea widget to avoid system overlaps.
+                                              child: SafeArea(
+                                                top: false,
+                                                child: CupertinoTimerPicker(
+                                                  initialTimerDuration:
+                                                      widget._timeRequired!,
+                                                  mode: CupertinoTimerPickerMode
+                                                      .hm,
+                                                  // This is called when the user changes the timer's
+                                                  // duration.
+                                                  onTimerDurationChanged:
+                                                      (Duration newDuration) {
+                                                    setState(() =>
+                                                        widget._timeRequired =
+                                                            newDuration);
+                                                  },
+                                                ),
+                                              ),
+                                            ));
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.blue,
+                                  ),
+                                  iconSize: 20,
+                                  onPressed: () {
+                                    widget._timeRequired = null;
+                                    widget._daysRequired = 0;
+                                    setState(() {});
+                                  },
+                                )
+                              ],
+                            ),
+                          )
+                        ])
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Priority",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54)),
+                        DropdownButton<Priority>(
+                          value: widget._priority,
+                          items: List<DropdownMenuItem<Priority>>.generate(4,
+                              (index) {
+                            String text;
+                            switch (Priority.values[index]) {
+                              case Priority.high:
+                                text = "High";
+                                break;
+                              case Priority.medium:
+                                text = "Medium";
+                                break;
+                              case Priority.low:
+                                text = "Low";
+                                break;
+                              case Priority.none:
+                                text = "None";
+                                break;
+                            }
+                            return DropdownMenuItem(
+                                value: Priority.values[index],
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    width: 60,
+                                    child: Text(
+                                      text,
+                                      style: const TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500),
+                                      textAlign: TextAlign.right,
+                                    )));
+                          }),
+                          onChanged: (Priority? value) {
+                            widget._priority = value!;
+                            setState(() {});
+                          },
+                          underline: const SizedBox(),
+                          iconEnabledColor: Colors.blue,
+                          iconDisabledColor: Colors.blue,
+                          iconSize: 0.0,
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(
+                          width: 120,
+                          child: Text("Location",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54)),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 50,
+                              maxLength: 120,
+                              initialValue: widget._location,
+                              decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.blue)),
+                              ),
+                              onChanged: (String? value) {
+                                widget._location = value;
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(
+                          width: 120,
+                          child: Text("Description",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54)),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              minLines: 1,
+                              maxLines: 50,
+                              maxLength: 500,
+                              initialValue: widget._description,
+                              decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.blue)),
+                              ),
+                              onChanged: (String? value) {
+                                widget._description = value;
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Tags",
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54)),
+                    ),
+                    ListView.builder(
+                        itemCount: widget._parent.getTags().length,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CheckboxListTile(
+                              checkboxShape: const CircleBorder(),
+                              title: Text(
+                                  widget._parent.getTags()[index].getName()),
+                              secondary: Icon(
+                                  widget._parent.getTags()[index].getIcon()),
+                              value: widget._chosenTags
+                                  .contains(widget._parent.getTags()[index]),
+                              onChanged: (bool? state) {
+                                if (state == null) {
+                                  return;
+                                }
+
+                                if (state) {
+                                  widget._chosenTags
+                                      .add(widget._parent.getTags()[index]);
+                                } else {
+                                  widget._chosenTags
+                                      .remove(widget._parent.getTags()[index]);
+                                }
+
+                                setState(() {});
+                              });
+                        }),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Container(
+                          padding: const EdgeInsets.only(right: 6),
+                          height: 40,
+                          child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius:
+                                      BorderRadiusDirectional.circular(12)),
+                              child: TextButton(
+                                child: const Text(
+                                  "Discard",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  bool result = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: const Text(
+                                              "Are you sure you want to discard all changes?"),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, true);
+                                                },
+                                                child: const Text("YES")),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context, false);
+                                                },
+                                                child: const Text("NO")),
+                                          ],
+                                        );
+                                      });
+                                  if (result) {
+                                    Navigator.pop(context, 0);
+                                  }
+                                },
+                              )),
+                        )),
+                        Expanded(
+                            child: Container(
+                          padding: const EdgeInsets.only(left: 6),
+                          height: 40,
+                          child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius:
+                                      BorderRadiusDirectional.circular(12)),
+                              child: TextButton(
+                                child: const Text(
+                                  "Save",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (widget._name == null ||
+                                      widget._name!.isEmpty) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: const Text(
+                                                "Name must not be empty."),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("OK"))
+                                            ],
+                                          );
+                                        });
+                                    return;
+                                  }
+                                  if (widget._task == null) {
+                                    widget._task = Task(
+                                        widget._folder,
+                                        widget._name!,
+                                        widget._priority,
+                                        widget._chosenTags,
+                                        widget._deadline,
+                                        widget._haveTime,
+                                        widget._timeRequired != null
+                                            ? widget._timeRequired! +
+                                                Duration(
+                                                    days: widget._daysRequired)
+                                            : null,
+                                        widget._description,
+                                        widget._location);
+                                    widget._folder.addTask(widget._task!);
+                                  } else {
+                                    widget._task!.update(
+                                        widget._name!,
+                                        widget._priority,
+                                        widget._chosenTags,
+                                        widget._deadline,
+                                        widget._haveTime,
+                                        widget._timeRequired,
+                                        widget._description);
+                                  }
+                                  Navigator.pop(
+                                      context, widget._task == null ? 1 : 0);
+                                },
+                              )),
+                        )),
+                      ],
+                    ),
+                    Visibility(
+                        visible: widget._task != null,
+                        child: Row(children: [
+                          Expanded(
+                              child: SizedBox(
+                            height: 40,
+                            child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                    color: Colors.red[500],
+                                    borderRadius:
+                                        BorderRadiusDirectional.circular(12)),
+                                child: TextButton(
+                                  child: const Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    bool result = await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                                content: const Text(
+                                                    "Are you sure you want to delete task?\n"
+                                                    "You will not be able to restore it."),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context, true);
+                                                      },
+                                                      child: const Text("YES")),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context, false);
+                                                      },
+                                                      child: const Text("NO")),
+                                                ]));
+                                    if (result) {
+                                      widget._folder
+                                          .getTasks()
+                                          .remove(widget._task!);
+                                      Navigator.pop(context, -1);
+                                    }
+                                  },
+                                )),
+                          )),
+                        ]))
+                  ],
+                ))));
+  }
+}
