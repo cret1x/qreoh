@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../firebase_functions/tasks.dart';
 import 'task_manager_widget.dart';
 import '../../entities/tag.dart';
 import '../../entities/folder.dart';
@@ -71,8 +72,7 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Wrap(
                 spacing: 12,
                 runSpacing: 12,
@@ -82,11 +82,9 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                             color: Colors.blue,
-                            borderRadius:
-                                BorderRadiusDirectional.circular(12)),
+                            borderRadius: BorderRadiusDirectional.circular(12)),
                         child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: TextFormField(
@@ -121,8 +119,7 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                   decoration: BoxDecoration(
                                       color: Colors.blue[100],
                                       borderRadius:
-                                          BorderRadiusDirectional.circular(
-                                              12)),
+                                          BorderRadiusDirectional.circular(12)),
                                   child: Center(
                                       child: Text(widget._folder.getName(),
                                           style: const TextStyle(
@@ -231,8 +228,8 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                       context: context,
                                       builder: (context) => Container(
                                             height: 216,
-                                            padding: const EdgeInsets.only(
-                                                top: 6.0),
+                                            padding:
+                                                const EdgeInsets.only(top: 6.0),
                                             // The bottom margin is provided to align the popup above the system
                                             // navigation bar.
                                             margin: EdgeInsets.only(
@@ -255,16 +252,14 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                                 itemExtent: 32,
                                                 onSelectedItemChanged:
                                                     (int value) {
-                                                  widget._daysRequired =
-                                                      value;
+                                                  widget._daysRequired = value;
                                                   setState(() {});
                                                 },
-                                                children: List<
-                                                        Widget>.generate(
+                                                children: List<Widget>.generate(
                                                     61,
                                                     (index) => Center(
-                                                        child: Text(index
-                                                            .toString()))),
+                                                        child: Text(
+                                                            index.toString()))),
                                               ),
                                             ),
                                           ));
@@ -278,8 +273,8 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                       context: context,
                                       builder: (context) => Container(
                                             height: 216,
-                                            padding: const EdgeInsets.only(
-                                                top: 6.0),
+                                            padding:
+                                                const EdgeInsets.only(top: 6.0),
                                             // The bottom margin is provided to align the popup above the system
                                             // navigation bar.
                                             margin: EdgeInsets.only(
@@ -297,8 +292,8 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                               child: CupertinoTimerPicker(
                                                 initialTimerDuration:
                                                     widget._timeRequired!,
-                                                mode: CupertinoTimerPickerMode
-                                                    .hm,
+                                                mode:
+                                                    CupertinoTimerPickerMode.hm,
                                                 // This is called when the user changes the timer's
                                                 // duration.
                                                 onTimerDurationChanged:
@@ -462,10 +457,10 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                       itemBuilder: (BuildContext context, int index) {
                         return CheckboxListTile(
                             checkboxShape: const CircleBorder(),
-                            title: Text(
-                                widget._parent.getTags()[index].getName()),
-                            secondary: Icon(
-                                widget._parent.getTags()[index].getIcon()),
+                            title:
+                                Text(widget._parent.getTags()[index].getName()),
+                            secondary:
+                                Icon(widget._parent.getTags()[index].getIcon()),
                             value: widget._chosenTags
                                 .contains(widget._parent.getTags()[index]),
                             onChanged: (bool? state) {
@@ -581,6 +576,7 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                       widget._description,
                                       widget._location);
                                   widget._folder.addTask(widget._task!);
+                                  createTask(widget._task!);
                                 } else {
                                   widget._task!.update(
                                       widget._name!,
@@ -591,6 +587,8 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                       widget._timeRequired,
                                       widget._description);
                                 }
+
+
                                 Navigator.pop(
                                     context, widget._task == null ? 1 : 0);
                               },

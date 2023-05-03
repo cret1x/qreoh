@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'folder.dart';
 import 'tag.dart';
@@ -18,6 +19,46 @@ class Task {
   bool _haveTime = false;
   late List<Tag> _tags = <Tag>[];
   List<Notification> _notifications = [];
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      "name": _name,
+      "priority": _priority.index,
+      if (_deadline != null) "deadline": _deadline,
+      if (_description != null) "description": _description,
+      if (_timeRequired != null) "timeRequired": _timeRequired!.inMinutes,
+      if (_place != null) "place": _place,
+      "haveTime": _haveTime,
+      "tags": _tags.map((e) => e.toFirestore()),
+    };
+  }
+
+  factory Task.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      Folder parent,
+      SnapshotOptions? options,
+      ) {
+    final data = snapshot.data();
+    List<Tag> tags = [];
+    if (data?['tags'] != null) {
+      print(data!['name']);
+      for (var element in data['tags']) {
+        tags.add(Tag.fromFirestore(element));
+      }
+    }
+    return Task(
+      parent,
+      data!['name'],
+      Priority.values[data['priority']],
+      tags,
+      data['deadline'] != null ? (data['deadline'] as Timestamp).toDate() : null,
+      data['haveTime'],
+      data['timeRequired'] != null ? Duration(minutes: data['timeRequired']) : null,
+      data['description'],
+      data['place'],
+    );
+  }
+
 
   Task(this._parent, this._name, this._priority,
       [List<Tag>? tags,

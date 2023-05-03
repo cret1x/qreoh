@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'task.dart';
 
 class Folder {
   String _name;
   Folder? _parent;
-  final List<Folder> _children = List<Folder>.empty();
+  final List<Folder> _children = [];
   final List<Task> _tasks = [];
 
   Folder(this._name, this._parent, [List<Task>? tasks]) {
