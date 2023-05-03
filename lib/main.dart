@@ -46,12 +46,21 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       title: 'Qreoh app',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Colors.deepOrangeAccent,
+          secondary: Colors.deepOrangeAccent.shade100,
+          brightness: Brightness.light,
+        ),
+
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          surface: Colors.black12,
+          onSurface: Colors.white,
+          primary: Colors.deepOrangeAccent,
+          secondary: Colors.orange.shade800,
+          brightness: Brightness.dark,
+        ),
       ),
       themeMode: _themeMode,
       home: const StartupPage(),

@@ -79,9 +79,9 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _navbarSelectedIndex,
         onTap: _onNavbarItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),
+          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Tasks'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_rounded), label: 'Profile'),
+              icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Settings'),

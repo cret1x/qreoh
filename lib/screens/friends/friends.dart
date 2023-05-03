@@ -36,7 +36,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: Colors.blue.shade100,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -45,13 +45,12 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                 value: _dropdownValue,
                 icon: const Icon(Icons.arrow_downward),
                 elevation: 16,
-                style: const TextStyle(
-                  color: Colors.deepPurple,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 24,
                 ),
                 underline: Container(
                   height: 2,
-                  color: Colors.deepPurpleAccent,
                 ),
                 onChanged: (String? value) {
                   setState(() {
