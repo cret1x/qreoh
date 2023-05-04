@@ -4,19 +4,24 @@ import 'task_manager_widget.dart';
 import '../../entities/task.dart';
 
 class TaskWidget extends StatefulWidget {
-  final Task _task;
-  final TaskManagerWidget _parent;
+  final Task task;
 
-  const TaskWidget(this._parent, this._task, {super.key});
+  const TaskWidget({super.key, required this.task});
 
   @override
-  State<StatefulWidget> createState() => TaskState(_task.getState());
+  State<StatefulWidget> createState() => TaskState();
 }
 
 class TaskState extends State<TaskWidget> {
-  bool _isSelected;
+  bool _isSelected = false;
 
-  TaskState(this._isSelected);
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _isSelected = widget.task.done;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,48 +45,47 @@ class TaskState extends State<TaskWidget> {
                               onPressed: () {}, icon: const Icon(Icons.share)),
                         ]),
                     SizedBox(
-                        height: 70,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadiusDirectional.circular(12)),
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(widget._task.getName(),
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                    Transform.scale(
-                                        scale: 1.5,
-                                        child: Theme(
-                                            data: ThemeData(
-                                                unselectedWidgetColor:
-                                                    Colors.white),
-                                            child: Checkbox(
-                                                shape: const CircleBorder(),
-                                                checkColor: Colors.blue,
-                                                activeColor: Colors.white,
-                                                value: _isSelected,
-                                                onChanged: (bool? state) => {
-                                                      widget._task
-                                                          .setState(state),
-                                                      setState(() {
-                                                        _isSelected = widget
-                                                            ._task
-                                                            .getState();
-                                                      })
-                                                    }))),
-                                  ])),
-                        )),
+                      height: 70,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadiusDirectional.circular(12)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(widget.task.name,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                              Transform.scale(
+                                scale: 1.5,
+                                child: Theme(
+                                  data: ThemeData(
+                                      unselectedWidgetColor: Colors.white),
+                                  child: Checkbox(
+                                    shape: const CircleBorder(),
+                                    checkColor: Colors.blue,
+                                    activeColor: Colors.white,
+                                    value: _isSelected,
+                                    onChanged: (bool? state) {
+                                      widget.task.done = state!;
+                                      setState(() {
+                                        _isSelected = widget.task.done;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     Visibility(
-                        visible: widget._task.getDate() != "",
+                        visible: widget.task.stringDate.isNotEmpty,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -90,10 +94,10 @@ class TaskState extends State<TaskWidget> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black54)),
-                              Text(widget._task.getDate())
+                              Text(widget.task.stringDate)
                             ])),
                     Visibility(
-                        visible: widget._task.getTimeLeft() != "",
+                        visible: widget.task.stringTimeLeft.isNotEmpty,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -102,10 +106,10 @@ class TaskState extends State<TaskWidget> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black54)),
-                              Text(widget._task.getTimeLeft())
+                              Text(widget.task.stringTimeLeft)
                             ])),
                     Visibility(
-                        visible: widget._task.getStringTimeRequired() != null,
+                        visible: widget.task.stringTimeRequired != null,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -114,13 +118,11 @@ class TaskState extends State<TaskWidget> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black54)),
-                            Text(widget._task.getStringTimeRequired() == null
-                                ? ""
-                                : widget._task.getStringTimeRequired()!)
+                            Text(widget.task.stringTimeRequired ?? ""),
                           ],
                         )),
                     Visibility(
-                        visible: widget._task.getLocation() != null,
+                        visible: widget.task.place != null,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -129,13 +131,11 @@ class TaskState extends State<TaskWidget> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black54)),
-                            Text(widget._task.getLocation() == null
-                                ? ""
-                                : widget._task.getLocation()!)
+                            Text(widget.task.place ?? ""),
                           ],
                         )),
                     Visibility(
-                        visible: widget._task.getDescription() != null,
+                        visible: widget.task.description != null,
                         child: const Align(
                           alignment: Alignment.centerLeft,
                           child: Text("Description",
@@ -145,15 +145,12 @@ class TaskState extends State<TaskWidget> {
                                   color: Colors.black54)),
                         )),
                     Visibility(
-                        visible: widget._task.getDescription() != null,
+                        visible: widget.task.description != null,
                         child: Row(
                           children: [
                             Flexible(
                                 fit: FlexFit.loose,
-                                child: Text(
-                                    widget._task.getDescription() == null
-                                        ? ""
-                                        : widget._task.getDescription()!))
+                                child: Text(widget.task.description ?? ""),),
                           ],
                         )),
                     Row(
@@ -164,11 +161,11 @@ class TaskState extends State<TaskWidget> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black54)),
-                        Text(widget._task.getPath())
+                        Text(widget.task.path)
                       ],
                     ),
                     Visibility(
-                      visible: widget._task.getTags().isNotEmpty,
+                      visible: widget.task.tags.isNotEmpty,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text("Tags",
@@ -179,15 +176,15 @@ class TaskState extends State<TaskWidget> {
                       ),
                     ),
                     Visibility(
-                        visible: widget._task.getTags().isNotEmpty,
+                        visible: widget.task.tags.isNotEmpty,
                         child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: widget._task.getTags().length,
+                            itemCount: widget.task.tags.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Row(
                                 children: [
-                                  Icon(widget._task.getTags()[index].getIcon()),
-                                  Text(widget._task.getTags()[index].getName()),
+                                  Icon(widget.task.tags[index].getIcon()),
+                                  Text(widget.task.tags[index].getName()),
                                 ],
                               );
                             })),
@@ -214,8 +211,7 @@ class TaskState extends State<TaskWidget> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               EditCreateTaskWidget.edit(
-                                                  widget._parent,
-                                                  widget._task)));
+                                                  widget.task)));
                                   if (result < 0) {
                                     Navigator.pop(context);
                                   } else {

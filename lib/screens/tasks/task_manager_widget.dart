@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
 import '../../entities/tag.dart';
@@ -7,37 +9,16 @@ import 'task_comparators.dart';
 import 'task_list_widget.dart';
 import '../../entities/folder.dart';
 
-class TaskManagerWidget extends StatefulWidget {
-  Folder _current;
-  List<Tag> _tags;
-  SortRule _sortRule = SortRule.leftAsc;
-  final Filter _filter = Filter();
-
-  TaskManagerWidget(this._current, this._tags, {super.key});
-
-  List<Tag> getTags() {
-    return _tags;
-  }
-
-  Filter getFilter() {
-    return _filter;
-  }
-
-  Folder getCurrentFolder() {
-    return _current;
-  }
-
-  SortRule getSortRule() {
-    return _sortRule;
-  }
+class TaskManagerWidget extends ConsumerStatefulWidget {
+  const TaskManagerWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return TaskManagerState();
-  }
+  ConsumerState<TaskManagerWidget> createState() => _TaskManagerState();
 }
 
-class TaskManagerState extends State<TaskManagerWidget> {
+class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
+  Folder _current = Folder("root", null);
+  SortRule _sortRule = SortRule.leftAsc;
   static const List<DropdownMenuItem<SortRule>> _menu_items = [
     DropdownMenuItem(value: SortRule.leftAsc, child: Text("Time left ▲")),
     DropdownMenuItem(value: SortRule.leftDesc, child: Text("Time left ▼")),
@@ -47,6 +28,11 @@ class TaskManagerState extends State<TaskManagerWidget> {
     DropdownMenuItem(value: SortRule.priorityDesc, child: Text("Priority ▼")),
     DropdownMenuItem(value: SortRule.estimation, child: Text("Recommended"))
   ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +53,7 @@ class TaskManagerState extends State<TaskManagerWidget> {
                                   borderRadius:
                                       BorderRadiusDirectional.circular(12)),
                               child: Center(
-                                  child: Text(widget._current.getName(),
+                                  child: Text(_current.getName(),
                                       style: const TextStyle(
                                           color: Colors.black)))))),
                   SizedBox(
@@ -98,11 +84,12 @@ class TaskManagerState extends State<TaskManagerWidget> {
                             child: Center(
                                 child: DropdownButton<SortRule>(
                                     hint: const Text("Sort rule"),
-                                    value: widget._sortRule,
+                                    value: _sortRule,
                                     items: _menu_items,
                                     onChanged: (SortRule? value) {
-                                      widget._sortRule = value!;
-                                      setState(() {});
+                                      setState(() {
+                                        _sortRule = value!;
+                                      });
                                     }))))),
                 Container(
                     padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
@@ -118,7 +105,7 @@ class TaskManagerState extends State<TaskManagerWidget> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        FilterWidget(widget)));
+                                        FilterWidget()));
                             setState(() {});
                           },
                           icon: const Icon(Icons.filter_alt_outlined),
@@ -150,15 +137,17 @@ class TaskManagerState extends State<TaskManagerWidget> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditCreateTaskWidget(
-                                        widget, widget._current)));
+                                    builder: (context) => EditCreateTaskWidget(_current)));
                             setState(() {});
                           },
                           icon: const Icon(Icons.add),
                           color: Colors.white,
                         ))))
               ]),
-              TaskListWidget(widget)
+              TaskListWidget(
+                folder: _current,
+                sort: _sortRule,
+              ),
             ])));
   }
 }

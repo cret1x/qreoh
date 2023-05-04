@@ -1,274 +1,264 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 import '../../entities/tag.dart';
 import '../../entities/task.dart';
-import 'task_manager_widget.dart';
 import '../../entities/filter.dart';
 
-class FilterWidget extends StatefulWidget {
-  final TaskManagerWidget _parent;
-
-  const FilterWidget(this._parent, {super.key});
+class FilterWidget extends ConsumerStatefulWidget {
+  const FilterWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return FilterState();
-  }
-
+  ConsumerState<FilterWidget> createState() => _FilterState();
 }
 
-class FilterState extends State<FilterWidget> {
+class _FilterState extends ConsumerState<FilterWidget> {
   late bool _priorities;
   late bool _statuses;
   late bool _tags;
 
   void _changePriorityState(bool state, Priority priority) {
     if (state) {
-      widget._parent.getFilter().priorities.add(priority);
-    } else if (widget._parent.getFilter().priorities.contains(priority)) {
-      widget._parent.getFilter().priorities.remove(priority);
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var priorities = state.priorities;
+        priorities.add(priority);
+        return state.copyWith(priorities: priorities, tags: state.tags, statuses: state.statuses);
+      });
+    } else if (ref.read(tasksFilterProvider).priorities.contains(priority)) {
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var priorities = state.priorities;
+        priorities.remove(priority);
+        return state.copyWith(priorities: priorities, tags: state.tags, statuses: state.statuses);
+      });
     }
   }
 
   void _changeStatusState(bool state, bool status) {
     if (state) {
-      widget._parent.getFilter().statuses.add(status);
-    } else if (widget._parent.getFilter().statuses.contains(status)) {
-      widget._parent.getFilter().statuses.remove(status);
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var statuses = state.statuses;
+        statuses.add(status);
+        return state.copyWith(priorities: state.priorities, tags: state.tags, statuses: statuses);
+      });
+    } else if (ref.read(tasksFilterProvider).statuses.contains(status)) {
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var statuses = state.statuses;
+        statuses.remove(status);
+        return state.copyWith(priorities: state.priorities, tags: state.tags, statuses: statuses);
+      });
     }
   }
 
   void _changeTagState(bool state, Tag tag) {
     if (state) {
-      widget._parent.getFilter().tags.add(tag);
-    } else if (widget._parent.getFilter().tags.contains(tag)) {
-      widget._parent.getFilter().tags.remove(tag);
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var tags = state.tags;
+        tags.add(tag);
+        return state.copyWith(priorities: state.priorities, tags: tags, statuses: state.statuses);
+      });
+    } else if (ref.read(tasksFilterProvider).tags.contains(tag)) {
+      ref.read(tasksFilterProvider.notifier).update((state) {
+        var tags = state.tags;
+        tags.remove(tag);
+        return state.copyWith(priorities: state.priorities, tags: tags, statuses: state.statuses);
+
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    _priorities = widget._parent.getFilter().priorities.length == 4;
-    _statuses = widget._parent.getFilter().statuses.length == 2;
-    _tags = widget._parent.getFilter().tags.length == widget._parent.getTags().length;
-    return Material(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: Column(
-            children: [
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back)
-                  )
-              ),
-              Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16),
-                    child: Text(
-                      "Priority",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54
-                      ),
-                    )
-                  ),
-                  const Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Divider()
-                    )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Checkbox(
-                      value: _priorities,
-                      onChanged: (bool? state) {
-                        _priorities = state!;
-
-                        _changePriorityState(state, Priority.high);
-                        _changePriorityState(state, Priority.medium);
-                        _changePriorityState(state, Priority.low);
-                        _changePriorityState(state, Priority.none);
-
-                        setState(() {});
-                      }
-                    )
-                  )
-
-                ]
-              ),
-              CheckboxListTile(
-                title: const Text("High"),
-                value: widget._parent.getFilter().priorities.contains(Priority.high),
-                onChanged: (bool? state) {
-                  if (state == null) {
-                    return;
-                  }
-                  _changePriorityState(state, Priority.high);
-                  setState(() {});
-                }
-              ),
-              CheckboxListTile(
-                  title: const Text("Medium"),
-                  value: widget._parent.getFilter().priorities.contains(Priority.medium),
-                  onChanged: (bool? state) {
-                    if (state == null) {
-                      return;
-                    }
-                    _changePriorityState(state, Priority.medium);
-                    setState(() {});
-                  }
-              ),
-              CheckboxListTile(
-                  title: const Text("Low"),
-                  value: widget._parent.getFilter().priorities.contains(Priority.low),
-                  onChanged: (bool? state) {
-                    if (state == null) {
-                      return;
-                    }
-                    _changePriorityState(state, Priority.low);
-                    setState(() {});
-                  }
-              ),
-              CheckboxListTile(
-                  title: const Text("None"),
-                  value: widget._parent.getFilter().priorities.contains(Priority.none),
-                  onChanged: (bool? state) {
-                    if (state == null) {
-                      return;
-                    }
-                    _changePriorityState(state, Priority.none);
-                    setState(() {});
-                  }
-              ),
-              Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16),
-                        child: Text(
-                          "Status",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54
-                          )
-                        )
-                    ),
-                    const Expanded(
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Divider()
-                        )
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: Checkbox(
-                          value: _statuses,
-                          onChanged: (bool? state) {
-                            _statuses = state!;
-
-                            _changeStatusState(state, true);
-                            _changeStatusState(state, false);
-
-                            setState(() {});
-                          }
-                      )
-                    )
-                  ]
-              ),
-              CheckboxListTile(
-                  title: const Text("Done"),
-                  value: widget._parent.getFilter().statuses.contains(true),
-                  onChanged: (bool? state) {
-                    if (state == null) {
-                      return;
-                    }
-
-                    _changeStatusState(state, true);
-
-                    setState(() {});
-                  }
-              ),
-              CheckboxListTile(
-                  title: const Text("Not done"),
-                  value: widget._parent.getFilter().statuses.contains(false),
-                  onChanged: (bool? state) {
-                    if (state == null) {
-                      return;
-                    }
-
-                    _changeStatusState(state, false);
-
-                    setState(() {});
-                  }
-              ),
-              Row(
-                  children: [
+    _priorities = ref.read(tasksFilterProvider).priorities.length == 4;
+    _statuses = ref.read(tasksFilterProvider).statuses.length == 2;
+    _tags = ref.read(tasksFilterProvider).tags.length ==
+        ref.read(userTagsProvider).length;
+    Filter filter = ref.watch(tasksFilterProvider);
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Filters"),
+        ),
+        body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                child: Column(children: [
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.arrow_back))),
+                  Row(children: [
                     const Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
-                            "Tags",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54
-                            )
-                        )
-                    ),
+                          "Priority",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        )),
                     const Expanded(
                         child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Divider()
-                        )
-                    ),
+                            child: Divider())),
                     Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: Checkbox(
-                        value: _tags,
-                        onChanged: (bool? state) {
-                          _tags = state!;
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Checkbox(
+                            value: _priorities,
+                            onChanged: (bool? state) {
+                              _priorities = state!;
 
-                          for (int i = 0; i < widget._parent.getTags().length; ++i) {
-                            _changeTagState(state, widget._parent.getTags()[i]);
-                          }
+                              _changePriorityState(state, Priority.high);
+                              _changePriorityState(state, Priority.medium);
+                              _changePriorityState(state, Priority.low);
+                              _changePriorityState(state, Priority.none);
 
-                          setState(() {});
+                              setState(() {});
+                            }))
+                  ]),
+                  CheckboxListTile(
+                      title: const Text("High"),
+                      value: filter.priorities.contains(Priority.high),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
                         }
-                      )
-                    ),
-                  ]
-              ),
-              ListView.builder(
-                  itemCount: widget._parent.getTags().length,
-                  shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CheckboxListTile(
-                        title: Text(widget._parent.getTags()[index].getName()),
-                        secondary: Icon(widget._parent.getTags()[index].getIcon()),
-                        value: widget._parent.getFilter().tags.contains(widget._parent.getTags()[index]),
-                        onChanged: (bool? state) {
-                          if (state == null) {
-                            return;
-                          }
-
-                          _changeTagState(state, widget._parent.getTags()[index]);
-
-                          setState(() {});
+                        _changePriorityState(state, Priority.high);
+                        setState(() {});
+                      }),
+                  CheckboxListTile(
+                      title: const Text("Medium"),
+                      value: filter.priorities.contains(Priority.medium),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
                         }
-                    );
-                  }
-              )
-            ]
-          )
-         )
-      )
-    );
+                        _changePriorityState(state, Priority.medium);
+                        setState(() {});
+                      }),
+                  CheckboxListTile(
+                      title: const Text("Low"),
+                      value: filter.priorities.contains(Priority.low),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
+                        }
+                        _changePriorityState(state, Priority.low);
+                        setState(() {});
+                      }),
+                  CheckboxListTile(
+                      title: const Text("None"),
+                      value: filter.priorities.contains(Priority.none),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
+                        }
+                        _changePriorityState(state, Priority.none);
+                        setState(() {});
+                      }),
+                  Row(children: [
+                    const Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Text("Status",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54))),
+                    const Expanded(
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Divider())),
+                    Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Checkbox(
+                            value: _statuses,
+                            onChanged: (bool? state) {
+                              _statuses = state!;
+
+                              _changeStatusState(state, true);
+                              _changeStatusState(state, false);
+
+                              setState(() {});
+                            }))
+                  ]),
+                  CheckboxListTile(
+                      title: const Text("Done"),
+                      value: filter.statuses.contains(true),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
+                        }
+
+                        _changeStatusState(state, true);
+
+                        setState(() {});
+                      }),
+                  CheckboxListTile(
+                      title: const Text("Not done"),
+                      value: filter.statuses.contains(false),
+                      onChanged: (bool? state) {
+                        if (state == null) {
+                          return;
+                        }
+
+                        _changeStatusState(state, false);
+
+                        setState(() {});
+                      }),
+                  Row(children: [
+                    const Padding(
+                        padding: EdgeInsets.only(left: 16),
+                        child: Text("Tags",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54))),
+                    const Expanded(
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Divider())),
+                    Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Checkbox(
+                            value: _tags,
+                            onChanged: (bool? state) {
+                              _tags = state!;
+
+                              for (int i = 0;
+                                  i < ref.read(userTagsProvider).length;
+                                  ++i) {
+                                _changeTagState(
+                                    state, ref.read(userTagsProvider)[i]);
+                              }
+
+                              setState(() {});
+                            })),
+                  ]),
+                  ListView.builder(
+                      itemCount: ref.read(userTagsProvider).length,
+                      shrinkWrap: true,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CheckboxListTile(
+                            title: Text(
+                                ref.read(userTagsProvider)[index].getName()),
+                            secondary: Icon(
+                                ref.read(userTagsProvider)[index].getIcon()),
+                            value: filter.tags
+                                .contains(ref.read(userTagsProvider)[index]),
+                            onChanged: (bool? state) {
+                              if (state == null) {
+                                return;
+                              }
+
+                              _changeTagState(
+                                  state, ref.read(userTagsProvider)[index]);
+
+                              setState(() {});
+                            });
+                      })
+                ]))));
   }
 }

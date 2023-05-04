@@ -4,7 +4,7 @@ import 'package:qreoh/screens/friends/friend_requests.dart';
 import 'package:qreoh/screens/friends/friends.dart';
 import 'package:qreoh/screens/profile/profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
-import 'package:qreoh/screens/tasks/tasks.dart';
+import 'package:qreoh/screens/tasks/task_manager_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   int _navbarSelectedIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
   static const List<Widget> _pages = [
-    TasksWidget(),
+    TaskManagerWidget(),
     ProfileWidget(),
     FriendsWidget(),
     SettingsWidget()

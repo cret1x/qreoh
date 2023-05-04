@@ -1,7 +1,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/entities/filter.dart';
+import 'package:qreoh/entities/tag.dart';
 
 final appThemeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
 
 final authStateProvider = StateProvider<bool>((ref) => false);
+
+final userTagsProvider = StateProvider<List<Tag>>((ref) => [Tag("1", Icons.add, "pl"), Tag("2",Icons.ac_unit, "fh")]);
+
+final tasksFilterProvider = StateProvider<Filter>((ref) => Filter());

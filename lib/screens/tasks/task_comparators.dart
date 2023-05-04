@@ -30,50 +30,50 @@ int Function(Task, Task) getFunc(SortRule sr) {
 }
 
 int timeLeftAscending(Task t1, Task t2) {
-  if (t1.getDeadline() == null && t2.getDeadline() == null) {
+  if (t1.deadline == null && t2.deadline == null) {
     return 0;
   }
-  if (t1.getDeadline() == null) {
+  if (t1.deadline == null) {
     return 1;
   }
-  if (t2.getDeadline() == null) {
+  if (t2.deadline == null) {
     return -1;
   }
   DateTime now = DateTime.now();
   return t1
-      .getDeadline()!
+      .deadline!
       .difference(now)
-      .compareTo(t2.getDeadline()!.difference(now));
+      .compareTo(t2.deadline!.difference(now));
 }
 
 int timeLeftDescending(Task t1, Task t2) {
-  if (t1.getDeadline() == null && t2.getDeadline() == null) {
+  if (t1.deadline == null && t2.deadline == null) {
     return 0;
   }
-  if (t1.getDeadline() == null) {
+  if (t1.deadline == null) {
     return 1;
   }
-  if (t2.getDeadline() == null) {
+  if (t2.deadline == null) {
     return -1;
   }
   DateTime now = DateTime.now();
   return t2
-      .getDeadline()!
+      .deadline!
       .difference(now)
-      .compareTo(t1.getDeadline()!.difference(now));
+      .compareTo(t1.deadline!.difference(now));
 }
 
 int alphabeticallyAToZ(Task t1, Task t2) {
-  return t1.getName().compareTo(t2.getName());
+  return t1.name.compareTo(t2.name);
 }
 
 int alphabeticallyZToA(Task t1, Task t2) {
-  return t2.getName().compareTo(t1.getName());
+  return t2.name.compareTo(t1.name);
 }
 
 int priorityAscending(Task t1, Task t2) {
-  Priority p1 = t1.getPriority();
-  Priority p2 = t2.getPriority();
+  Priority p1 = t1.priority;
+  Priority p2 = t2.priority;
   if (p1 == Priority.none) {
     if (p2 == Priority.none) {
       return 0;
@@ -90,8 +90,8 @@ int priorityAscending(Task t1, Task t2) {
 }
 
 int priorityDescending(Task t1, Task t2) {
-  Priority p1 = t1.getPriority();
-  Priority p2 = t2.getPriority();
+  Priority p1 = t1.priority;
+  Priority p2 = t2.priority;
   if (p1 == Priority.none) {
     if (p2 == Priority.none) {
       return 0;
@@ -108,14 +108,14 @@ int priorityDescending(Task t1, Task t2) {
 }
 
 int estimatedOrder(Task t1, Task t2) {
-  if (t1.getEstimation() == null && t2.getEstimation() == null) {
+  if (t1.estimation == null && t2.estimation == null) {
     return 0;
   }
-  if (t1.getEstimation() == null) {
+  if (t1.estimation == null) {
     return 1;
   }
-  if (t2.getEstimation() == null) {
+  if (t2.estimation == null) {
     return -1;
   }
-  return t1.getEstimation()!.compareTo(t2.getEstimation()!);
+  return t1.estimation!.compareTo(t2.estimation!);
 }

@@ -14,18 +14,18 @@ Future<void> createTask(Task task) async {
   final tasksRef = db.collection('users').doc(uid).collection("tasks");
   CollectionReference curRef = tasksRef;
   late DocumentReference docRef;
-  String pathString = task.getParent().getPath();
-  final path = pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+  String pathString = task.parent.getPath();
+  pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
     docRef = curRef.doc(element);
     curRef = docRef.collection("folders");
   });
-  docRef = docRef.collection("tasks").doc(task.getName());
+  docRef = docRef.collection("tasks").doc(task.id);
   docRef.set(
     task.toFirestore(),
   );
 }
 
-Future<List<Task>> getFolderContent(Folder folder) async {
+Future<List<Task>> getTasksInFolder(Folder folder) async {
   String uid = FirebaseAuth.instance.currentUser!.uid;
   final db = FirebaseFirestore.instance;
   final tasksRef = db.collection('users').doc(uid).collection("tasks");
@@ -41,6 +41,30 @@ Future<List<Task>> getFolderContent(Folder folder) async {
   for (var element in tasksCollection.docs) {
       tasks.add(Task.fromFirestore(element, folder, null));
   }
-  print(tasks);
   return tasks;
+}
+
+Future<void> changeTaskState(Task task) async {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+  final db = FirebaseFirestore.instance;
+  final tasksRef = db.collection('users').doc(uid).collection("tasks");
+  CollectionReference curRef = tasksRef;
+  late DocumentReference docRef;
+  String pathString = task.parent.getPath();
+  pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+    docRef = curRef.doc(element);
+    curRef = docRef.collection("folders");
+  });
+  docRef = docRef.collection("tasks").doc(task.id);
+  docRef.update({
+    "done": task.done,
+  });
+}
+
+Future<void> updateTask(Task task) async {
+
+}
+
+Future<void> deleteTask(Task task) async {
+
 }

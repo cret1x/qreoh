@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../firebase_functions/tasks.dart';
 import 'task_manager_widget.dart';
@@ -7,8 +10,8 @@ import '../../entities/tag.dart';
 import '../../entities/folder.dart';
 import '../../entities/task.dart';
 
-class EditCreateTaskWidget extends StatefulWidget {
-  final TaskManagerWidget _parent;
+class EditCreateTaskWidget extends ConsumerStatefulWidget {
+  final uuid = const Uuid();
   late Folder _folder;
   Task? _task;
   String? _name;
@@ -21,36 +24,38 @@ class EditCreateTaskWidget extends StatefulWidget {
   String? _description;
   final List<Tag> _chosenTags = [];
 
-  EditCreateTaskWidget(this._parent, this._folder, {super.key}) {
+  EditCreateTaskWidget(this._folder, {super.key}) {
     _task = null;
   }
 
-  EditCreateTaskWidget.edit(this._parent, Task task, {super.key}) {
+  EditCreateTaskWidget.edit(Task task, {super.key}) {
     _task = task;
-    _folder = task.getParent();
-    _name = task.getName();
-    _deadline = task.getDeadline();
-    _haveTime = task.getHaveTime();
+    _folder = task.parent;
+    _name = task.name;
+    _deadline = task.deadline;
+    _haveTime = task.haveTime;
     _daysRequired =
-        task.getTimeRequired() == null ? 0 : task.getTimeRequired()!.inDays;
-    _timeRequired = task.getTimeRequired() == null
+        task.timeRequired == null ? 0 : task.timeRequired!.inDays;
+    _timeRequired = task.timeRequired == null
         ? null
-        : task.getTimeRequired()! - Duration(days: _daysRequired);
-    _priority = task.getPriority();
-    _location = task.getLocation();
-    _description = task.getDescription();
-    for (Tag tag in task.getTags()) {
+        : task.timeRequired! - Duration(days: _daysRequired);
+    _priority = task.priority;
+    _location = task.place;
+    _description = task.description;
+    for (Tag tag in task.tags) {
       _chosenTags.add(tag);
     }
   }
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<EditCreateTaskWidget> createState() {
     return EditCreateTaskWidgetState();
   }
 }
 
-class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
+class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
+
+  List<Tag> _userTags = [];
   String _durationToString(Duration? duration) {
     if (duration == null) {
       return "Add";
@@ -65,6 +70,7 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _userTags = ref.watch(userTagsProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Task"),
@@ -452,17 +458,17 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                             color: Colors.black54)),
                   ),
                   ListView.builder(
-                      itemCount: widget._parent.getTags().length,
+                      itemCount: _userTags.length,
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
                         return CheckboxListTile(
                             checkboxShape: const CircleBorder(),
                             title:
-                                Text(widget._parent.getTags()[index].getName()),
+                                Text(_userTags[index].getName()),
                             secondary:
-                                Icon(widget._parent.getTags()[index].getIcon()),
+                                Icon(_userTags[index].getIcon()),
                             value: widget._chosenTags
-                                .contains(widget._parent.getTags()[index]),
+                                .contains(_userTags[index]),
                             onChanged: (bool? state) {
                               if (state == null) {
                                 return;
@@ -470,10 +476,10 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
 
                               if (state) {
                                 widget._chosenTags
-                                    .add(widget._parent.getTags()[index]);
+                                    .add(_userTags[index]);
                               } else {
                                 widget._chosenTags
-                                    .remove(widget._parent.getTags()[index]);
+                                    .remove(_userTags[index]);
                               }
 
                               setState(() {});
@@ -561,20 +567,24 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                   return;
                                 }
                                 if (widget._task == null) {
+
+
                                   widget._task = Task(
-                                      widget._folder,
-                                      widget._name!,
-                                      widget._priority,
-                                      widget._chosenTags,
-                                      widget._deadline,
-                                      widget._haveTime,
-                                      widget._timeRequired != null
+                                      id: widget.uuid.v1(),
+                                      parent: widget._folder,
+                                      name: widget._name!,
+                                      done: false,
+                                      priority: widget._priority,
+                                      tags: widget._chosenTags,
+                                      deadline: widget._deadline,
+                                      haveTime: widget._haveTime,
+                                      timeRequired: widget._timeRequired != null
                                           ? widget._timeRequired! +
                                               Duration(
                                                   days: widget._daysRequired)
                                           : null,
-                                      widget._description,
-                                      widget._location);
+                                      description: widget._description,
+                                      place: widget._location);
                                   widget._folder.addTask(widget._task!);
                                   createTask(widget._task!);
                                 } else {
@@ -587,7 +597,6 @@ class EditCreateTaskWidgetState extends State<EditCreateTaskWidget> {
                                       widget._timeRequired,
                                       widget._description);
                                 }
-
 
                                 Navigator.pop(
                                     context, widget._task == null ? 1 : 0);
