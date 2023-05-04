@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
@@ -47,172 +49,189 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Widget build(BuildContext context) {
     return Material(
         child: DecoratedBox(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("graphics/background2.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Wrap(runSpacing: 12, children: [
-            SizedBox(
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                      height: 40,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 12, 0),
-                                      child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              borderRadius:
-                                                  BorderRadiusDirectional
-                                                      .circular(12)),
-                                          child: Center(
-                                              child:
-                                                  Text(_current.getName()))))),
-                              SizedBox(
-                                  height: 40,
-                                  child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          borderRadius:
-                                              BorderRadiusDirectional.circular(
-                                                  12)),
-                                      child: Center(
-                                          child: IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(Icons.folder_open),
-                                        color: Colors.white,
-                                      ))))
-                            ],
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("graphics/background2.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  child: Wrap(runSpacing: 12, children: [
+                    SizedBox(
+                      child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          Row(children: [
-                            Expanded(
-                              child: Container(
-                                  height: 52,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                                  child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          borderRadius:
-                                              BorderRadius.circular(12)),
-                                      child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 12, left: 18),
-                                          child: DropdownButtonHideUnderline(
-                                              child: DropdownButton<SortRule>(
+                          child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                          child: Container(
+                                              height: 40,
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 12, 0),
+                                              child: DecoratedBox(
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
+                                                      borderRadius:
+                                                          BorderRadiusDirectional
+                                                              .circular(12)),
+                                                  child: Center(
+                                                      child: Text(_current
+                                                          .getName()))))),
+                                      SizedBox(
+                                          height: 40,
+                                          child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                                   borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  isExpanded: true,
-                                                  icon: const Icon(
-                                                      Icons.arrow_downward),
-                                                  hint: const Text("Sort rule"),
-                                                  value: _sortRule,
-                                                  items: _menuItems,
-                                                  onChanged: (SortRule? value) {
-                                                    setState(() {
-                                                      _sortRule = value!;
-                                                    });
-                                                  }))))),
-                            ),
-                            Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                                height: 52,
-                                child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        borderRadius:
-                                            BorderRadiusDirectional.circular(
-                                                12)),
-                                    child: Center(
-                                        child: IconButton(
-                                      onPressed: () async {
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FilterWidget()));
-                                        setState(() {});
-                                      },
-                                      icon:
-                                          const Icon(Icons.filter_alt_outlined),
-                                      color: Colors.white,
-                                    )))),
-                            Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                                height: 52,
-                                child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        borderRadius:
-                                            BorderRadiusDirectional.circular(
-                                                12)),
-                                    child: Center(
-                                        child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Icons.label_important),
-                                      color: Colors.white,
-                                    )))),
-                            Container(
-                                padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                                height: 52,
-                                child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        borderRadius:
-                                            BorderRadiusDirectional.circular(
-                                                12)),
-                                    child: Center(
-                                        child: IconButton(
-                                      onPressed: () async {
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditCreateTaskWidget(
-                                                        _current)));
-                                        setState(() {});
-                                      },
-                                      icon: const Icon(Icons.add),
-                                      color: Colors.white,
-                                    ))))
-                          ]),
-                        ],
-                      ))),
-            ),
-            TaskListWidget(
-              folder: _current,
-              sort: _sortRule,
-            ),
-          ])),
-    ));
+                                                      BorderRadiusDirectional
+                                                          .circular(12)),
+                                              child: Center(
+                                                  child: IconButton(
+                                                onPressed: () {},
+                                                icon: const Icon(
+                                                    Icons.folder_open),
+                                                color: Colors.white,
+                                              ))))
+                                    ],
+                                  ),
+                                  Row(children: [
+                                    Expanded(
+                                      child: Container(
+                                          height: 52,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 12, 12, 0),
+                                          child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
+                                              child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      right: 12, left: 18),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                          child: DropdownButton<
+                                                                  SortRule>(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              isExpanded: true,
+                                                              icon: const Icon(Icons
+                                                                  .arrow_downward),
+                                                              hint: const Text(
+                                                                  "Sort rule"),
+                                                              value: _sortRule,
+                                                              items: _menuItems,
+                                                              onChanged:
+                                                                  (SortRule? value) {
+                                                                setState(() {
+                                                                  _sortRule =
+                                                                      value!;
+                                                                });
+                                                              }))))),
+                                    ),
+                                    Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 12, 12, 0),
+                                        height: 52,
+                                        child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                borderRadius:
+                                                    BorderRadiusDirectional
+                                                        .circular(12)),
+                                            child: Center(
+                                                child: IconButton(
+                                              onPressed: () async {
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FilterWidget()));
+                                                setState(() {});
+                                              },
+                                              icon: const Icon(
+                                                  Icons.filter_alt_outlined),
+                                              color: Colors.white,
+                                            )))),
+                                    Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 12, 12, 0),
+                                        height: 52,
+                                        child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                borderRadius:
+                                                    BorderRadiusDirectional
+                                                        .circular(12)),
+                                            child: Center(
+                                                child: IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                  Icons.label_important),
+                                              color: Colors.white,
+                                            )))),
+                                    Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 12, 0, 0),
+                                        height: 52,
+                                        child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                borderRadius:
+                                                    BorderRadiusDirectional
+                                                        .circular(12)),
+                                            child: Center(
+                                                child: IconButton(
+                                              onPressed: () async {
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            EditCreateTaskWidget(
+                                                                _current)));
+                                                setState(() {});
+                                              },
+                                              icon: const Icon(Icons.add),
+                                              color: Colors.white,
+                                            ))))
+                                  ]),
+                                ],
+                              ))),
+                    ),
+                    TaskListWidget(
+                      folder: _current,
+                      sort: _sortRule,
+                    ),
+                  ])),
+            )));
   }
 }
