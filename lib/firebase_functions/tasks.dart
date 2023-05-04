@@ -4,13 +4,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qreoh/entities/folder.dart';
-import 'package:qreoh/entities/user_entity.dart';
 import 'package:path/path.dart';
-import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast.dart' as sembast;
 import 'package:sembast/sembast_io.dart';
+import 'package:sembast/utils/value_utils.dart';
 
 import '../entities/task.dart';
 
@@ -18,9 +17,9 @@ import '../entities/task.dart';
 class FirebaseTaskManager {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   final db = FirebaseFirestore.instance;
-  DatabaseFactory dbFactory = databaseFactoryIo;
-  late final Database localDB;
-  late final StoreRef<String, Map<String, dynamic>> store;
+  sembast.DatabaseFactory dbFactory = databaseFactoryIo;
+  late final sembast.Database localDB;
+  late final sembast.StoreRef<String, Map<String, dynamic>> store;
   static final FirebaseTaskManager _singleton = FirebaseTaskManager._internal();
 
   factory FirebaseTaskManager() {
@@ -45,23 +44,12 @@ class FirebaseTaskManager {
     }
   }
 
-  // {"root": {"tasks": [<Task1>, <Task2>], "folders": [
-  // "folder1" : {"tasks": [], "folders": []},
-  // ]}}
-
   void openLocalDB() async {
     var dir = await getApplicationDocumentsDirectory();
     await dir.create(recursive: true);
-    var dbPath = join(dir.path, 'user.db');
-    localDB = await dbFactory.openDatabase(dbPath, version: 1, onVersionChanged: (db, oldVer, newVer) async {
-      if (oldVer == 0) {
-        await store.add(db, {"tasks": {"root": {"tasks": [], "folders": {}}}});
-      }
-    });
-    store = StoreRef.main();
-    var record = store.record("tasks");
-    var tree = await record.get(localDB);
-    print(tree);
+    var dbPath = join(dir.path, 'tasks.db');
+    store = sembast.StoreRef.main();
+    localDB = await dbFactory.openDatabase(dbPath);
   }
 
   Future<void> createTask(Task task) async {
@@ -79,17 +67,7 @@ class FirebaseTaskManager {
         task.toFirestore(),
       );
     } else {
-      var record = store.record("tasks");
-      var tree = await record.get(localDB);
-
-      var curFolder = tree!['root'];
-      pathString.substring(0, pathString.length - 1).split('/').skip(1).forEach((element) {
-        if (!(curFolder['folders'] as Map).containsKey(element)) {
-          (curFolder['folders'] as Map)[element] = {"tasks": [], "folders": []};
-        }
-        curFolder = curFolder['folders'][element];
-      });
-      (curFolder['tasks'] as List).add(task.toFirestore());
+      await store.record(task.id).add(localDB, {"folder": pathString, "task": task.toFirestore()});
     }
   }
 
@@ -109,35 +87,34 @@ class FirebaseTaskManager {
         tasks.add(Task.fromFirestore(element.data(), folder));
       }
     } else {
-      var record = store.record("tasks");
-      var tree = await record.get(localDB);
-      var curFolder = tree!['root'];
-      pathString.substring(0, pathString.length - 1).split('/').skip(1).forEach((element) {
-        if (!(curFolder['folders'] as Map).containsKey(element)) {
-          (curFolder['folders'] as Map)[element] = {"tasks": [], "folders": []};
-        }
-        curFolder = curFolder['folders'][element];
-      });
-      for (var elem in (curFolder['tasks'] as List)) {
-        tasks.add(Task.fromFirestore(elem, folder));
+      var finder = sembast.Finder(
+          filter: sembast.Filter.equals('folder', pathString));
+      var records = await store.find(localDB, finder: finder);
+      for (var element in records) {
+        tasks.add(Task.fromFirestore(element.value['task'], folder));
       }
     }
     return tasks;
   }
 
   Future<void> changeTaskState(Task task) async {
-    final tasksRef = db.collection('users').doc(uid).collection("tasks");
-    CollectionReference curRef = tasksRef;
-    late DocumentReference docRef;
     String pathString = task.parent.getPath();
-    pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
-      docRef = curRef.doc(element);
-      curRef = docRef.collection("folders");
-    });
-    docRef = docRef.collection("tasks").doc(task.id);
-    docRef.update({
-      "done": task.done,
-    });
+    if (isOnline) {
+      final tasksRef = db.collection('users').doc(uid).collection("tasks");
+      CollectionReference curRef = tasksRef;
+      late DocumentReference docRef;
+
+      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+        docRef = curRef.doc(element);
+        curRef = docRef.collection("folders");
+      });
+      docRef = docRef.collection("tasks").doc(task.id);
+      docRef.update({
+        "done": task.done,
+      });
+    } else {
+      await store.record(task.id).update(localDB, {'task.done': task.done});
+    }
   }
 
   Future<void> updateTask(Task task) async {

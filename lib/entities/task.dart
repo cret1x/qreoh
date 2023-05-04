@@ -48,7 +48,7 @@ class Task {
       if (description != null) "description": description,
       if (timeRequired != null) "timeRequired": timeRequired!.inMinutes,
       if (place != null) "place": place,
-      "tags": tags.map((e) => e.toFirestore()),
+      "tags": tags.map((e) => e.toFirestore()).toList(),
     };
   }
 
