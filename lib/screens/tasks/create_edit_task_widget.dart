@@ -35,8 +35,7 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
     _name = task.name;
     _deadline = task.deadline;
     _haveTime = task.haveTime;
-    _daysRequired =
-        task.timeRequired == null ? 0 : task.timeRequired!.inDays;
+    _daysRequired = task.timeRequired == null ? 0 : task.timeRequired!.inDays;
     _timeRequired = task.timeRequired == null
         ? null
         : task.timeRequired! - Duration(days: _daysRequired);
@@ -55,8 +54,8 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
 }
 
 class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
-
   List<Tag> _userTags = [];
+
   String _durationToString(Duration? duration) {
     if (duration == null) {
       return "Add";
@@ -79,42 +78,44 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Wrap(
-                spacing: 12,
                 runSpacing: 12,
                 children: [
-                  SizedBox(
-                      height: 70,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadiusDirectional.circular(12)),
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: TextFormField(
-                                maxLength: 30,
-                                initialValue: widget._name,
-                                onChanged: (String? value) {
-                                  widget._name = value;
-                                },
-                                style: const TextStyle(color: Colors.white),
-                                decoration: const InputDecoration(
-                                  counterText: "",
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.white)),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.white)),
-                                  labelText: 'Task name',
-                                ),
-                              ),
-                            )),
-                      )),
+                  Padding(
+                    padding:
+                    const EdgeInsets.only(left: 3, right: 3, bottom: 12),
+                    child: TextFormField(
+                      maxLength: 30,
+                      initialValue: widget._name,
+                      onChanged: (String? value) {
+                        widget._name = value;
+                      },
+                      style: TextStyle(
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .primary),
+                      decoration: InputDecoration(
+                        counterText: "",
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color:
+                                Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .secondary)),
+                        hintText: "Task name",
+                        hintStyle: TextStyle(
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -124,36 +125,43 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                               padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
                               child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                      color: Colors.blue[100],
+                                      color: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .secondary,
                                       borderRadius:
-                                          BorderRadiusDirectional.circular(12)),
+                                      BorderRadiusDirectional.circular(12)),
                                   child: Center(
-                                      child: Text(widget._folder.getName(),
-                                          style: const TextStyle(
-                                              color: Colors.black)))))),
+                                      child: Text(widget._folder.getName()))))),
                       SizedBox(
                           height: 40,
                           child: DecoratedBox(
                               decoration: BoxDecoration(
-                                  color: Colors.blue,
+                                  color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .primary,
                                   borderRadius:
-                                      BorderRadiusDirectional.circular(12)),
+                                  BorderRadiusDirectional.circular(12)),
                               child: Center(
                                   child: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.folder_open),
-                                color: Colors.white,
-                              ))))
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.folder_open),
+                                    color: Colors.white,
+                                  ))))
                     ],
                   ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Deadline",
+                        Text("Deadline",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black54)),
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onBackground)),
                         Row(
                           children: [
                             TextButton(
@@ -161,7 +169,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 widget._deadline == null
                                     ? "Add"
                                     : widget._deadline.toString().substring(
-                                        0, widget._haveTime ? 16 : 10),
+                                    0, widget._haveTime ? 16 : 10),
                               ),
                               onPressed: () async {
                                 widget._deadline = await showDatePicker(
@@ -177,7 +185,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 TimeOfDay? time = await showTimePicker(
                                     context: context,
                                     initialTime:
-                                        const TimeOfDay(hour: 0, minute: 0),
+                                    const TimeOfDay(hour: 0, minute: 0),
                                     cancelText: "SKIP");
                                 widget._haveTime = time != null;
                                 if (time != null) {
@@ -193,8 +201,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 visible: widget._deadline != null,
                                 child: IconButton(
                                   icon: const Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.blue,
+                                    Icons.close,
+                                    color: Colors.red,
                                   ),
                                   iconSize: 20,
                                   onPressed: () {
@@ -209,11 +217,15 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Required time",
+                      Text("Required time",
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black54)),
+                              color:
+                              Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .onBackground)),
                       Row(children: [
                         Visibility(
                             visible: widget._timeRequired == null,
@@ -233,14 +245,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 onPressed: () {
                                   showCupertinoModalPopup(
                                       context: context,
-                                      builder: (context) => Container(
+                                      builder: (context) =>
+                                          Container(
                                             height: 216,
                                             padding:
-                                                const EdgeInsets.only(top: 6.0),
+                                            const EdgeInsets.only(top: 6.0),
                                             // The bottom margin is provided to align the popup above the system
                                             // navigation bar.
                                             margin: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
+                                              bottom: MediaQuery
+                                                  .of(context)
                                                   .viewInsets
                                                   .bottom,
                                             ),
@@ -253,9 +267,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               top: false,
                                               child: CupertinoPicker(
                                                 scrollController:
-                                                    FixedExtentScrollController(
-                                                        initialItem: widget
-                                                            ._daysRequired),
+                                                FixedExtentScrollController(
+                                                    initialItem: widget
+                                                        ._daysRequired),
                                                 itemExtent: 32,
                                                 onSelectedItemChanged:
                                                     (int value) {
@@ -264,9 +278,11 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                                 },
                                                 children: List<Widget>.generate(
                                                     61,
-                                                    (index) => Center(
-                                                        child: Text(
-                                                            index.toString()))),
+                                                        (index) =>
+                                                        Center(
+                                                            child: Text(
+                                                                index
+                                                                    .toString()))),
                                               ),
                                             ),
                                           ));
@@ -278,14 +294,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 onPressed: () {
                                   showCupertinoModalPopup(
                                       context: context,
-                                      builder: (context) => Container(
+                                      builder: (context) =>
+                                          Container(
                                             height: 216,
                                             padding:
-                                                const EdgeInsets.only(top: 6.0),
+                                            const EdgeInsets.only(top: 6.0),
                                             // The bottom margin is provided to align the popup above the system
                                             // navigation bar.
                                             margin: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
+                                              bottom: MediaQuery
+                                                  .of(context)
                                                   .viewInsets
                                                   .bottom,
                                             ),
@@ -298,16 +316,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               top: false,
                                               child: CupertinoTimerPicker(
                                                 initialTimerDuration:
-                                                    widget._timeRequired!,
+                                                widget._timeRequired!,
                                                 mode:
-                                                    CupertinoTimerPickerMode.hm,
+                                                CupertinoTimerPickerMode.hm,
                                                 // This is called when the user changes the timer's
                                                 // duration.
                                                 onTimerDurationChanged:
                                                     (Duration newDuration) {
                                                   setState(() =>
-                                                      widget._timeRequired =
-                                                          newDuration);
+                                                  widget._timeRequired =
+                                                      newDuration);
                                                 },
                                               ),
                                             ),
@@ -316,8 +334,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                               ),
                               IconButton(
                                 icon: const Icon(
-                                  Icons.cancel_outlined,
-                                  color: Colors.blue,
+                                  Icons.close,
+                                  color: Colors.red,
                                 ),
                                 iconSize: 20,
                                 onPressed: () {
@@ -335,65 +353,76 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Priority",
+                      Text("Priority",
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black54)),
-                      DropdownButton<Priority>(
-                        value: widget._priority,
-                        items: List<DropdownMenuItem<Priority>>.generate(4,
-                            (index) {
-                          String text;
-                          switch (Priority.values[index]) {
-                            case Priority.high:
-                              text = "High";
-                              break;
-                            case Priority.medium:
-                              text = "Medium";
-                              break;
-                            case Priority.low:
-                              text = "Low";
-                              break;
-                            case Priority.none:
-                              text = "None";
-                              break;
-                          }
-                          return DropdownMenuItem(
-                              value: Priority.values[index],
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  width: 60,
-                                  child: Text(
-                                    text,
-                                    style: const TextStyle(
-                                        color: Colors.blue,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                    textAlign: TextAlign.right,
-                                  )));
-                        }),
-                        onChanged: (Priority? value) {
-                          widget._priority = value!;
-                          setState(() {});
-                        },
-                        underline: const SizedBox(),
-                        iconEnabledColor: Colors.blue,
-                        iconDisabledColor: Colors.blue,
-                        iconSize: 0.0,
-                      )
+                              color:
+                              Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .onBackground)),
+                      DropdownButtonHideUnderline(
+                          child: DropdownButton<Priority>(
+                            iconEnabledColor: Theme
+                                .of(context)
+                                .colorScheme
+                                .primary,
+                            borderRadius: BorderRadius.circular(12),
+                            value: widget._priority,
+                            items: List<DropdownMenuItem<Priority>>.generate(4,
+                                    (index) {
+                                  String text;
+                                  switch (Priority.values[index]) {
+                                    case Priority.high:
+                                      text = "High";
+                                      break;
+                                    case Priority.medium:
+                                      text = "Medium";
+                                      break;
+                                    case Priority.low:
+                                      text = "Low";
+                                      break;
+                                    case Priority.none:
+                                      text = "None";
+                                      break;
+                                  }
+                                  return DropdownMenuItem(
+                                      value: Priority.values[index],
+                                      child: Container(
+                                          alignment: Alignment.center,
+                                          width: 60,
+                                          child: Text(
+                                            text,
+                                            style: TextStyle(
+                                                color: Theme
+                                                    .of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          )));
+                                }),
+                            onChanged: (Priority? value) {
+                              widget._priority = value!;
+                              setState(() {});
+                            },
+                          )),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         width: 120,
                         child: Text("Location",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black54)),
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onBackground)),
                       ),
                       Expanded(
                         child: Padding(
@@ -404,9 +433,14 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             maxLines: 50,
                             maxLength: 120,
                             initialValue: widget._location,
-                            decoration: const InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue)),
+                            decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
+                                        Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .secondary)),
                             ),
                             onChanged: (String? value) {
                               widget._location = value;
@@ -420,13 +454,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(
+                      SizedBox(
                         width: 120,
                         child: Text("Description",
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black54)),
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onBackground)),
                       ),
                       Expanded(
                         child: Padding(
@@ -437,9 +474,14 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             maxLines: 50,
                             maxLength: 500,
                             initialValue: widget._description,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue)),
+                                  borderSide: BorderSide(
+                                      color:
+                                      Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .secondary)),
                             ),
                             onChanged: (String? value) {
                               widget._description = value;
@@ -450,13 +492,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       ),
                     ],
                   ),
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Tags",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black54)),
+                            color: Theme
+                                .of(context)
+                                .colorScheme
+                                .onBackground)),
                   ),
                   ListView.builder(
                       itemCount: _userTags.length,
@@ -464,23 +509,19 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       itemBuilder: (BuildContext context, int index) {
                         return CheckboxListTile(
                             checkboxShape: const CircleBorder(),
-                            title:
-                                Text(_userTags[index].getName()),
-                            secondary:
-                                Icon(_userTags[index].getIcon()),
-                            value: widget._chosenTags
-                                .contains(_userTags[index]),
+                            title: Text(_userTags[index].getName()),
+                            secondary: Icon(_userTags[index].getIcon()),
+                            value:
+                            widget._chosenTags.contains(_userTags[index]),
                             onChanged: (bool? state) {
                               if (state == null) {
                                 return;
                               }
 
                               if (state) {
-                                widget._chosenTags
-                                    .add(_userTags[index]);
+                                widget._chosenTags.add(_userTags[index]);
                               } else {
-                                widget._chosenTags
-                                    .remove(_userTags[index]);
+                                widget._chosenTags.remove(_userTags[index]);
                               }
 
                               setState(() {});
@@ -489,15 +530,15 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   Row(
                     children: [
                       Expanded(
-                          child: Container(
-                        padding: const EdgeInsets.only(right: 6),
-                        height: 40,
-                        child: DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(12)),
-                            child: TextButton(
+                        child: Container(
+                            padding: const EdgeInsets.only(right: 6),
+                            height: 40,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadiusDirectional.circular(12),
+                                  )),
                               child: const Text(
                                 "Discard",
                                 style: TextStyle(
@@ -530,17 +571,17 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 }
                               },
                             )),
-                      )),
+                      ),
                       Expanded(
-                          child: Container(
-                        padding: const EdgeInsets.only(left: 6),
-                        height: 40,
-                        child: DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(12)),
-                            child: TextButton(
+                        child: Container(
+                            padding: const EdgeInsets.only(left: 6),
+                            height: 40,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadiusDirectional.circular(12),
+                                  )),
                               child: const Text(
                                 "Save",
                                 style: TextStyle(
@@ -568,8 +609,6 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   return;
                                 }
                                 if (widget._task == null) {
-
-
                                   widget._task = Task(
                                       id: widget.uuid.v1(),
                                       parent: widget._folder,
@@ -581,13 +620,14 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       haveTime: widget._haveTime,
                                       timeRequired: widget._timeRequired != null
                                           ? widget._timeRequired! +
-                                              Duration(
-                                                  days: widget._daysRequired)
+                                          Duration(
+                                              days: widget._daysRequired)
                                           : null,
                                       description: widget._description,
                                       place: widget._location);
                                   widget._folder.addTask(widget._task!);
-                                  widget.firebaseTaskManager.createTask(widget._task!);
+                                  widget.firebaseTaskManager
+                                      .createTask(widget._task!);
                                 } else {
                                   widget._task!.update(
                                       widget._name!,
@@ -603,7 +643,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                     context, widget._task == null ? 1 : 0);
                               },
                             )),
-                      )),
+                      ),
                     ],
                   ),
                   Visibility(
@@ -611,50 +651,52 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       child: Row(children: [
                         Expanded(
                             child: SizedBox(
-                          height: 40,
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color: Colors.red[500],
-                                  borderRadius:
+                              height: 40,
+                              child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      color: Colors.red[500],
+                                      borderRadius:
                                       BorderRadiusDirectional.circular(12)),
-                              child: TextButton(
-                                child: const Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  bool result = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                              content: const Text(
-                                                  "Are you sure you want to delete task?\n"
-                                                  "You will not be able to restore it."),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context, true);
-                                                    },
-                                                    child: const Text("YES")),
-                                                TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context, false);
-                                                    },
-                                                    child: const Text("NO")),
-                                              ]));
-                                  if (result) {
-                                    widget._folder
-                                        .getTasks()
-                                        .remove(widget._task!);
-                                    Navigator.pop(context, -1);
-                                  }
-                                },
-                              )),
-                        )),
+                                  child: TextButton(
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      bool result = await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                  content: const Text(
+                                                      "Are you sure you want to delete task?\n"
+                                                          "You will not be able to restore it."),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context, true);
+                                                        },
+                                                        child: const Text(
+                                                            "YES")),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context, false);
+                                                        },
+                                                        child: const Text(
+                                                            "NO")),
+                                                  ]));
+                                      if (result) {
+                                        widget._folder
+                                            .getTasks()
+                                            .remove(widget._task!);
+                                        Navigator.pop(context, -1);
+                                      }
+                                    },
+                                  )),
+                            )),
                       ]))
                 ],
               ))),
