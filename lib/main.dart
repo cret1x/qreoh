@@ -83,7 +83,7 @@ class _StartupPageState extends State<StartupPage> {
     super.initState();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       setState(() {
-        _isAuth = user != null;
+        _isAuth = user != null && !user.isAnonymous;
       });
     });
   }

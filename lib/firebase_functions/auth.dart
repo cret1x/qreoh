@@ -57,3 +57,7 @@ Future<void> createUserInDatabase(String uid, String login) async {
     'tag': tag
   });
 }
+
+Future<void> restorePassword(String email) async {
+  FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+}
