@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -5,6 +6,6 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Profile");
+    return Text("Profile for user ${FirebaseAuth.instance.currentUser?.email ?? 'anon'}");
   }
 }

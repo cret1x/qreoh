@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qreoh/screens/auth/restore_password.dart';
 
 import '../../firebase_functions/auth.dart';
 
@@ -100,7 +101,10 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        print('i forgot click!');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RestorePassword()));
                       },
                       child: const Text('I forgot'),
                     ),

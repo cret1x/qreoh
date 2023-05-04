@@ -9,7 +9,6 @@ import 'package:qreoh/entities/folder.dart';
 import 'package:path/path.dart';
 import 'package:sembast/sembast.dart' as sembast;
 import 'package:sembast/sembast_io.dart';
-import 'package:sembast/utils/value_utils.dart';
 
 import '../entities/task.dart';
 
@@ -36,6 +35,7 @@ class FirebaseTaskManager {
   bool isOnline = false;
 
   void _checkStatus(ConnectivityResult result) async {
+    print(result);
     try {
       final result = await InternetAddress.lookup('example.com');
       isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
@@ -54,6 +54,7 @@ class FirebaseTaskManager {
 
   Future<void> createTask(Task task) async {
     String pathString = task.parent.getPath();
+    await store.record(task.id).add(localDB, {"folder": pathString, "task": task.toFirestore()});
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
@@ -66,8 +67,6 @@ class FirebaseTaskManager {
       docRef.set(
         task.toFirestore(),
       );
-    } else {
-      await store.record(task.id).add(localDB, {"folder": pathString, "task": task.toFirestore()});
     }
   }
 
@@ -99,6 +98,7 @@ class FirebaseTaskManager {
 
   Future<void> changeTaskState(Task task) async {
     String pathString = task.parent.getPath();
+    await store.record(task.id).update(localDB, {'task.done': task.done});
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
@@ -112,8 +112,6 @@ class FirebaseTaskManager {
       docRef.update({
         "done": task.done,
       });
-    } else {
-      await store.record(task.id).update(localDB, {'task.done': task.done});
     }
   }
 
