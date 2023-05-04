@@ -50,14 +50,18 @@ class TaskListState extends ConsumerState<TaskListWidget> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: ListView.builder(
-                            padding: const EdgeInsets.all(8),
-                            itemCount: tasks.length,
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return TaskItemWidget(task: tasks[index]);
-                            }))));
+                        padding: const EdgeInsets.only(right: 12),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.all(8),
+                          itemCount: tasks.length,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            return TaskItemWidget(task: tasks[index]);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider();
+                          },
+                        ))));
           } else {
             return const Center(
               child: Text("No tasks"),
