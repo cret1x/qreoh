@@ -16,11 +16,11 @@ class TaskListWidget extends ConsumerStatefulWidget {
   final SortRule sort;
   final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
-  TaskListWidget(
-      {super.key,
-      required this.folder,
-      required this.sort,
-      });
+  TaskListWidget({
+    super.key,
+    required this.folder,
+    required this.sort,
+  });
 
   @override
   ConsumerState<TaskListWidget> createState() {
@@ -41,16 +41,23 @@ class TaskListState extends ConsumerState<TaskListWidget> {
             );
           }
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Task> tasks = snapshot.data!.where(filter.check)
-                .toList();
+            List<Task> tasks = snapshot.data!.where(filter.check).toList();
             tasks.sort(getFunc(widget.sort));
-            return ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: tasks.length,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return TaskItemWidget(task: tasks[index]);
-                });
+            return SizedBox(
+                child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.only(right: 12),
+                        child: ListView.builder(
+                            padding: const EdgeInsets.all(8),
+                            itemCount: tasks.length,
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int index) {
+                              return TaskItemWidget(task: tasks[index]);
+                            }))));
           } else {
             return const Center(
               child: Text("No tasks"),
