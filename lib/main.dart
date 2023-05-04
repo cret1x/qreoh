@@ -50,6 +50,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           primary: Colors.deepOrangeAccent,
           secondary: Colors.deepOrangeAccent.shade100,
           onBackground: Colors.black87,
+          primaryContainer: Colors.white,
           brightness: Brightness.light,
         ),
 
