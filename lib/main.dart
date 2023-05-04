@@ -49,6 +49,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: Colors.deepOrangeAccent,
           secondary: Colors.deepOrangeAccent.shade100,
+          onBackground: Colors.black87,
           brightness: Brightness.light,
         ),
 
