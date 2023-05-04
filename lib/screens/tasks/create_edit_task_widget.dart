@@ -55,6 +55,7 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
 
 class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   List<Tag> _userTags = [];
+  bool _isOnline = false;
 
   String _durationToString(Duration? duration) {
     if (duration == null) {
@@ -69,8 +70,15 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     _userTags = ref.watch(userTagsProvider);
+    _isOnline = ref.watch(networkStateProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Create Task"),
@@ -627,7 +635,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       place: widget._location);
                                   widget._folder.addTask(widget._task!);
                                   widget.firebaseTaskManager
-                                      .createTask(widget._task!);
+                                      .createTask(widget._task!, _isOnline);
                                 } else {
                                   widget._task!.update(
                                       widget._name!,

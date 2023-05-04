@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
+import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/tag_widget.dart';
 import 'package:qreoh/screens/tasks/task_widget.dart';
 
-class TaskItemWidget extends StatefulWidget {
+class TaskItemWidget extends ConsumerStatefulWidget {
   final Task task;
   final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
   TaskItemWidget({super.key, required this.task});
 
   @override
-  State<StatefulWidget> createState() => _TaskItemWidgetState();
+  ConsumerState<TaskItemWidget> createState() => _TaskItemWidgetState();
 }
 
-class _TaskItemWidgetState extends State<TaskItemWidget> {
+class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
   bool _isSelected = false;
+  bool _isOnline = false;
 
   @override
   void initState() {
     super.initState();
     _isSelected = widget.task.done;
+
   }
 
   @override
   Widget build(BuildContext context) {
+    _isOnline = ref.watch(networkStateProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
@@ -50,7 +55,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                     value: _isSelected,
                     onChanged: (bool? state) {
                       widget.task.done = state ?? false;
-                      widget.firebaseTaskManager.changeTaskState(widget.task);
+                      widget.firebaseTaskManager.changeTaskState(widget.task, _isOnline);
                       setState(() {
                         _isSelected = widget.task.done;
                       });

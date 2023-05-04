@@ -29,11 +29,13 @@ class TaskListWidget extends ConsumerStatefulWidget {
 }
 
 class TaskListState extends ConsumerState<TaskListWidget> {
+  bool _isOnline = false;
   @override
   Widget build(BuildContext context) {
     Filter filter = ref.watch(tasksFilterProvider);
+    _isOnline = ref.watch(networkStateProvider);
     return FutureBuilder(
-        future: widget.firebaseTaskManager.getTasksInFolder(widget.folder),
+        future: widget.firebaseTaskManager.getTasksInFolder(widget.folder, _isOnline),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

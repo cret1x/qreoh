@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qreoh/entities/folder.dart';
 import 'package:path/path.dart';
+import 'package:qreoh/global_providers.dart';
 import 'package:sembast/sembast.dart' as sembast;
 import 'package:sembast/sembast_io.dart';
 
@@ -18,7 +20,9 @@ class FirebaseTaskManager {
   final db = FirebaseFirestore.instance;
   sembast.DatabaseFactory dbFactory = databaseFactoryIo;
   late final sembast.Database localDB;
+  late final sembast.Database missedDB;
   late final sembast.StoreRef<String, Map<String, dynamic>> store;
+  late WidgetRef ref;
   static final FirebaseTaskManager _singleton = FirebaseTaskManager._internal();
 
   factory FirebaseTaskManager() {
@@ -27,32 +31,21 @@ class FirebaseTaskManager {
 
   FirebaseTaskManager._internal() {
     openLocalDB();
-    _connectivity.onConnectivityChanged.listen(_checkStatus);
   }
 
-  final _connectivity = Connectivity();
 
-  bool isOnline = false;
-
-  void _checkStatus(ConnectivityResult result) async {
-    print(result);
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      isOnline = false;
-    }
-  }
 
   void openLocalDB() async {
     var dir = await getApplicationDocumentsDirectory();
     await dir.create(recursive: true);
     var dbPath = join(dir.path, 'tasks.db');
+    var missedDbPath = join(dir.path, "missed.db");
     store = sembast.StoreRef.main();
     localDB = await dbFactory.openDatabase(dbPath);
+    missedDB = await dbFactory.openDatabase(missedDbPath);
   }
 
-  Future<void> createTask(Task task) async {
+  Future<void> createTask(Task task, bool isOnline) async {
     String pathString = task.parent.getPath();
     await store.record(task.id).add(localDB, {"folder": pathString, "task": task.toFirestore()});
     if (isOnline) {
@@ -67,10 +60,12 @@ class FirebaseTaskManager {
       docRef.set(
         task.toFirestore(),
       );
+    } else {
+      await store.record(task.id).add(missedDB, {"action": "add"});
     }
   }
 
-  Future<List<Task>> getTasksInFolder(Folder folder) async {
+  Future<List<Task>> getTasksInFolder(Folder folder, bool isOnline) async {
     String pathString = folder.getPath();
     List<Task> tasks = [];
     if (isOnline) {
@@ -96,7 +91,7 @@ class FirebaseTaskManager {
     return tasks;
   }
 
-  Future<void> changeTaskState(Task task) async {
+  Future<void> changeTaskState(Task task, bool isOnline) async {
     String pathString = task.parent.getPath();
     await store.record(task.id).update(localDB, {'task.done': task.done});
     if (isOnline) {
@@ -112,14 +107,16 @@ class FirebaseTaskManager {
       docRef.update({
         "done": task.done,
       });
+    } else {
+      await store.record(task.id).add(missedDB, {"action": "update"});
     }
   }
 
-  Future<void> updateTask(Task task) async {
+  Future<void> updateTask(Task task, bool isOnline) async {
 
   }
 
-  Future<void> deleteTask(Task task) async {
+  Future<void> deleteTask(Task task, bool isOnline) async {
 
   }
 }

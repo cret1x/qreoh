@@ -45,8 +45,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
     super.initState();
   }
 
+  bool _isOnline = false;
+
   @override
   Widget build(BuildContext context) {
+    _isOnline = ref.watch(networkStateProvider);
     return Material(
         child: DecoratedBox(
             decoration: const BoxDecoration(
@@ -227,6 +230,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                 ],
                               ))),
                     ),
+                    Text("Connection status: ${_isOnline ? "online" : "offline"}"),
                     TaskListWidget(
                       folder: _current,
                       sort: _sortRule,
