@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _navbarSelectedIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
-  static const List<Widget> _pages = [
+  static final List<Widget> _pages = [
     TaskManagerWidget(),
     ProfileWidget(),
     FriendsWidget(),

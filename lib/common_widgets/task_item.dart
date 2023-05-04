@@ -6,8 +6,9 @@ import 'package:qreoh/screens/tasks/task_widget.dart';
 
 class TaskItemWidget extends StatefulWidget {
   final Task task;
+  final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
-  const TaskItemWidget({super.key, required this.task});
+  TaskItemWidget({super.key, required this.task});
 
   @override
   State<StatefulWidget> createState() => _TaskItemWidgetState();
@@ -49,7 +50,7 @@ class _TaskItemWidgetState extends State<TaskItemWidget> {
                     value: _isSelected,
                     onChanged: (bool? state) {
                       widget.task.done = state ?? false;
-                      changeTaskState(widget.task);
+                      widget.firebaseTaskManager.changeTaskState(widget.task);
                       setState(() {
                         _isSelected = widget.task.done;
                       });

@@ -53,11 +53,10 @@ class Task {
   }
 
   factory Task.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    Map<String, dynamic> data,
     Folder parent,
-    SnapshotOptions? options,
+
   ) {
-    final data = snapshot.data()!;
     List<Tag> tags = [];
     if (data['tags'] != null) {
       for (var element in data['tags']) {

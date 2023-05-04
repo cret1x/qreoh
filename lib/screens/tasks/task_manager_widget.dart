@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
@@ -10,7 +11,9 @@ import 'task_list_widget.dart';
 import '../../entities/folder.dart';
 
 class TaskManagerWidget extends ConsumerStatefulWidget {
-  const TaskManagerWidget({super.key});
+  final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
+
+  TaskManagerWidget({super.key});
 
   @override
   ConsumerState<TaskManagerWidget> createState() => _TaskManagerState();

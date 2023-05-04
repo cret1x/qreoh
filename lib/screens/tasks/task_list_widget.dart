@@ -14,11 +14,13 @@ import '../../entities/task.dart';
 class TaskListWidget extends ConsumerStatefulWidget {
   final Folder folder;
   final SortRule sort;
+  final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
-  const TaskListWidget(
+  TaskListWidget(
       {super.key,
       required this.folder,
-      required this.sort});
+      required this.sort,
+      });
 
   @override
   ConsumerState<TaskListWidget> createState() {
@@ -31,7 +33,7 @@ class TaskListState extends ConsumerState<TaskListWidget> {
   Widget build(BuildContext context) {
     Filter filter = ref.watch(tasksFilterProvider);
     return FutureBuilder(
-        future: getTasksInFolder(widget.folder),
+        future: widget.firebaseTaskManager.getTasksInFolder(widget.folder),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
