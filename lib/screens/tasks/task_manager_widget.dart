@@ -22,7 +22,7 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
 class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Folder _current = Folder("root", null);
   SortRule _sortRule = SortRule.leftAsc;
-  static const List<DropdownMenuItem<SortRule>> _menu_items = [
+  static const List<DropdownMenuItem<SortRule>> _menuItems = [
     DropdownMenuItem(value: SortRule.leftAsc, child: Text("Time left ▲")),
     DropdownMenuItem(value: SortRule.leftDesc, child: Text("Time left ▼")),
     DropdownMenuItem(value: SortRule.nameAZ, child: Text("Name A-Z")),
@@ -31,6 +31,12 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
     DropdownMenuItem(value: SortRule.priorityDesc, child: Text("Priority ▼")),
     DropdownMenuItem(value: SortRule.estimation, child: Text("Recommended"))
   ];
+
+  // Widget getDropdownListItem(String text) {
+  //   return Padding(
+  //       padding: padding
+  //   )
+  // }
 
   @override
   void initState() {
@@ -41,7 +47,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Widget build(BuildContext context) {
     return Material(
         child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,18 +58,16 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                           padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
                           child: DecoratedBox(
                               decoration: BoxDecoration(
-                                  color: Colors.blue[100],
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                   borderRadius:
                                       BorderRadiusDirectional.circular(12)),
-                              child: Center(
-                                  child: Text(_current.getName(),
-                                      style: const TextStyle(
-                                          color: Colors.black)))))),
+                              child: Center(child: Text(_current.getName()))))),
                   SizedBox(
                       height: 40,
                       child: DecoratedBox(
                           decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: Theme.of(context).colorScheme.primary,
                               borderRadius:
                                   BorderRadiusDirectional.circular(12)),
                           child: Center(
@@ -76,30 +80,35 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
               ),
               Row(children: [
                 Expanded(
-                    child: Container(
-                        height: 52,
-                        padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                        child: DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: Colors.blue[100],
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(12)),
-                            child: Center(
-                                child: DropdownButton<SortRule>(
-                                    hint: const Text("Sort rule"),
-                                    value: _sortRule,
-                                    items: _menu_items,
-                                    onChanged: (SortRule? value) {
-                                      setState(() {
-                                        _sortRule = value!;
-                                      });
-                                    }))))),
+                  child: Container(
+                      height: 52,
+                      padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
+                      child: DecoratedBox(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondary,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Padding(
+                              padding: const EdgeInsets.only(right: 12, left: 18),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<SortRule>(
+                                      borderRadius: BorderRadius.circular(12),
+                                      isExpanded: true,
+                                      icon: const Icon(Icons.arrow_downward),
+                                      hint: const Text("Sort rule"),
+                                      value: _sortRule,
+                                      items: _menuItems,
+                                      onChanged: (SortRule? value) {
+                                        setState(() {
+                                          _sortRule = value!;
+                                        });
+                                      }))))),
+                ),
                 Container(
                     padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
                     height: 52,
                     child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadiusDirectional.circular(12)),
                         child: Center(
                             child: IconButton(
@@ -107,8 +116,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        FilterWidget()));
+                                    builder: (context) => FilterWidget()));
                             setState(() {});
                           },
                           icon: const Icon(Icons.filter_alt_outlined),
@@ -119,7 +127,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                     height: 52,
                     child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadiusDirectional.circular(12)),
                         child: Center(
                             child: IconButton(
@@ -132,7 +140,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                     height: 52,
                     child: DecoratedBox(
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadiusDirectional.circular(12)),
                         child: Center(
                             child: IconButton(
@@ -140,7 +148,8 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EditCreateTaskWidget(_current)));
+                                    builder: (context) =>
+                                        EditCreateTaskWidget(_current)));
                             setState(() {});
                           },
                           icon: const Icon(Icons.add),
