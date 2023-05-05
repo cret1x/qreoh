@@ -24,21 +24,23 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
 class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Folder _current = Folder("root", null);
   SortRule _sortRule = SortRule.leftAsc;
-  static const List<DropdownMenuItem<SortRule>> _menuItems = [
-    DropdownMenuItem(value: SortRule.leftAsc, child: Text("Time left ▲")),
-    DropdownMenuItem(value: SortRule.leftDesc, child: Text("Time left ▼")),
-    DropdownMenuItem(value: SortRule.nameAZ, child: Text("Name A-Z")),
-    DropdownMenuItem(value: SortRule.nameZA, child: Text("Name Z-A")),
-    DropdownMenuItem(value: SortRule.priorityAsc, child: Text("Priority ▲")),
-    DropdownMenuItem(value: SortRule.priorityDesc, child: Text("Priority ▼")),
-    DropdownMenuItem(value: SortRule.estimation, child: Text("Recommended"))
+  static final List<DropdownMenuItem<SortRule>> _menuItems = [
+    DropdownMenuItem(value: SortRule.leftAsc, child: getDropdownListItem("Time left ▲")),
+    DropdownMenuItem(value: SortRule.leftDesc, child:  getDropdownListItem("Time left ▼")),
+    DropdownMenuItem(value: SortRule.nameAZ, child:  getDropdownListItem("Name A-Z")),
+    DropdownMenuItem(value: SortRule.nameZA, child:  getDropdownListItem("Name Z-A")),
+    DropdownMenuItem(value: SortRule.priorityAsc, child:  getDropdownListItem("Priority ▲")),
+    DropdownMenuItem(value: SortRule.priorityDesc, child:  getDropdownListItem("Priority ▼")),
+    DropdownMenuItem(value: SortRule.estimation, child:  getDropdownListItem("Estimated"))
   ];
 
-  // Widget getDropdownListItem(String text) {
-  //   return Padding(
-  //       padding: padding
-  //   )
-  // }
+  static Widget getDropdownListItem(String text) {
+    return Center(
+      child: Text(
+        text,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -52,9 +54,12 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
     _isOnline = ref.watch(networkStateProvider);
     return Material(
         child: DecoratedBox(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("graphics/background2.jpg"),
+                image: AssetImage(
+                    Theme.of(context).colorScheme.brightness == Brightness.light
+                        ? "graphics/background2.jpg"
+                        : "graphics/background5.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,19 +85,24 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
-                                          child: Container(
-                                              height: 40,
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 12, 0),
-                                              child: DecoratedBox(
+                                          child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8, right: 16, bottom: 4),
+                                              child: Container(
+                                                  height: 40,
                                                   decoration: BoxDecoration(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary,
-                                                      borderRadius:
-                                                          BorderRadiusDirectional
-                                                              .circular(12)),
+                                                    border: Border(
+                                                      bottom: BorderSide(
+                                                          width: 2.0,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .secondary),
+                                                    ),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 0, 12, 0),
                                                   child: Center(
                                                       child: Text(_current
                                                           .getName()))))),
@@ -120,35 +130,39 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                       child: Container(
                                           height: 52,
                                           padding: const EdgeInsets.fromLTRB(
-                                              0, 12, 12, 0),
+                                              8, 12, 12, 4),
                                           child: DecoratedBox(
                                               decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                      width: 2.0,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary),
+                                                ),
+                                              ),
                                               child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      right: 12, left: 18),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 12, left: 18),
                                                   child:
                                                       DropdownButtonHideUnderline(
                                                           child: DropdownButton<
                                                                   SortRule>(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           12),
                                                               isExpanded: true,
-                                                              icon: const Icon(Icons
-                                                                  .arrow_downward),
-                                                              hint: const Text(
-                                                                  "Sort rule"),
+                                                              iconSize: 0.0,
                                                               value: _sortRule,
                                                               items: _menuItems,
                                                               onChanged:
-                                                                  (SortRule? value) {
+                                                                  (SortRule?
+                                                                      value) {
                                                                 setState(() {
                                                                   _sortRule =
                                                                       value!;
@@ -230,7 +244,8 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                 ],
                               ))),
                     ),
-                    Text("Connection status: ${_isOnline ? "online" : "offline"}"),
+                    Text(
+                        "Connection status: ${_isOnline ? "online" : "offline"}"),
                     TaskListWidget(
                       folder: _current,
                       sort: _sortRule,
