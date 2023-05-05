@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/screens/tasks/folders_widget.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
 import '../../entities/tag.dart';
@@ -25,13 +26,20 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Folder _current = Folder("root", null);
   SortRule _sortRule = SortRule.leftAsc;
   static final List<DropdownMenuItem<SortRule>> _menuItems = [
-    DropdownMenuItem(value: SortRule.leftAsc, child: getDropdownListItem("Time left ▲")),
-    DropdownMenuItem(value: SortRule.leftDesc, child:  getDropdownListItem("Time left ▼")),
-    DropdownMenuItem(value: SortRule.nameAZ, child:  getDropdownListItem("Name A-Z")),
-    DropdownMenuItem(value: SortRule.nameZA, child:  getDropdownListItem("Name Z-A")),
-    DropdownMenuItem(value: SortRule.priorityAsc, child:  getDropdownListItem("Priority ▲")),
-    DropdownMenuItem(value: SortRule.priorityDesc, child:  getDropdownListItem("Priority ▼")),
-    DropdownMenuItem(value: SortRule.estimation, child:  getDropdownListItem("Estimated"))
+    DropdownMenuItem(
+        value: SortRule.leftAsc, child: getDropdownListItem("Time left ▲")),
+    DropdownMenuItem(
+        value: SortRule.leftDesc, child: getDropdownListItem("Time left ▼")),
+    DropdownMenuItem(
+        value: SortRule.nameAZ, child: getDropdownListItem("Name A-Z")),
+    DropdownMenuItem(
+        value: SortRule.nameZA, child: getDropdownListItem("Name Z-A")),
+    DropdownMenuItem(
+        value: SortRule.priorityAsc, child: getDropdownListItem("Priority ▲")),
+    DropdownMenuItem(
+        value: SortRule.priorityDesc, child: getDropdownListItem("Priority ▼")),
+    DropdownMenuItem(
+        value: SortRule.estimation, child: getDropdownListItem("Estimated"))
   ];
 
   static Widget getDropdownListItem(String text) {
@@ -87,7 +95,9 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                       Expanded(
                                           child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 8, right: 16, bottom: 4),
+                                                  left: 8,
+                                                  right: 16,
+                                                  bottom: 4),
                                               child: Container(
                                                   height: 40,
                                                   decoration: BoxDecoration(
@@ -118,7 +128,14 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                           .circular(12)),
                                               child: Center(
                                                   child: IconButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FoldersWidget(
+                                                                  _current)));
+                                                },
                                                 icon: const Icon(
                                                     Icons.folder_open),
                                                 color: Colors.white,
