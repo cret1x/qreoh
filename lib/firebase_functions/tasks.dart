@@ -117,6 +117,19 @@ class FirebaseTaskManager {
   }
 
   Future<void> deleteTask(Task task, bool isOnline) async {
-
+    String pathString = task.parent.getPath();
+    await store.record(task.id).delete(localDB);
+    if (isOnline) {
+      final tasksRef = db.collection('users').doc(uid).collection("tasks");
+      CollectionReference curRef = tasksRef;
+      late DocumentReference docRef;
+      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+        docRef = curRef.doc(element);
+        curRef = docRef.collection("folders");
+      });
+      docRef.collection("tasks").doc(task.id).delete();
+    } else {
+      await store.record(task.id).add(missedDB, {"action": "delete"});
+    }
   }
 }
