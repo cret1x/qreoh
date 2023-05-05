@@ -235,7 +235,9 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                   ),
                 ),
               ),
-              Text("Connection status: ${_isOnline ? "online" : "offline"}"),
+              const SizedBox(
+                height: 12,
+              ),
               Flexible(
                 fit: FlexFit.loose,
                 child: TaskListWidget(
