@@ -139,7 +139,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       borderRadius:
                                       BorderRadiusDirectional.circular(12)),
                                   child: Center(
-                                      child: Text(widget._folder.getName()))))),
+                                      child: Text(widget._folder.name))))),
                       SizedBox(
                           height: 40,
                           child: DecoratedBox(
@@ -632,7 +632,6 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                           : null,
                                       description: widget._description,
                                       place: widget._location);
-                                  widget._folder.addTask(widget._task!);
                                   ref.read(taskListStateProvider.notifier).addTask(widget._task!, _isOnline);
                                 } else {
                                   widget._task!.update(
@@ -695,9 +694,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                                             "NO")),
                                                   ]));
                                       if (result) {
-                                        widget._folder
-                                            .getTasks()
-                                            .remove(widget._task!);
+                                        ref.read(taskListStateProvider.notifier).deleteTask(widget._task!, _isOnline);
                                         Navigator.pop(context, -1);
                                       }
                                     },

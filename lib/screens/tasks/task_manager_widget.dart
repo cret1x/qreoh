@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/folders_widget.dart';
+import 'package:uuid/uuid.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
 import '../../entities/tag.dart';
@@ -21,7 +22,8 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
 }
 
 class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
-  Folder _current = Folder("root", null);
+
+  Folder _current = Folder(id: "root", name: "Общее", parent: null);
   SortRule _sortRule = SortRule.leftAsc;
   static final List<DropdownMenuItem<SortRule>> _menuItems = [
     DropdownMenuItem(
@@ -109,7 +111,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                 0, 0, 12, 0),
                                             child: Center(
                                                 child: Text(
-                                                    _current.getName()))))),
+                                                    _current.name))))),
                                 SizedBox(
                                   height: 40,
                                   child: DecoratedBox(

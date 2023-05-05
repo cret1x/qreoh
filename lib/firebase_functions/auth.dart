@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<String?> registerUser(String login, String email, String password) async{
+Future<String?> registerUser(
+    String login, String email, String password) async {
   try {
     final credential =
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -24,10 +25,9 @@ Future<String?> registerUser(String login, String email, String password) async{
   return null;
 }
 
-Future<String?> loginUser(email, password) async{
+Future<String?> loginUser(email, password) async {
   try {
-    final credential =
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -44,7 +44,7 @@ Future<String?> loginUser(email, password) async{
   return null;
 }
 
-Future<void> signOutUser() async{
+Future<void> signOutUser() async {
   await FirebaseAuth.instance.signOut();
 }
 
@@ -52,10 +52,12 @@ Future<void> createUserInDatabase(String uid, String login) async {
   final usersRef = FirebaseFirestore.instance.collection('users');
   final snapshot = await usersRef.count().get();
   int tag = snapshot.count;
-  usersRef.doc(uid).set({
-    'login': login,
-    'tag': tag
-  });
+  usersRef.doc(uid).set({'login': login, 'tag': tag});
+  usersRef
+      .doc(uid)
+      .collection("folders")
+      .doc("root")
+      .set({"name": "Общее", "parent": null});
 }
 
 Future<void> restorePassword(String email) async {

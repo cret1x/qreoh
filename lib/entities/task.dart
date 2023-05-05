@@ -39,6 +39,7 @@ class Task {
   Map<String, dynamic> toFirestore() {
     return {
       "id": id,
+      "parentId": parent.id,
       "name": name,
       "priority": priority.index,
       "done": done,
