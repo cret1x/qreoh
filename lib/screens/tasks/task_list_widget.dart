@@ -42,25 +42,32 @@ class TaskListState extends ConsumerState<TaskListWidget> {
     List<Task> tasks = _taskList.where(filter.check).toList();
     tasks.sort(getFunc(widget.sort));
     return DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: SizedBox(
-          child: ListView.separated(
-            scrollDirection: Axis.vertical,
-            physics: ScrollPhysics(),
-            padding: const EdgeInsets.all(8),
-            shrinkWrap: true,
-            itemCount: tasks.length,
-            itemBuilder: (BuildContext context, int index) {
-              return TaskItemWidget(task: tasks[index]);
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-          ),
-        ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: SizedBox(
+        child: _taskList.isNotEmpty
+            ? ListView.separated(
+                scrollDirection: Axis.vertical,
+                physics: ScrollPhysics(),
+                padding: const EdgeInsets.all(8),
+                itemCount: tasks.length,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return TaskItemWidget(task: tasks[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+              )
+            : const Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Center(
+                  child: Text('У вас нет заданий.'),
+                ),
+              ),
+      ),
     );
   }
 }
