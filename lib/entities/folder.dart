@@ -3,53 +3,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'task.dart';
 
 class Folder {
-  String _name;
-  Folder? _parent;
-  final List<Folder> _children = [];
-  final List<Task> _tasks = [];
+  String id;
+  String name;
+  Folder? parent;
 
-  Folder(this._name, this._parent, [List<Task>? tasks]) {
-    if (tasks != null) {
-      _tasks.addAll(tasks);
+  Folder({required this.id, required this.name, this.parent});
+
+  factory Folder.fromFirestore(String id, String name, Folder parent) {
+    return Folder(id: id, name: name, parent: parent);
+  }
+
+  String getStringPath() {
+    if (parent == null) {
+      return "$name/";
     }
+    return "${parent!.getStringPath()}$name/";
   }
 
-  void addTask(Task task) {
-    _tasks.add(task);
-  }
-
-  void addTasks(Iterable<Task> tasks) {
-    _tasks.addAll(tasks);
-  }
-
-  String getName() {
-    return _name;
-  }
-
-  Folder? getParent() {
-    return _parent;
-  }
-
-  List<Folder> getChildren() {
-    return _children;
-  }
-
-  List<Task> getTasks() {
-    return _tasks;
-  }
-
-  void addChild(Folder child) {
-    _children.add(child);
-  }
-
-  void setParent(Folder parent) {
-    _parent = parent;
-  }
-
-  String getPath() {
-    if (_parent == null) {
-      return "$_name/";
+  List<String> getIdPath() {
+    List<String> ids = [id];
+    Folder? current = parent;
+    while (current != null) {
+      ids.add(id);
+      current = current.parent;
     }
-    return "${_parent!.getPath()}$_name/";
+    return ids.reversed.toList();
   }
 }

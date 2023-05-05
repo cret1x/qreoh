@@ -21,6 +21,8 @@ class FirebaseTaskManager {
   sembast.DatabaseFactory dbFactory = databaseFactoryIo;
   late final sembast.Database localDB;
   late final sembast.Database missedDB;
+  late final sembast.Database foldersDB;
+  late final sembast.Database tagsDB;
   late final sembast.StoreRef<String, Map<String, dynamic>> store;
   late WidgetRef ref;
   static final FirebaseTaskManager _singleton = FirebaseTaskManager._internal();
@@ -38,21 +40,24 @@ class FirebaseTaskManager {
   void openLocalDB() async {
     var dir = await getApplicationDocumentsDirectory();
     await dir.create(recursive: true);
-    var dbPath = join(dir.path, 'tasks.db');
-    var missedDbPath = join(dir.path, "missed.db");
+    var dbPath = join(dir.path, uid, 'tasks.db');
+    var missedDbPath = join(dir.path, uid, "missed.db");
+    var foldersDbPath = join(dir.path, uid, "folders.db");
+    var tagsDbPath = join(dir.path, uid, "tags.db");
     store = sembast.StoreRef.main();
     localDB = await dbFactory.openDatabase(dbPath);
     missedDB = await dbFactory.openDatabase(missedDbPath);
+    foldersDB = await dbFactory.openDatabase(foldersDbPath);
+    tagsDB = await dbFactory.openDatabase(tagsDbPath);
   }
 
   Future<void> createTask(Task task, bool isOnline) async {
-    String pathString = task.parent.getPath();
-    await store.record(task.id).add(localDB, {"folder": pathString, "task": task.toFirestore()});
+    await store.record(task.id).add(localDB, {"folder": task.parent.id, "task": task.toFirestore()});
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
       late DocumentReference docRef;
-      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+      task.parent.getIdPath().forEach((element) {
         docRef = curRef.doc(element);
         curRef = docRef.collection("folders");
       });
@@ -66,13 +71,12 @@ class FirebaseTaskManager {
   }
 
   Future<List<Task>> getTasksInFolder(Folder folder, bool isOnline) async {
-    String pathString = folder.getPath();
     List<Task> tasks = [];
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
       late DocumentReference docRef;
-      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+      folder.getIdPath().forEach((element) {
         docRef = curRef.doc(element);
         curRef = docRef.collection("folders");
       });
@@ -82,7 +86,7 @@ class FirebaseTaskManager {
       }
     } else {
       var finder = sembast.Finder(
-          filter: sembast.Filter.equals('folder', pathString));
+          filter: sembast.Filter.equals('folder', folder.id));
       var records = await store.find(localDB, finder: finder);
       for (var element in records) {
         tasks.add(Task.fromFirestore(element.value['task'], folder));
@@ -92,14 +96,12 @@ class FirebaseTaskManager {
   }
 
   Future<void> changeTaskState(Task task, bool isOnline) async {
-    String pathString = task.parent.getPath();
     await store.record(task.id).update(localDB, {'task.done': task.done});
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
       late DocumentReference docRef;
-
-      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+      task.parent.getIdPath().forEach((element) {
         docRef = curRef.doc(element);
         curRef = docRef.collection("folders");
       });
@@ -117,13 +119,12 @@ class FirebaseTaskManager {
   }
 
   Future<void> deleteTask(Task task, bool isOnline) async {
-    String pathString = task.parent.getPath();
     await store.record(task.id).delete(localDB);
     if (isOnline) {
       final tasksRef = db.collection('users').doc(uid).collection("tasks");
       CollectionReference curRef = tasksRef;
       late DocumentReference docRef;
-      pathString.substring(0, pathString.length - 1).split('/').forEach((element) {
+      task.parent.getIdPath().forEach((element) {
         docRef = curRef.doc(element);
         curRef = docRef.collection("folders");
       });
@@ -131,5 +132,55 @@ class FirebaseTaskManager {
     } else {
       await store.record(task.id).add(missedDB, {"action": "delete"});
     }
+  }
+
+  Future<List<Folder>> getSubFolders(Folder folder, bool isOnline) async {
+    List<Folder> folders = [];
+    if (isOnline) {
+      final tasksRef = db.collection('users').doc(uid).collection("tasks");
+      CollectionReference curRef = tasksRef;
+      late DocumentReference docRef;
+      folder.getIdPath().forEach((element) {
+        docRef = curRef.doc(element);
+        curRef = docRef.collection("folders");
+      });
+      final foldersCollection = await curRef.get();
+      for (QueryDocumentSnapshot element in foldersCollection.docs) {
+        Map<String, dynamic> data = element.data()! as Map<String, dynamic>;
+        folders.add(Folder.fromFirestore(element.id, data['name'], folder));
+      }
+    } else {
+      var finder = sembast.Finder(
+          filter: sembast.Filter.equals('parent', folder.id));
+      var records = await store.find(foldersDB, finder: finder);
+      for (var element in records) {
+        folders.add(Folder.fromFirestore(element.key, element.value['name'], folder));
+      }
+    }
+    return folders;
+  }
+
+  Future<void> createFolder(Folder folder, bool isOnline) async {
+    await store.record(folder.id).add(foldersDB, {"name": folder.name, "parent": folder.parent?.id ?? "null"});
+    if (isOnline) {
+      final tasksRef = db.collection('users').doc(uid).collection("tasks");
+      CollectionReference curRef = tasksRef;
+      late DocumentReference docRef;
+      folder.getIdPath().forEach((element) {
+        docRef = curRef.doc(element);
+        curRef = docRef.collection("folders");
+      });
+      curRef.doc(folder.id).set({
+        "name": folder.name,
+      });
+    }
+  }
+
+  Future<void> deleteFolder(Folder folder, bool isOnline) async {
+
+  }
+
+  Future<void> updateFolder(Folder folder, bool isOnline) async {
+
   }
 }

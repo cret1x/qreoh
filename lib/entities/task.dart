@@ -193,6 +193,6 @@ class Task {
   }
 
   String get path {
-    return "${parent.getPath()}$name";
+    return "${parent.getStringPath()}$name";
   }
 }
