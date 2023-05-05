@@ -14,7 +14,6 @@ import '../../entities/task.dart';
 class TaskListWidget extends ConsumerStatefulWidget {
   final Folder folder;
   final SortRule sort;
-  final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
   TaskListWidget({
     super.key,
@@ -30,45 +29,39 @@ class TaskListWidget extends ConsumerStatefulWidget {
 
 class TaskListState extends ConsumerState<TaskListWidget> {
   bool _isOnline = false;
+  List<Task> _taskList = [];
+
   @override
   Widget build(BuildContext context) {
     Filter filter = ref.watch(tasksFilterProvider);
     _isOnline = ref.watch(networkStateProvider);
-    return FutureBuilder(
-        future: widget.firebaseTaskManager.getTasksInFolder(widget.folder, _isOnline),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Task> tasks = snapshot.data!.where(filter.check).toList();
-            tasks.sort(getFunc(widget.sort));
-            return SizedBox(
-                child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: ListView.separated(
-                          padding: const EdgeInsets.all(8),
-                          itemCount: tasks.length,
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return TaskItemWidget(task: tasks[index]);
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider();
-                          },
-                        ))));
-          } else {
-            return const Center(
-              child: Text("No tasks"),
-            );
-          }
-        });
+    _taskList = ref.watch(taskListStateProvider);
+    ref.read(taskListStateProvider.notifier).loadTasksFromFolder(widget.folder, _isOnline);
+    List<Task> tasks = _taskList.where(filter.check).toList();
+    tasks.sort(getFunc(widget.sort));
+    return SizedBox(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: Container(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(8),
+              itemCount: tasks.length,
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) {
+                return TaskItemWidget(task: tasks[index]);
+              },
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

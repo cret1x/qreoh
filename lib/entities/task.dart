@@ -36,7 +36,6 @@ class Task {
     this.notifications,
   });
 
-
   Map<String, dynamic> toFirestore() {
     return {
       "id": id,
@@ -55,7 +54,6 @@ class Task {
   factory Task.fromFirestore(
     Map<String, dynamic> data,
     Folder parent,
-
   ) {
     List<Tag> tags = [];
     if (data['tags'] != null) {
@@ -82,6 +80,24 @@ class Task {
     );
   }
 
+  Task copyWith(
+      {Folder? parent,
+      String? name,
+      Priority? priority,
+      bool? done,
+      bool? haveTime,
+      List<Tag>? tags}) {
+    return Task(
+      id: id,
+      parent: parent ?? this.parent,
+      name: name ?? this.name,
+      priority: priority ?? this.priority,
+      done: done ?? this.done,
+      haveTime: haveTime ?? this.haveTime,
+      tags: tags ?? this.tags,
+    );
+  }
+
   void update(
       String name,
       Priority priority,
@@ -98,7 +114,6 @@ class Task {
     this.timeRequired = timeRequired;
     this.description = description;
   }
-
 
   void markAsDone() {
     done = true;

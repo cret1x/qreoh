@@ -12,7 +12,6 @@ import '../../entities/task.dart';
 
 class EditCreateTaskWidget extends ConsumerStatefulWidget {
   final uuid = const Uuid();
-  final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
   late Folder _folder;
   Task? _task;
   String? _name;
@@ -634,8 +633,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       description: widget._description,
                                       place: widget._location);
                                   widget._folder.addTask(widget._task!);
-                                  widget.firebaseTaskManager
-                                      .createTask(widget._task!, _isOnline);
+                                  ref.read(taskListStateProvider.notifier).addTask(widget._task!, _isOnline);
                                 } else {
                                   widget._task!.update(
                                       widget._name!,
