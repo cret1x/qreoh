@@ -75,6 +75,9 @@ flutter:
   assets:
     - graphics/background1.jpg
     - graphics/background2.jpg
+    - graphics/background3.jpg
+    - graphics/background4.jpg
+    - graphics/background5.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
