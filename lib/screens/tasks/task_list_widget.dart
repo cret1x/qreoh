@@ -36,32 +36,31 @@ class TaskListState extends ConsumerState<TaskListWidget> {
     Filter filter = ref.watch(tasksFilterProvider);
     _isOnline = ref.watch(networkStateProvider);
     _taskList = ref.watch(taskListStateProvider);
-    ref.read(taskListStateProvider.notifier).loadTasksFromFolder(widget.folder, _isOnline);
+    ref
+        .read(taskListStateProvider.notifier)
+        .loadTasksFromFolder(widget.folder, _isOnline);
     List<Task> tasks = _taskList.where(filter.check).toList();
     tasks.sort(getFunc(widget.sort));
-    return SizedBox(
-      child: DecoratedBox(
+    return DecoratedBox(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: Container(
-            child: ListView.separated(
-              padding: const EdgeInsets.all(8),
-              itemCount: tasks.length,
-              shrinkWrap: true,
-              itemBuilder: (BuildContext context, int index) {
-                return TaskItemWidget(task: tasks[index]);
-              },
-              separatorBuilder: (context, index) {
-                return const Divider();
-              },
-            ),
+        child: SizedBox(
+          child: ListView.separated(
+            scrollDirection: Axis.vertical,
+            physics: ScrollPhysics(),
+            padding: const EdgeInsets.all(8),
+            shrinkWrap: true,
+            itemCount: tasks.length,
+            itemBuilder: (BuildContext context, int index) {
+              return TaskItemWidget(task: tasks[index]);
+            },
+            separatorBuilder: (context, index) {
+              return const Divider();
+            },
           ),
         ),
-      ),
     );
   }
 }
