@@ -511,6 +511,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 .onBackground)),
                   ),
                   ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                       itemCount: _userTags.length,
                       shrinkWrap: true,
                       itemBuilder: (BuildContext context, int index) {
