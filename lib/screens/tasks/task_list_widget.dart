@@ -61,10 +61,13 @@ class TaskListState extends ConsumerState<TaskListWidget> {
                   return const Divider();
                 },
               )
-            : const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Center(
-                  child: Text('У вас нет заданий.'),
+            : Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    Text('У вас пока нет заданий.'),
+                  ],
                 ),
               ),
       ),
