@@ -131,7 +131,7 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                     context: context,
                                                     builder: (BuildContext
                                                             context) =>
-                                                        const CreateEditFolderWidget(
+                                                        CreateEditFolderWidget(
                                                             null),
                                                   );
                                                   if (result != null) {
@@ -273,14 +273,77 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                         const EdgeInsets.all(
                                                             20),
                                                     child: Dismissible(
-                                                      key: Key(snapshot
-                                                          .data![index].id),
+                                                      key: UniqueKey(),
+                                                      secondaryBackground:
+                                                          const Align(
+                                                          alignment: Alignment
+                                                              .centerRight,
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    right: 16),
+                                                            child: Icon(
+                                                              Icons.delete,
+                                                              color:
+                                                                  Colors.red,
+                                                            ),
+
+                                                        ),
+                                                      ),
+                                                      background: const Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                          EdgeInsets.only(
+                                                              right: 16),
+                                                          child: Icon(
+                                                            Icons.edit,
+                                                            color:
+                                                            Colors.black45,
+                                                          ),
+
+                                                        ),
+                                                      ),
                                                       confirmDismiss:
                                                           (direction) async {
-                                                        return false;
+                                                        if (direction ==
+                                                            DismissDirection
+                                                                .startToEnd) {
+                                                          String? result =
+                                                              await showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                CreateEditFolderWidget(
+                                                                    snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .name),
+                                                          );
+                                                          if (result != null) {
+                                                            snapshot
+                                                                .data![index]
+                                                                .rename(result);
+                                                            widget
+                                                                ._firebaseTaskManager
+                                                                .updateFolder(
+                                                                    snapshot.data![
+                                                                        index]);
+                                                          }
+                                                          setState(() {});
+                                                          return false;
+                                                        }
+                                                        widget
+                                                            ._firebaseTaskManager
+                                                            .deleteFolder(
+                                                            snapshot.data![
+                                                            index]);
+                                                        return true;
                                                       },
-                                                      onDismissed:
-                                                          (direction) async {},
+                                                      onDismissed: (direction) {
+                                                        setState(() {});
+                                                      },
                                                       child: InkWell(
                                                         onTap: () {
                                                           _current = snapshot

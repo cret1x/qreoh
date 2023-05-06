@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 
 class CreateEditFolderWidget extends StatefulWidget {
   final String? _oldName;
-  const CreateEditFolderWidget(this._oldName, {super.key});
+  CreateEditFolderWidget(this._oldName, {super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return CreateEditFolderState();
+    return CreateEditFolderState(_oldName);
   }
 }
 
 class CreateEditFolderState extends State<CreateEditFolderWidget> {
-  final TextEditingController _controller = TextEditingController();
+  late TextEditingController _controller;
+
+  CreateEditFolderState(String? oldName) {
+    _controller = TextEditingController(text: oldName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,6 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
         ),
       ),
       content: TextFormField(
-        initialValue: widget._oldName,
         controller: _controller,
         maxLength: 20,
         onChanged: (String? value) {
