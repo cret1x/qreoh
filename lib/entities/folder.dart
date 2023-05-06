@@ -26,4 +26,8 @@ class Folder {
     }
     return "${parent!.getStringPath()}$name/";
   }
+
+  void rename(String name) {
+    this.name = name;
+  }
 }
