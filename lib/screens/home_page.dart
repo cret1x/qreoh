@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qreoh/screens/friends/add_friend.dart';
 import 'package:qreoh/screens/friends/friend_requests.dart';
-import 'package:qreoh/screens/friends/friends.dart';
+import 'package:qreoh/screens/friends/friends_widget.dart';
 import 'package:qreoh/screens/profile/profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
 import 'package:qreoh/screens/tasks/task_manager_widget.dart';
