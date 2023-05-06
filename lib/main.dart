@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/screens/auth/reset_password.dart';
+import 'package:qreoh/screens/auth/verify.dart';
 import 'package:qreoh/screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qreoh/screens/home_page.dart';
+import 'package:qreoh/states/user_auth_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
@@ -71,32 +74,26 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 }
 
-class StartupPage extends StatefulWidget {
+class StartupPage extends ConsumerStatefulWidget {
   const StartupPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _StartupPageState();
+  ConsumerState<StartupPage> createState() => _StartupPageState();
 }
 
-class _StartupPageState extends State<StartupPage> {
-  bool _isAuth = false;
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      setState(() {
-        _isAuth = user != null && !user.isAnonymous;
-      });
-    });
-  }
+class _StartupPageState extends ConsumerState<StartupPage> {
+  UserAuthState _authState = UserAuthState.anonymous();
 
   @override
   Widget build(BuildContext context) {
-    if (_isAuth) {
-      return const HomePage();
-    } else {
-      return const WelcomeWidget();
+    _authState = ref.watch(authStateProvider);
+    switch(_authState.state) {
+      case AuthState.anonymous:
+        return const WelcomeWidget();
+      case AuthState.registered:
+        return const VerifyEmailWidget();
+      case AuthState.verified:
+        return const HomePage();
     }
   }
 }

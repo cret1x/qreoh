@@ -60,6 +60,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   @override
   Widget build(BuildContext context) {
     _isOnline = ref.watch(networkStateProvider);
+    ref.read(userTagsProvider.notifier).loadTags();
     return Stack(
       children: [
         ConstrainedBox(

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:qreoh/screens/auth/restore_password.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/screens/auth/reset_password.dart';
+import 'package:qreoh/states/user_auth_state.dart';
 
 import '../../firebase_functions/auth.dart';
 
-class LoginWidget extends StatefulWidget {
+class LoginWidget extends ConsumerStatefulWidget {
   const LoginWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => _LoginWidgetState();
+  ConsumerState<LoginWidget> createState() => _LoginWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
+class _LoginWidgetState extends ConsumerState<LoginWidget>
+    with RestorationMixin {
   final _obscurePassword = RestorableBool(true);
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -104,7 +108,7 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RestorePassword()));
+                                builder: (context) => const ResetPassword()));
                       },
                       child: const Text('I forgot'),
                     ),
@@ -117,7 +121,9 @@ class _LoginWidgetState extends State<LoginWidget> with RestorationMixin {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          loginUser(_emailController.text,
+                          ref
+                              .read(authStateProvider.notifier)
+                              .loginUser(_emailController.text,
                                   _passwordController.text)
                               .then((value) {
                             if (value != null) {

@@ -58,19 +58,19 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
           ),
         ),
         const Spacer(),
-        const Padding(
-            padding: EdgeInsets.all(8.0),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
             child: ButtonDanger(
               buttonText: "Sign out",
               warningText: "Are u sure?",
-              action: signOutUser,
+              action: ref.read(authStateProvider.notifier).signOutUser,
             )),
-        const Padding(
-            padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
+        Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
             child: ButtonDanger(
               buttonText: "Delete Account",
               warningText: "Are u sure?",
-              action: null,
+              action: ref.read(authStateProvider.notifier).deleteUserAccount,
             ))
       ],
     );

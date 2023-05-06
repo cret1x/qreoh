@@ -14,14 +14,13 @@ class Tag {
 
   Map<String, dynamic> toFirestore() {
     return {
-      "id": id,
       "icon": _icon.codePoint,
       "name": _name,
     };
   }
 
-  factory Tag.fromFirestore(Map<String, dynamic> data) {
-    return Tag(data['id'],
+  factory Tag.fromFirestore(String id, Map<String, dynamic> data) {
+    return Tag(id,
       IconData(data['icon'], fontFamily: 'MaterialIcons'),
       data['name'],
     );

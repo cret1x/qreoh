@@ -18,7 +18,7 @@ class Task {
   Duration? timeRequired;
   String? place;
   bool haveTime;
-  List<Tag> tags;
+  List<String> tags;
   List<Notification>? notifications;
 
   Task({
@@ -48,7 +48,7 @@ class Task {
       if (description != null) "description": description,
       if (timeRequired != null) "timeRequired": timeRequired!.inMinutes,
       if (place != null) "place": place,
-      "tags": tags.map((e) => e.toFirestore()).toList(),
+      "tags": tags,
     };
   }
 
@@ -56,12 +56,6 @@ class Task {
     Map<String, dynamic> data,
     Folder parent,
   ) {
-    List<Tag> tags = [];
-    if (data['tags'] != null) {
-      for (var element in data['tags']) {
-        tags.add(Tag.fromFirestore(element));
-      }
-    }
     return Task(
       id: data['id'],
       parent: parent,
@@ -77,7 +71,7 @@ class Task {
           ? Duration(minutes: data['timeRequired'])
           : null,
       place: data['place'],
-      tags: tags,
+      tags: List.from(data['tags']),
     );
   }
 
@@ -87,7 +81,7 @@ class Task {
       Priority? priority,
       bool? done,
       bool? haveTime,
-      List<Tag>? tags}) {
+      List<String>? tags}) {
     return Task(
       id: id,
       parent: parent ?? this.parent,
@@ -102,7 +96,7 @@ class Task {
   void update(
       String name,
       Priority priority,
-      List<Tag> tags,
+      List<String> tags,
       DateTime? deadline,
       bool? haveTime,
       Duration? timeRequired,

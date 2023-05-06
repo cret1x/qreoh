@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 
 import '../../firebase_functions/auth.dart';
 
-class RestorePassword extends StatefulWidget {
-  const RestorePassword({super.key});
+class ResetPassword extends ConsumerStatefulWidget {
+  const ResetPassword({super.key});
 
   @override
-  State<StatefulWidget> createState() => _RestorePasswordState();
+  ConsumerState<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _RestorePasswordState extends State<RestorePassword> {
+class _ResetPasswordState extends ConsumerState<ResetPassword> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +30,7 @@ class _RestorePasswordState extends State<RestorePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login form"),
+        title: const Text("Сброс пароля"),
       ),
       body: Center(
         child: Padding(
@@ -61,11 +63,21 @@ class _RestorePasswordState extends State<RestorePassword> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          restorePassword(_emailController.text);
+                          ref
+                              .read(authStateProvider.notifier)
+                              .resetPassword(_emailController.text)
+                              .then((value) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "Вам было отправлено письмо для сброса пароля"),
+                              ),
+                            );
+                          });
                         }
                       },
                       child: const Text(
-                        "Send email",
+                        "Сбросить пароль",
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

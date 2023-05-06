@@ -29,7 +29,7 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
     final children = ref
         .read(taskListStateProvider.notifier)
         .firebaseTaskManager
-        .getSubFolders(_current, true);
+        .getSubFolders(_current);
     return Scaffold(
       appBar: AppBar(
         title: Text("Folders"),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/tag_widget.dart';
 import 'package:qreoh/screens/tasks/task_widget.dart';
+import 'package:qreoh/states/user_tags_state.dart';
 
 class TaskItemWidget extends ConsumerStatefulWidget {
   final Task task;
@@ -18,18 +20,18 @@ class TaskItemWidget extends ConsumerStatefulWidget {
 
 class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
   bool _isSelected = false;
-  bool _isOnline = false;
+  List<Tag> _allTags = [];
 
   @override
   void initState() {
     super.initState();
     _isSelected = widget.task.done;
-
   }
 
   @override
   Widget build(BuildContext context) {
-    _isOnline = ref.watch(networkStateProvider);
+    _allTags = ref.watch(userTagsProvider);
+    final tags = _allTags.where((element) => widget.task.tags.contains(element.id)).toList();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
@@ -55,7 +57,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                     value: _isSelected,
                     onChanged: (bool? state) {
                       widget.task.done = state ?? false;
-                      widget.firebaseTaskManager.changeTaskState(widget.task, _isOnline);
+                      widget.firebaseTaskManager.changeTaskState(widget.task);
                       setState(() {
                         _isSelected = widget.task.done;
                       });
@@ -64,7 +66,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                   Column(
                     children: [
                       Text(widget.task.name),
-                      TagsWidget(widget.task.tags)
+                      TagsWidget(tags)
                     ],
                   ),
                 ],

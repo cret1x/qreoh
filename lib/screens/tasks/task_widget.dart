@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/entities/tag.dart';
+import 'package:qreoh/global_providers.dart';
 import 'create_edit_task_widget.dart';
 import 'task_manager_widget.dart';
 import '../../entities/task.dart';
 
-class TaskWidget extends StatefulWidget {
+class TaskWidget extends ConsumerStatefulWidget {
   final Task task;
 
   const TaskWidget({super.key, required this.task});
 
   @override
-  State<StatefulWidget> createState() => TaskState();
+  ConsumerState<TaskWidget> createState() => TaskState();
 }
 
-class TaskState extends State<TaskWidget> {
+class TaskState extends ConsumerState<TaskWidget> {
   bool _isSelected = false;
+  List<Tag> _allTags = [];
 
   @override
   void initState() {
@@ -25,6 +29,8 @@ class TaskState extends State<TaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _allTags = ref.watch(userTagsProvider);
+    final tags = _allTags.where((element) => widget.task.tags.contains(element.id)).toList();
     return Material(
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -165,7 +171,7 @@ class TaskState extends State<TaskWidget> {
                       ],
                     ),
                     Visibility(
-                      visible: widget.task.tags.isNotEmpty,
+                      visible: tags.isNotEmpty,
                       child: const Align(
                         alignment: Alignment.centerLeft,
                         child: Text("Tags",
@@ -176,15 +182,15 @@ class TaskState extends State<TaskWidget> {
                       ),
                     ),
                     Visibility(
-                        visible: widget.task.tags.isNotEmpty,
+                        visible: tags.isNotEmpty,
                         child: ListView.builder(
                             shrinkWrap: true,
-                            itemCount: widget.task.tags.length,
+                            itemCount: tags.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Row(
                                 children: [
-                                  Icon(widget.task.tags[index].getIcon()),
-                                  Text(widget.task.tags[index].getName()),
+                                  Icon(tags[index].getIcon()),
+                                  Text(tags[index].getName()),
                                 ],
                               );
                             })),

@@ -16,7 +16,7 @@ class FirebaseTaskManager {
 
   FirebaseTaskManager._internal();
 
-  Future<void> createTask(Task task, bool isOnline) async {
+  Future<void> createTask(Task task) async {
     final tasksRef = db
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -24,7 +24,7 @@ class FirebaseTaskManager {
     tasksRef.doc(task.id).set(task.toFirestore());
   }
 
-  Future<List<Task>> getTasksInFolder(Folder folder, bool isOnline) async {
+  Future<List<Task>> getTasksInFolder(Folder folder) async {
     List<Task> tasks = [];
     final tasksRef = db
         .collection('users')
@@ -38,7 +38,7 @@ class FirebaseTaskManager {
     return tasks;
   }
 
-  Future<void> changeTaskState(Task task, bool isOnline) async {
+  Future<void> changeTaskState(Task task) async {
     final taskRef =
         db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("tasks").doc(task.id);
     taskRef.update({
@@ -46,11 +46,15 @@ class FirebaseTaskManager {
     });
   }
 
-  Future<void> updateTask(Task task, bool isOnline) async {
-    //TODO: updateTask
+  Future<void> updateTask(Task task) async {
+    final tasksRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("tasks");
+    tasksRef.doc(task.id).set(task.toFirestore());
   }
 
-  Future<void> deleteTask(Task task, bool isOnline) async {
+  Future<void> deleteTask(Task task) async {
     final taskRef = db
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -58,7 +62,7 @@ class FirebaseTaskManager {
     taskRef.doc(task.id).delete();
   }
 
-  Future<List<Folder>> getSubFolders(Folder folder, bool isOnline) async {
+  Future<List<Folder>> getSubFolders(Folder folder) async {
     List<Folder> folders = [];
     final foldersRef = db
         .collection('users')
@@ -73,17 +77,17 @@ class FirebaseTaskManager {
     return folders;
   }
 
-  Future<void> createFolder(Folder folder, bool isOnline) async {
+  Future<void> createFolder(Folder folder) async {
     final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
     foldersRef.doc(folder.id).set(folder.toFirestore());
   }
 
-  Future<void> deleteFolder(Folder folder, bool isOnline) async {
+  Future<void> deleteFolder(Folder folder) async {
     final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
     foldersRef.doc(folder.id).delete();
   }
 
-  Future<void> updateFolder(Folder folder, bool isOnline) async {
+  Future<void> updateFolder(Folder folder) async {
     final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
     foldersRef.doc(folder.id).set(folder.toFirestore());
   }

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 
 import '../../firebase_functions/auth.dart';
 
-class RegisterWidget extends StatefulWidget {
+class RegisterWidget extends ConsumerStatefulWidget {
   const RegisterWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => _RegisterWidgetState();
+  ConsumerState<RegisterWidget> createState() => _RegisterWidgetState();
 }
 
-class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
+class _RegisterWidgetState extends ConsumerState<RegisterWidget> with RestorationMixin {
   final _obscurePassword = RestorableBool(true);
   final _loginController = TextEditingController();
   final _emailController = TextEditingController();
@@ -158,13 +160,14 @@ class _RegisterWidgetState extends State<RegisterWidget> with RestorationMixin {
                           setState(() {
                             _isLoading = true;
                           });
-                          registerUser(_loginController.text, _emailController.text, _passwordController.text).then((value) {
+                          ref.read(authStateProvider.notifier).registerUser(_loginController.text, _emailController.text, _passwordController.text).then((value) {
                             setState(() {
                               _isLoading = false;
                             });
                             if (value != null) {
                               if (value == "OK") {
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Account created!")));
+                                ref.read(authStateProvider.notifier).verifyUser();
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));

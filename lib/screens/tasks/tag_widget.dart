@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../entities/tag.dart';
 
 class TagItem extends StatelessWidget {
@@ -12,13 +13,14 @@ class TagItem extends StatelessWidget {
   }
 }
 
-class TagsWidget extends StatelessWidget {
+class TagsWidget extends ConsumerWidget {
   final List<Tag> _tags;
 
   const TagsWidget(this._tags, {super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+
     return Expanded(
       child:  ListView.builder(
         itemCount: _tags.length,

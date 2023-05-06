@@ -38,7 +38,7 @@ class TaskListState extends ConsumerState<TaskListWidget> {
     _taskList = ref.watch(taskListStateProvider);
     ref
         .read(taskListStateProvider.notifier)
-        .loadTasksFromFolder(widget.folder, _isOnline);
+        .loadTasksFromFolder(widget.folder);
     List<Task> tasks = _taskList.where(filter.check).toList();
     tasks.sort(getFunc(widget.sort));
     return DecoratedBox(
