@@ -512,31 +512,6 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       ),
                     ],
                   ),
-                  ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _allTags.length,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CheckboxListTile(
-                            checkboxShape: const CircleBorder(),
-                            title: Text(_allTags[index].getName()),
-                            secondary: Icon(_allTags[index].getIcon()),
-                            value:
-                                widget._chosenTags.contains(_allTags[index].id),
-                            onChanged: (bool? state) {
-                              if (state == null) {
-                                return;
-                              }
-
-                              if (state) {
-                                widget._chosenTags.add(_allTags[index].id);
-                              } else {
-                                widget._chosenTags.remove(_allTags[index].id);
-                              }
-
-                              setState(() {});
-                            });
-                      }),
                   Row(
                     children: [
                       Expanded(

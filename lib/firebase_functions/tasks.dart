@@ -85,6 +85,15 @@ class FirebaseTaskManager {
   Future<void> deleteFolder(Folder folder) async {
     final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
     foldersRef.doc(folder.id).delete();
+    final subTasks = await getTasksInFolder(folder);
+    final subs = await getSubFolders(folder);
+
+    for (final task in subTasks) {
+      deleteTask(task);
+    }
+    for (final sub in subs) {
+      deleteFolder(sub);
+    }
   }
 
   Future<void> updateFolder(Folder folder) async {
