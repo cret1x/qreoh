@@ -16,6 +16,8 @@ import 'task_list_widget.dart';
 import '../../entities/folder.dart';
 
 class TaskManagerWidget extends ConsumerStatefulWidget {
+  final _firebaseTaskManager = FirebaseTaskManager();
+
   TaskManagerWidget({super.key});
 
   @override
@@ -55,11 +57,8 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
     super.initState();
   }
 
-  bool _isOnline = false;
-
   @override
   Widget build(BuildContext context) {
-    _isOnline = ref.watch(networkStateProvider);
     ref.read(userTagsProvider.notifier).loadTags();
     return Stack(
       children: [
@@ -94,24 +93,37 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                    child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8, right: 16, bottom: 4),
-                                        child: Container(
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                    width: 2.0,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary),
-                                              ),
-                                            ),
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 12, 0),
-                                            child: Center(
-                                                child: Text(_current.name))))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 16, bottom: 4),
+                                    child: Container(
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              width: 2.0,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                        ),
+                                      ),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 12, 0),
+                                      child: Center(
+                                        child: FutureBuilder(
+                                          future: widget._firebaseTaskManager.reloadName(_current),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              _current.rename(snapshot.data!);
+                                              return Text(_current.name);
+                                            }
+                                            return const CircularProgressIndicator();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 SizedBox(
                                   height: 40,
                                   child: DecoratedBox(
@@ -131,11 +143,10 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                       builder: (context) =>
                                                           FoldersWidget(
                                                               _current)));
-                                          if (newFolder != null &&
-                                              newFolder != _current) {
+                                          if (newFolder != null) {
                                             _current = newFolder;
-                                            setState(() {});
                                           }
+                                          setState(() {});
                                         },
                                         icon: const Icon(Icons.folder_open),
                                         color: Colors.white,
