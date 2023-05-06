@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:qreoh/entities/user_entity.dart';
 
@@ -24,54 +25,66 @@ class FriendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {},
-      leading: CircleAvatar(
-        backgroundColor: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
-            .withOpacity(1.0),
-        radius: 32,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.fitWidth,
+          image: AssetImage(
+              Theme.of(context).colorScheme.brightness == Brightness.light
+                  ? "graphics/background2.jpg"
+                  : "graphics/background5.jpg"),
+        ),
       ),
-      title: Text(
-        login ?? "test",
-        style: const TextStyle(fontSize: 22),
-      ),
-      subtitle: Text("#$tag"),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (actionAccept != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadiusDirectional.circular(12)),
-                child: Center(
-                  child: IconButton(
-                    onPressed: actionAccept,
-                    icon: const Icon(Icons.person_add),
-                    color: Colors.white,
+      child: ListTile(
+        onTap: () {},
+        leading: CircleAvatar(
+          backgroundColor:
+              Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                  .withOpacity(1.0),
+          radius: 32,
+        ),
+        title: Text(
+          login ?? "test",
+          style: const TextStyle(fontSize: 22),
+        ),
+        subtitle: Text("#$tag"),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (actionAccept != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadiusDirectional.circular(12)),
+                  child: Center(
+                    child: IconButton(
+                      onPressed: actionAccept,
+                      icon: const Icon(Icons.person_add),
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (actionDeny != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadiusDirectional.circular(12)),
-                child: Center(
-                  child: IconButton(
-                    onPressed: actionDeny,
-                    icon: const Icon(Icons.block),
-                    color: Colors.white,
+            if (actionDeny != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadiusDirectional.circular(12)),
+                  child: Center(
+                    child: IconButton(
+                      onPressed: actionDeny,
+                      icon: const Icon(Icons.block),
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

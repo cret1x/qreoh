@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/filter.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
+import 'package:qreoh/states/friends_list_state.dart';
 import 'package:qreoh/states/network_state.dart';
 import 'package:qreoh/states/task_list_state.dart';
 import 'package:qreoh/states/user_auth_state.dart';
@@ -20,3 +21,5 @@ final networkStateProvider = StateNotifierProvider<NetworkStateNotifier, bool>((
 final taskListStateProvider = StateNotifierProvider<TaskListStateNotifier, List<Task>>((ref) => TaskListStateNotifier());
 
 final authStateProvider = StateNotifierProvider<UserAuthStateNotifier, UserAuthState>((ref) => UserAuthStateNotifier());
+
+final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier());

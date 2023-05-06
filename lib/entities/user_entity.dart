@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserEntity {
-  final String? uid;
-  final String? login;
-  final int? tag;
+  final String uid;
+  final String login;
+  final int tag;
 
   UserEntity(this.uid, this.login, this.tag);
 

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/friend_item.dart';
 import 'package:qreoh/entities/user_entity.dart';
+import 'package:qreoh/global_providers.dart';
 
 import '../../firebase_functions/friends.dart';
 
-class AddFriendWidget extends StatefulWidget {
+class AddFriendWidget extends ConsumerStatefulWidget {
   const AddFriendWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => _AddFriendWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddFriendWidgetState();
 }
 
-class _AddFriendWidgetState extends State<AddFriendWidget> {
+class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
   final _loginController = TextEditingController();
   final _tagController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -84,7 +86,7 @@ class _AddFriendWidgetState extends State<AddFriendWidget> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        searchFriend(_loginController.text, int.parse(_tagController.text)).then((value) {
+                        ref.read(friendsListStateProvider.notifier).searchFriend(_loginController.text, int.parse(_tagController.text)).then((value) {
                           if (value != null) {
                             setState(() {
                               _foundFriend.clear();
@@ -114,8 +116,8 @@ class _AddFriendWidgetState extends State<AddFriendWidget> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FriendItem.withAction(_foundFriend.first, () {
-                    sendFriendRequest(_foundFriend.first);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Send request")));
+                    ref.read(friendsListStateProvider.notifier).sendRequest(_foundFriend.first);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Sent request")));
                   }, null),
                 );
               },

@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 
 import '../../common_widgets/friend_item.dart';
 import '../../entities/user_entity.dart';
@@ -9,16 +11,17 @@ import '../../firebase_functions/friends.dart';
 
 const List<String> _sortTypes = <String>['A - Z', 'Z - A', 'fav'];
 
-class FriendsWidget extends StatefulWidget {
+class FriendsWidget extends ConsumerStatefulWidget {
   const FriendsWidget({super.key});
 
   @override
-  State<StatefulWidget> createState() => _FriendsWidgetState();
+  ConsumerState<FriendsWidget> createState() => _FriendsWidgetState();
 }
 
-class _FriendsWidgetState extends State<FriendsWidget> {
+class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
   String _dropdownValue = _sortTypes.first;
   bool _descending = false;
+  List<UserEntity> _friends = [];
 
   @override
   void initState() {
@@ -27,8 +30,9 @@ class _FriendsWidgetState extends State<FriendsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _friends = ref.watch(friendsListStateProvider).friends;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -63,6 +67,9 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                       _descending = false;
                     }
                   });
+                  ref
+                      .read(friendsListStateProvider.notifier)
+                      .getAllFriends(_descending);
                 },
                 items: _sortTypes.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
@@ -76,36 +83,46 @@ class _FriendsWidgetState extends State<FriendsWidget> {
               ),
             ),
           ),
-          Expanded(
-              child: FutureBuilder(
-            future: getAllFriends(_descending),
-            builder: (context, data) {
-              if (data.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (data.hasData && data.data!.isNotEmpty) {
-                return ListView.builder(
-                    itemCount: data.data!.length,
-                    itemBuilder: (context, index) {
-                      return FriendItem(data.data!.elementAt(index));
-                    });
-              } else {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "You have no friends",
-                        style: TextStyle(fontSize: 32),
-                      ),
-                    ],
+          Flexible(
+            fit: FlexFit.loose,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: ClipRect(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                );
-              }
-            },
-          )),
+                  child: SizedBox(
+                    child: ClipRect(
+                      child: _friends.isNotEmpty
+                          ? ListView.separated(
+                              itemCount: _friends.length,
+                              itemBuilder: (context, index) {
+                                return FriendItem(_friends[index]);
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const Divider();
+                              },
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "You have no friends",
+                                    style: TextStyle(fontSize: 32),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

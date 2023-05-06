@@ -44,7 +44,11 @@ class FirebaseTagManager {
   }
 
   Future<void> updateTag(Tag tag) async {
-
+    final tasksRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("tags");
+    tasksRef.doc(tag.id).set(tag.toFirestore());
   }
 }
 

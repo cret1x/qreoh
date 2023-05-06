@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/entities/folder.dart';
-import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/auth.dart';
-import 'package:qreoh/firebase_functions/tasks.dart';
 
 enum AuthState { anonymous, registered, verified }
 
