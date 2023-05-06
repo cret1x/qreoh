@@ -36,7 +36,9 @@ class FriendItem extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          //TODO: navigate to friends profile
+        },
         leading: CircleAvatar(
           backgroundColor:
               Color((math.Random().nextDouble() * 0xFFFFFF).toInt())

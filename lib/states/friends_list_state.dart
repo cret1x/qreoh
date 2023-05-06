@@ -97,7 +97,7 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     );
   }
 
-  void getAllFriends(bool desc) async {
+  Future<void> getAllFriends(bool desc) async {
     //TODO: change to firebase function call
     final friends = await firebaseFriendsManager.getAllFriends();
     friends.sort((UserEntity a, UserEntity b) {
