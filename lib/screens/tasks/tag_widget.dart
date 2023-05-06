@@ -9,7 +9,7 @@ class TagItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Icon(_tag.getIcon());
+    return Icon(_tag.icon);
   }
 }
 

@@ -243,9 +243,9 @@ class _FilterState extends ConsumerState<FilterWidget> {
                       itemBuilder: (BuildContext context, int index) {
                         return CheckboxListTile(
                             title: Text(
-                                ref.read(userTagsProvider)[index].getName()),
+                                ref.read(userTagsProvider)[index].name),
                             secondary: Icon(
-                                ref.read(userTagsProvider)[index].getIcon()),
+                                ref.read(userTagsProvider)[index].icon),
                             value: filter.tags
                                 .contains(ref.read(userTagsProvider)[index]),
                             onChanged: (bool? state) {

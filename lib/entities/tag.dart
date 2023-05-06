@@ -3,31 +3,31 @@ import 'package:flutter/material.dart';
 
 class Tag {
   String id;
-  IconData _icon;
-  String _name;
+  IconData icon;
+  String name;
+  Color color;
 
-  Tag(this.id, this._icon, this._name);
-
-  IconData getIcon() {
-    return _icon;
-  }
+  Tag({
+    required this.id,
+    required this.icon,
+    required this.name,
+    required this.color,
+  });
 
   Map<String, dynamic> toFirestore() {
     return {
-      "icon": _icon.codePoint,
-      "name": _name,
+      "icon": icon.codePoint,
+      "name": name,
+      "color": color.value,
     };
   }
 
   factory Tag.fromFirestore(String id, Map<String, dynamic> data) {
-    return Tag(id,
-      IconData(data['icon'], fontFamily: 'MaterialIcons'),
-      data['name'],
+    return Tag(id: id,
+      icon: IconData(data['icon'], fontFamily: 'MaterialIcons'),
+      name: data['name'],
+      color: Color(data['color']),
     );
-  }
-
-  String getName() {
-    return _name;
   }
 
   @override

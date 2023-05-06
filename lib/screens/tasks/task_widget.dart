@@ -189,8 +189,8 @@ class TaskState extends ConsumerState<TaskWidget> {
                             itemBuilder: (BuildContext context, int index) {
                               return Row(
                                 children: [
-                                  Icon(tags[index].getIcon()),
-                                  Text(tags[index].getName()),
+                                  Icon(tags[index].icon),
+                                  Text(tags[index].name),
                                 ],
                               );
                             })),
