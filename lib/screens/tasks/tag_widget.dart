@@ -21,15 +21,13 @@ class TagsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    return Expanded(
-      child:  ListView.builder(
+    return ListView.builder(
         itemCount: _tags.length,
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
               return TagItem(_tags[index]);
           }
-      )
     );
   }
 }

@@ -24,7 +24,9 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
   @override
   Widget build(BuildContext context) {
     _allTags = ref.watch(userTagsProvider);
-    final tags = _allTags.where((element) => widget.task.tags.contains(element.id)).toList();
+    final tags = _allTags
+        .where((element) => widget.task.tags.contains(element.id))
+        .toList();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
@@ -42,34 +44,58 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
         child: SizedBox(
           height: 50,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Checkbox(
-                    shape: const CircleBorder(),
-                    value: widget.task.done,
-                    onChanged: (bool? state) {
-                      widget.firebaseTaskManager.changeTaskState(widget.task);
-                      setState(() {
-                        widget.task.done = state ?? false;
-                      });
-                    },
-                  ),
-                  Column(
-                    children: [
-                      Text(widget.task.name),
-                      TagsWidget(tags)
-                    ],
-                  ),
-                ],
+              Checkbox(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                value: widget.task.done,
+                onChanged: (bool? state) {
+                  setState(() {
+                    widget.task.done = state ?? false;
+                    widget.firebaseTaskManager.changeTaskState(widget.task);
+                  });
+                },
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.task.stringDate),
-                  widget.task.textPriority,
-                ],
+              Expanded(
+                child: widget.task.deadline != null &&
+                        widget.task.tags.isNotEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(widget.task.name),
+                              widget.task.textPriority,
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: SizedBox(
+                                  height: 20,
+                                  child: TagsWidget(tags),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                                child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Text(widget.task.stringDate)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(widget.task.name),
+                          widget.task.textPriority,
+                        ],
+                      ),
               ),
             ],
           ),
