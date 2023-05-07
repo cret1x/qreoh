@@ -3,6 +3,8 @@ import 'package:qreoh/entities/user_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:qreoh/screens/profile/profile_shop.dart';
+
 
 class MyProfileSettings extends StatefulWidget {
   const MyProfileSettings({super.key});
@@ -113,7 +115,7 @@ class ProfilePageSettings extends State<MyProfileSettings> {
   }
 
   @override
-  Widget textbotton({@required hintText, required void function}) {
+  Widget textbotton({@required hintText, required Function function}) {
     return Material(
       elevation: 10,
       shadowColor: Colors.grey,
@@ -140,9 +142,7 @@ class ProfilePageSettings extends State<MyProfileSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Color(0xff555555),
-        actions: <Widget>[
+        actions: [
           IconButton(
           icon: const Icon(
             Icons.edit,
@@ -150,12 +150,16 @@ class ProfilePageSettings extends State<MyProfileSettings> {
             size: 30,
           ),
           onPressed: () {
-            Navigator.pushNamed(context, "/shop");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                    const ProfileShop()));
           },
           ),
         ]
       ),
-      body: Stack(
+      body: true ? null : Stack(
         alignment: Alignment.center,
         children: [
           Column(
@@ -179,11 +183,11 @@ class ProfilePageSettings extends State<MyProfileSettings> {
                         children: [
                           textbotton(
                             hintText: 'Save',
-                            function: save(),
+                            function: save,
                           ),
                           textbotton(
                             hintText: 'Cansel',
-                            function: cancel(),
+                            function: cancel,
                           ),
                         ],
                       ),
@@ -236,31 +240,6 @@ class ProfilePageSettings extends State<MyProfileSettings> {
                 },
               ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.done),
-            label: 'ToDoList',
-            activeIcon: null,
-            backgroundColor: Color(0xff555555),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.perm_identity),
-            label: 'Profile',
-            activeIcon: null,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Friends',
-            activeIcon: null,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-            activeIcon: null,
           ),
         ],
       ),

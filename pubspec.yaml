@@ -75,32 +75,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - graphics/background1.jpg
-    - graphics/background2.jpg
-    - graphics/background3.jpg
-    - graphics/background4.jpg
-    - graphics/background5.jpg
-
-  # To add assets to your application, add an assets section, like this:
-   assets:
-      - achievement_icons/analysis.jpg
-      - achievement_icons/chronometer.jpg
-      - achievement_icons/confetti.jpg
-      - achievement_icons/good-choice.jpg
-      - achievement_icons/idea.jpg
-      - achievement_icons/manager.jpg
-      - achievement_icons/rocket.jpg
-      - achievement_icons/success.jpg
-      - achievement_icons/success2.jpg
-      - achievement_icons/target.jpg
-      - achievement_icons/team.jpg
-      - achievement_icons/teamwork.jpg
-      - avatars/av1.jpg
-      - avatars/av2.jpg
-      - avatars/av3.jpg
-      - avatars/av4.jpg
-      - avatars/av5.jpg
-      - avatars/av6.jpg
+    - graphics/
+    - graphics/achievement_icons/
+    - graphics/avatars/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

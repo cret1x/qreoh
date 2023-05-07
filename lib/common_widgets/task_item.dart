@@ -23,10 +23,11 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _allTags = ref.watch(userTagsProvider);
-    final tags = _allTags
+    _allTags = ref.read(userTagsProvider);
+    final tags =  _allTags
         .where((element) => widget.task.tags.contains(element.id))
         .toList();
+    print(tags);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
@@ -39,7 +40,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
               ),
             ),
           );
-          setState(() {});
+          ref.read(taskListStateProvider.notifier).loadTasksFromFolder(widget.task.parent);
         },
         child: SizedBox(
           height: 50,
@@ -58,7 +59,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 },
               ),
               Expanded(
-                child: widget.task.deadline != null &&
+                child: widget.task.deadline != null ||
                         widget.task.tags.isNotEmpty
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

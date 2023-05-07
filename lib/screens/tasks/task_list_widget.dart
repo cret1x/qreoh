@@ -27,10 +27,8 @@ class TaskListState extends ConsumerState<TaskListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("REBUILD");
     _taskList = ref.watch(taskListStateProvider);
-    ref
-        .read(taskListStateProvider.notifier)
-        .loadTasksFromFolder(widget.folder);
     List<Task> tasks = _taskList.where(ref.read(tasksFilterProvider.notifier).check).toList();
     tasks.sort(getFunc(widget.sort));
     return DecoratedBox(

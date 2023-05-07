@@ -52,11 +52,20 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   @override
   void initState() {
     super.initState();
+    ref
+        .read(taskListStateProvider.notifier)
+        .loadTasksFromFolder(_current);
+
   }
 
   @override
   Widget build(BuildContext context) {
     ref.read(userTagsProvider.notifier).loadTags();
+    ref.listen(tasksFilterProvider, (previous, next) {
+      ref
+          .read(taskListStateProvider.notifier)
+          .loadTasksFromFolder(_current);
+    });
     return Stack(
       children: [
         ConstrainedBox(
@@ -150,6 +159,9 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                                   _current)));
                                               if (newFolder != null) {
                                                 _current = newFolder;
+                                                ref
+                                                    .read(taskListStateProvider.notifier)
+                                                    .loadTasksFromFolder(_current);
                                               }
                                               setState(() {});
                                             },

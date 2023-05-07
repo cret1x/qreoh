@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:qreoh/states/achievements.dart';
+import 'package:qreoh/entities/achievement.dart';
+import 'package:qreoh/states/achievements_state.dart';
 import 'package:qreoh/kastom.dart';
 
+//TODO: remade user entity
 class UserEntity {
   final String uid;
   final String login;

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/entities/filter.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/states/friends_list_state.dart';
