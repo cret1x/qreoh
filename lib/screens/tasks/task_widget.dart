@@ -213,10 +213,8 @@ class TaskState extends ConsumerState<TaskWidget> {
               ),
               Wrap(
                 spacing: 10,
-                children: widget.task.tags.map(
-                  (tagId) {
-                    final tag =
-                        _allTags.firstWhere((element) => element.id == tagId);
+                children: tags.map(
+                  (tag) {
                     return InputChip(
                         avatar: CircleAvatar(
                           backgroundColor:
