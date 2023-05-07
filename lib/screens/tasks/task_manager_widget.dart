@@ -71,163 +71,141 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          child: Column(
-            children: [
-              SizedBox(
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: FutureBuilder(
+            future: widget._firebaseTaskManager.reloadFolder(_current),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.name != _current.name) {
+                _current.rename(snapshot.data!.name);
+              }
+
+              return Column(
+                children: [
+                  SizedBox(
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
                               children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8, right: 16, bottom: 4),
-                                    child: Container(
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                              width: 2.0,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ),
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 12, 0),
-                                      child: Center(
-                                        child: FutureBuilder(
-                                          future: widget._firebaseTaskManager
-                                              .reloadName(_current),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.hasData) {
-                                              _current.rename(snapshot.data!);
-                                              return Text(_current.name);
-                                            }
-                                            return const CircularProgressIndicator();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      borderRadius:
-                                          BorderRadiusDirectional.circular(12),
-                                    ),
-                                    child: Center(
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          Folder? newFolder =
-                                              await Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          FoldersWidget(
-                                                              _current)));
-                                          if (newFolder != null) {
-                                            _current = newFolder;
-                                          }
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(Icons.folder_open),
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    height: 52,
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8, 12, 12, 4),
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                              width: 2.0,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                      ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.only(
-                                            right: 12, left: 18),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<SortRule>(
-                                            alignment: Alignment.center,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            isExpanded: true,
-                                            iconSize: 0.0,
-                                            value: _sortRule,
-                                            items: _menuItems,
-                                            onChanged: (SortRule? value) {
-                                              setState(() {
-                                                _sortRule = value!;
-                                              });
-                                            },
+                                            left: 8, right: 16, bottom: 4),
+                                        child: Container(
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                  width: 2.0,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 12, 0),
+                                          child: Center(
+                                            child: snapshot.hasData
+                                                ? Text(snapshot.data!.name)
+                                                : Transform.scale(
+                                                    scale: 0.6,
+                                                    child:
+                                                        const CircularProgressIndicator(),
+                                                  ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 40,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          borderRadius:
+                                              BorderRadiusDirectional.circular(
+                                                  12),
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              Folder? newFolder =
+                                                  await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              FoldersWidget(
+                                                                  _current)));
+                                              if (newFolder != null) {
+                                                _current = newFolder;
+                                              }
+                                              setState(() {});
+                                            },
+                                            icon: const Icon(Icons.folder_open),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                                  height: 52,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        borderRadius:
-                                            BorderRadiusDirectional.circular(
-                                                12)),
-                                    child: Center(
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      FilterWidget()));
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(
-                                            Icons.filter_alt_outlined),
-                                        color: Colors.white,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        height: 52,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8, 12, 12, 4),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                  width: 2.0,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 12, left: 18),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton<SortRule>(
+                                                alignment: Alignment.center,
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                isExpanded: true,
+                                                iconSize: 0.0,
+                                                value: _sortRule,
+                                                items: _menuItems,
+                                                onChanged: (SortRule? value) {
+                                                  setState(() {
+                                                    _sortRule = value!;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 12, 12, 0),
-                                    height: 52,
-                                    child: DecoratedBox(
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 12, 12, 0),
+                                      height: 52,
+                                      child: DecoratedBox(
                                         decoration: BoxDecoration(
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -236,68 +214,102 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                 BorderRadiusDirectional
                                                     .circular(12)),
                                         child: Center(
-                                            child: IconButton(
-                                          onPressed: () {},
-                                          icon:
-                                              const Icon(Icons.label_important),
-                                          color: Colors.white,
-                                        )))),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 12, 0, 0),
-                                  height: 52,
-                                  child: DecoratedBox(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        borderRadius:
-                                            BorderRadiusDirectional.circular(
-                                                12)),
-                                    child: Center(
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditCreateTaskWidget(
-                                                      _current, null),
-                                            ),
-                                          );
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(Icons.add),
-                                        color: Colors.white,
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          FilterWidget()));
+                                              setState(() {});
+                                            },
+                                            icon: const Icon(
+                                                Icons.filter_alt_outlined),
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 12, 12, 0),
+                                      height: 52,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            borderRadius:
+                                                BorderRadiusDirectional
+                                                    .circular(12)),
+                                        child: Center(
+                                          child: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                                Icons.label_important),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 12, 0, 0),
+                                      height: 52,
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            borderRadius:
+                                                BorderRadiusDirectional
+                                                    .circular(12)),
+                                        child: Center(
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditCreateTaskWidget(
+                                                          _current, null),
+                                                ),
+                                              );
+                                              setState(() {});
+                                            },
+                                            icon: const Icon(Icons.add),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              Flexible(
-                fit: FlexFit.loose,
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: TaskListWidget(
-                      folder: _current,
-                      sort: _sortRule,
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                        child: TaskListWidget(
+                          folder: snapshot.hasData ? snapshot.data! : _current,
+                          sort: _sortRule,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ],

@@ -101,9 +101,13 @@ class FirebaseTaskManager {
     foldersRef.doc(folder.id).set(folder.toFirestore());
   }
 
-  Future<String> reloadName(Folder folder) async {
+  Future<Folder> reloadFolder(Folder folder) async {
     final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
     final doc = await foldersRef.doc(folder.id).get();
-    return doc.data()!['name'];
+    if (doc.data() != null) {
+      folder.rename(doc.data()!['name']);
+      return folder;
+    }
+    return reloadFolder(folder.parent!);
   }
 }

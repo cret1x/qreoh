@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/screens/tasks/create_edit_folder.dart';
@@ -276,33 +275,33 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                       key: UniqueKey(),
                                                       secondaryBackground:
                                                           const Align(
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    right: 16),
-                                                            child: Icon(
-                                                              Icons.delete,
-                                                              color:
-                                                                  Colors.red,
-                                                            ),
-
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: 16),
+                                                          child: Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
                                                         ),
                                                       ),
-                                                      background: const Align(
+                                                      background: Align(
                                                         alignment: Alignment
                                                             .centerLeft,
                                                         child: Padding(
                                                           padding:
-                                                          EdgeInsets.only(
-                                                              right: 16),
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 16),
                                                           child: Icon(
-                                                            Icons.edit,
-                                                            color:
-                                                            Colors.black45,
+                                                            Icons.mode_edit_outlined,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .onSurface,
                                                           ),
-
                                                         ),
                                                       ),
                                                       confirmDismiss:
@@ -337,8 +336,8 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                         widget
                                                             ._firebaseTaskManager
                                                             .deleteFolder(
-                                                            snapshot.data![
-                                                            index]);
+                                                                snapshot.data![
+                                                                    index]);
                                                         return true;
                                                       },
                                                       onDismissed: (direction) {
