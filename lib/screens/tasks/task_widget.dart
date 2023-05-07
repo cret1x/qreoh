@@ -30,7 +30,9 @@ class TaskState extends ConsumerState<TaskWidget> {
   @override
   Widget build(BuildContext context) {
     _allTags = ref.watch(userTagsProvider);
-    final tags = _allTags.where((element) => widget.task.tags.contains(element.id)).toList();
+    final tags = _allTags
+        .where((element) => widget.task.tags.contains(element.id))
+        .toList();
     return Material(
         child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -155,8 +157,9 @@ class TaskState extends ConsumerState<TaskWidget> {
                         child: Row(
                           children: [
                             Flexible(
-                                fit: FlexFit.loose,
-                                child: Text(widget.task.description ?? ""),),
+                              fit: FlexFit.loose,
+                              child: Text(widget.task.description ?? ""),
+                            ),
                           ],
                         )),
                     Row(
@@ -213,11 +216,13 @@ class TaskState extends ConsumerState<TaskWidget> {
                                 ),
                                 onPressed: () async {
                                   int result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditCreateTaskWidget.edit(
-                                                  widget.task)));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditCreateTaskWidget(
+                                              widget.task.parent, widget.task),
+                                    ),
+                                  );
                                   if (result < 0) {
                                     Navigator.pop(context);
                                   } else {

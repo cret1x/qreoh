@@ -111,7 +111,8 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                           0, 0, 12, 0),
                                       child: Center(
                                         child: FutureBuilder(
-                                          future: widget._firebaseTaskManager.reloadName(_current),
+                                          future: widget._firebaseTaskManager
+                                              .reloadName(_current),
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData) {
                                               _current.rename(snapshot.data!);
@@ -260,11 +261,13 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                       child: IconButton(
                                         onPressed: () async {
                                           await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditCreateTaskWidget(
-                                                          _current)));
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditCreateTaskWidget(
+                                                      _current, null),
+                                            ),
+                                          );
                                           setState(() {});
                                         },
                                         icon: const Icon(Icons.add),

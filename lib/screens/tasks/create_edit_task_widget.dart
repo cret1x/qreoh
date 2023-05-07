@@ -15,7 +15,17 @@ import '../../entities/task.dart';
 class EditCreateTaskWidget extends ConsumerStatefulWidget {
   final uuid = const Uuid();
   late Folder _folder;
-  Task? _task;
+  final Task? _task;
+
+  EditCreateTaskWidget(this._folder, this._task, {super.key});
+
+  @override
+  ConsumerState<EditCreateTaskWidget> createState() {
+    return EditCreateTaskWidgetState(_task);
+  }
+}
+
+class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   String? _name;
   DateTime? _deadline;
   bool _haveTime = false;
@@ -24,39 +34,26 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
   Priority _priority = Priority.none;
   String? _location;
   String? _description;
-  final List<String> _chosenTags = [];
-
-  EditCreateTaskWidget(this._folder, {super.key}) {
-    _task = null;
-  }
-
-  EditCreateTaskWidget.edit(Task task, {super.key}) {
-    _task = task;
-    _folder = task.parent;
-    _name = task.name;
-    _deadline = task.deadline;
-    _haveTime = task.haveTime;
-    _daysRequired = task.timeRequired == null ? 0 : task.timeRequired!.inDays;
-    _timeRequired = task.timeRequired == null
-        ? null
-        : task.timeRequired! - Duration(days: _daysRequired);
-    _priority = task.priority;
-    _location = task.place;
-    _description = task.description;
-    for (String tag in task.tags) {
-      _chosenTags.add(tag);
-    }
-  }
-
-  @override
-  ConsumerState<EditCreateTaskWidget> createState() {
-    return EditCreateTaskWidgetState();
-  }
-}
-
-class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   List<Tag> _allTags = [];
   List<String> _selectedTags = [];
+
+  EditCreateTaskWidgetState(Task? task) {
+    if (task != null) {
+      _name = task.name;
+      _deadline = task.deadline;
+      _haveTime = task.haveTime;
+      _daysRequired = task.timeRequired == null ? 0 : task.timeRequired!.inDays;
+      _timeRequired = task.timeRequired == null
+          ? null
+          : task.timeRequired! - Duration(days: _daysRequired);
+      _priority = task.priority;
+      _location = task.place;
+      _description = task.description;
+      for (String tag in task.tags) {
+        _selectedTags.add(tag);
+      }
+    }
+  }
 
   String _durationToString(Duration? duration) {
     if (duration == null) {
@@ -72,15 +69,15 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
 
   void _showCreateTagDialog() async {
     await showDialog(
-        context: context,
-        builder: (BuildContext context) => const CreateEditTagWidget(),
+      context: context,
+      builder: (BuildContext context) => const CreateEditTagWidget(),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _selectedTags = widget._chosenTags;
+    _selectedTags = _selectedTags;
   }
 
   @override
@@ -102,9 +99,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                         const EdgeInsets.only(left: 3, right: 3, bottom: 12),
                     child: TextFormField(
                       maxLength: 30,
-                      initialValue: widget._name,
+                      initialValue: _name,
                       onChanged: (String? value) {
-                        widget._name = value;
+                        _name = value;
                       },
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
@@ -167,20 +164,21 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           children: [
                             TextButton(
                               child: Text(
-                                widget._deadline == null
+                                _deadline == null
                                     ? "Add"
-                                    : widget._deadline.toString().substring(
-                                        0, widget._haveTime ? 16 : 10),
+                                    : _deadline
+                                        .toString()
+                                        .substring(0, _haveTime ? 16 : 10),
                               ),
                               onPressed: () async {
-                                widget._deadline = await showDatePicker(
+                                _deadline = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime.now(),
                                   lastDate: DateTime.now()
                                       .add(const Duration(days: 2 * 365)),
                                 );
-                                if (widget._deadline == null) {
+                                if (_deadline == null) {
                                   return;
                                 }
                                 TimeOfDay? time = await showTimePicker(
@@ -188,18 +186,16 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                     initialTime:
                                         const TimeOfDay(hour: 0, minute: 0),
                                     cancelText: "SKIP");
-                                widget._haveTime = time != null;
+                                _haveTime = time != null;
                                 if (time != null) {
-                                  widget._deadline = widget._deadline!.add(
-                                      Duration(
-                                          hours: time.hour,
-                                          minutes: time.minute));
+                                  _deadline = _deadline!.add(Duration(
+                                      hours: time.hour, minutes: time.minute));
                                 }
                                 setState(() {});
                               },
                             ),
                             Visibility(
-                                visible: widget._deadline != null,
+                                visible: _deadline != null,
                                 child: IconButton(
                                   icon: const Icon(
                                     Icons.close,
@@ -207,8 +203,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   ),
                                   iconSize: 20,
                                   onPressed: () {
-                                    widget._haveTime = false;
-                                    widget._deadline = null;
+                                    _haveTime = false;
+                                    _deadline = null;
                                     setState(() {});
                                   },
                                 ))
@@ -226,20 +222,20 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   Theme.of(context).colorScheme.onBackground)),
                       Row(children: [
                         Visibility(
-                            visible: widget._timeRequired == null,
+                            visible: _timeRequired == null,
                             child: TextButton(
                               child: const Text("Add"),
                               onPressed: () {
-                                widget._timeRequired = Duration.zero;
+                                _timeRequired = Duration.zero;
                                 setState(() {});
                               },
                             )),
                         Visibility(
-                          visible: widget._timeRequired != null,
+                          visible: _timeRequired != null,
                           child: Row(
                             children: [
                               TextButton(
-                                child: Text("${widget._daysRequired} days"),
+                                child: Text("${_daysRequired} days"),
                                 onPressed: () {
                                   showCupertinoModalPopup(
                                       context: context,
@@ -264,12 +260,12 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               child: CupertinoPicker(
                                                 scrollController:
                                                     FixedExtentScrollController(
-                                                        initialItem: widget
-                                                            ._daysRequired),
+                                                        initialItem:
+                                                            _daysRequired),
                                                 itemExtent: 32,
                                                 onSelectedItemChanged:
                                                     (int value) {
-                                                  widget._daysRequired = value;
+                                                  _daysRequired = value;
                                                   setState(() {});
                                                 },
                                                 children: List<Widget>.generate(
@@ -283,8 +279,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 },
                               ),
                               TextButton(
-                                child: Text(
-                                    _durationToString(widget._timeRequired)),
+                                child: Text(_durationToString(_timeRequired)),
                                 onPressed: () {
                                   showCupertinoModalPopup(
                                       context: context,
@@ -308,16 +303,15 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               top: false,
                                               child: CupertinoTimerPicker(
                                                 initialTimerDuration:
-                                                    widget._timeRequired!,
+                                                    _timeRequired!,
                                                 mode:
                                                     CupertinoTimerPickerMode.hm,
                                                 // This is called when the user changes the timer's
                                                 // duration.
                                                 onTimerDurationChanged:
                                                     (Duration newDuration) {
-                                                  setState(() =>
-                                                      widget._timeRequired =
-                                                          newDuration);
+                                                  setState(() => _timeRequired =
+                                                      newDuration);
                                                 },
                                               ),
                                             ),
@@ -331,8 +325,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 ),
                                 iconSize: 20,
                                 onPressed: () {
-                                  widget._timeRequired = null;
-                                  widget._daysRequired = 0;
+                                  _timeRequired = null;
+                                  _daysRequired = 0;
                                   setState(() {});
                                 },
                               )
@@ -355,7 +349,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           child: DropdownButton<Priority>(
                         iconEnabledColor: Theme.of(context).colorScheme.primary,
                         borderRadius: BorderRadius.circular(12),
-                        value: widget._priority,
+                        value: _priority,
                         items: List<DropdownMenuItem<Priority>>.generate(4,
                             (index) {
                           String text;
@@ -389,7 +383,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   )));
                         }),
                         onChanged: (Priority? value) {
-                          widget._priority = value!;
+                          _priority = value!;
                           setState(() {});
                         },
                       )),
@@ -416,7 +410,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             minLines: 1,
                             maxLines: 50,
                             maxLength: 120,
-                            initialValue: widget._location,
+                            initialValue: _location,
                             decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -425,7 +419,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                           .secondary)),
                             ),
                             onChanged: (String? value) {
-                              widget._location = value;
+                              _location = value;
                               setState(() {});
                             },
                           ),
@@ -454,7 +448,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             minLines: 1,
                             maxLines: 50,
                             maxLength: 500,
-                            initialValue: widget._description,
+                            initialValue: _description,
                             decoration: InputDecoration(
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -463,7 +457,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                           .secondary)),
                             ),
                             onChanged: (String? value) {
-                              widget._description = value;
+                              _description = value;
                               setState(() {});
                             },
                           ),
@@ -586,8 +580,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 ),
                               ),
                               onPressed: () {
-                                if (widget._name == null ||
-                                    widget._name!.isEmpty) {
+                                if (_name == null || _name!.isEmpty) {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -606,34 +599,33 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   return;
                                 }
                                 if (widget._task == null) {
-                                  widget._task = Task(
+                                  final newTask = Task(
                                       id: widget.uuid.v1(),
                                       parent: widget._folder,
-                                      name: widget._name!,
+                                      name: _name!,
                                       done: false,
-                                      priority: widget._priority,
-                                      tags: widget._chosenTags,
-                                      deadline: widget._deadline,
-                                      haveTime: widget._haveTime,
-                                      timeRequired: widget._timeRequired != null
-                                          ? widget._timeRequired! +
-                                              Duration(
-                                                  days: widget._daysRequired)
+                                      priority: _priority,
+                                      tags: _selectedTags,
+                                      deadline: _deadline,
+                                      haveTime: _haveTime,
+                                      timeRequired: _timeRequired != null
+                                          ? _timeRequired! +
+                                              Duration(days: _daysRequired)
                                           : null,
-                                      description: widget._description,
-                                      place: widget._location);
+                                      description: _description,
+                                      place: _location);
                                   ref
                                       .read(taskListStateProvider.notifier)
-                                      .addTask(widget._task!);
+                                      .addTask(newTask);
                                 } else {
                                   widget._task!.update(
-                                      widget._name!,
-                                      widget._priority,
-                                      widget._chosenTags,
-                                      widget._deadline,
-                                      widget._haveTime,
-                                      widget._timeRequired,
-                                      widget._description);
+                                      _name!,
+                                      _priority,
+                                      _selectedTags,
+                                      _deadline,
+                                      _haveTime,
+                                      _timeRequired,
+                                      _description);
                                 }
 
                                 Navigator.pop(
