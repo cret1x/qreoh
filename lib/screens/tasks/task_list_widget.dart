@@ -28,13 +28,11 @@ class TaskListWidget extends ConsumerStatefulWidget {
 }
 
 class TaskListState extends ConsumerState<TaskListWidget> {
-  bool _isOnline = false;
   List<Task> _taskList = [];
 
   @override
   Widget build(BuildContext context) {
     Filter filter = ref.watch(tasksFilterProvider);
-    _isOnline = ref.watch(networkStateProvider);
     _taskList = ref.watch(taskListStateProvider);
     ref
         .read(taskListStateProvider.notifier)
@@ -47,10 +45,10 @@ class TaskListState extends ConsumerState<TaskListWidget> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: SizedBox(
-        child: _taskList.isNotEmpty
+        child: tasks.isNotEmpty
             ? ListView.separated(
                 scrollDirection: Axis.vertical,
-                physics: ScrollPhysics(),
+                physics: const ScrollPhysics(),
                 padding: const EdgeInsets.all(8),
                 itemCount: tasks.length,
                 shrinkWrap: true,
