@@ -14,10 +14,10 @@ import '../../entities/task.dart';
 
 class EditCreateTaskWidget extends ConsumerStatefulWidget {
   final uuid = const Uuid();
-  late Folder _folder;
+  final Folder _folder;
   final Task? _task;
 
-  EditCreateTaskWidget(this._folder, this._task, {super.key});
+  const EditCreateTaskWidget(this._folder, this._task, {super.key});
 
   @override
   ConsumerState<EditCreateTaskWidget> createState() {
@@ -626,6 +626,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       _haveTime,
                                       _timeRequired,
                                       _description);
+                                  ref
+                                      .read(taskListStateProvider.notifier)
+                                      .updateTask(widget._task!);
                                 }
 
                                 Navigator.pop(
