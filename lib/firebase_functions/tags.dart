@@ -36,11 +36,18 @@ class FirebaseTagManager {
   }
 
   Future<void> deleteTag(Tag tag) async {
-    final tasksRef = db
+    final tagsRef = db
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("tags");
-    tasksRef.doc(tag.id).delete();
+    final tasksRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection('tasks');
+    final toDelete = await tasksRef.where('tags', arrayContains: tag.id).get();
+    tagsRef.doc(tag.id).delete();
+    for (var doc in toDelete.docs) {
+      tasksRef.doc(doc.id).update({
+        "tags": FieldValue.arrayRemove([tag.id]),
+      });
+    }
   }
 
   Future<void> updateTag(Tag tag) async {
