@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
@@ -22,9 +24,6 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
     super.initState();
     ref.read(userStateProvider.notifier).getUser();
     ref.read(achievementsProvider.notifier).loadAchievements();
-    _userState = ref.read(userStateProvider);
-    _allAchievements = ref.read(achievementsProvider);
-    print(_allAchievements);
   }
 
   void _showAchievementTip(Achievement achievement) async {
@@ -148,68 +147,76 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _allAchievements = ref.watch(achievementsProvider);
+    _userState = ref.watch(userStateProvider);
     return Column(
       children: [
-        CustomPaint(
-          painter: HeaderCurvedContainer(),
-          child: SizedBox(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
-          ),
-        ),
-        Container(
-          height: 125,
-          width: 125,
-          margin: const EdgeInsets.only(top: 120, left: 40, right: 40),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.black, width: 0.0),
-            borderRadius: const BorderRadius.all(Radius.elliptical(50, 50)),
-            image: DecorationImage(
-                image: AssetImage("graphics/background3.jpg"),
-                fit: BoxFit.cover),
-          ),
+        Stack(
+          children: [
+             Container(
+               height: 150,
+               decoration: BoxDecoration(
+                 image: DecorationImage(
+                     image: _userState.banner,
+                     fit: BoxFit.cover)
+               ),
+            ),
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4)
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 32),
+                        height: 125,
+                        width: 125,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3.0),
+                          borderRadius: BorderRadius.circular(12),
+                          image: const DecorationImage(
+                              image: AssetImage("graphics/background3.jpg"),
+                              fit: BoxFit.cover),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 32.0),
+                        child: Text(_userState.login,
+                          style: TextStyle(
+                              letterSpacing: 2,
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24),),
+                      ),
+                      Text("#${_userState.tag}",
+                        style: const TextStyle(
+                            letterSpacing: 2,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),),
+                    ],
+                  )
+                ),
+              ),
+            ),
+          ],
         ),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 32),
-            child: ListView(
-              padding: const EdgeInsets.all(10),
-              children: [
-                Text(_userState.login,
-                  style: TextStyle(
-                      letterSpacing: 2,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24),),
-                Text("#${_userState.tag}",
-                  style: const TextStyle(
-                      letterSpacing: 2,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Text(
-                    "Достижения",
-                    style: TextStyle(
-                        letterSpacing: 2,
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .secondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24),
-                  ),
-                ),
-                achievementsList(),
-                Text(
-                  "Статистика",
+          child: ListView(
+            padding: const EdgeInsets.all(10),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  "Достижения",
                   style: TextStyle(
                       letterSpacing: 2,
                       color: Theme
@@ -219,14 +226,26 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       fontWeight: FontWeight.bold,
                       fontSize: 24),
                 ),
-                Row(
-                    children: [
-                      const Text("Выполненные задания: "),
-                      Text(_userState.totalTasksCount.toString()),
-                    ]
-                ),
-              ],
-            ),
+              ),
+              achievementsList(),
+              Text(
+                "Статистика",
+                style: TextStyle(
+                    letterSpacing: 2,
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24),
+              ),
+              Row(
+                  children: [
+                    const Text("Выполненные задания: "),
+                    Text(_userState.totalTasksCount.toString()),
+                  ]
+              ),
+            ],
           ),
         ),
       ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/kastom.dart';
+import 'package:qreoh/states/user_state.dart';
 
 class ProfileShop extends ConsumerStatefulWidget {
   const ProfileShop({super.key});
@@ -13,6 +14,23 @@ class ProfileShop extends ConsumerStatefulWidget {
 
 class _ProfileShopState extends ConsumerState<ProfileShop> {
   List<ShopItem> _shopItems = [];
+  late UserState _userState;
+
+  Widget buyButton(ShopItem item) {
+    if (_userState.collection.contains(item.id)) {
+      if (_userState.banner.assetName == item.image.assetName) {
+        return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
+      }
+      return ElevatedButton(onPressed: () {
+        ref.read(userStateProvider.notifier).selectItem(item);
+      }, child: const Text("Выбрать"));
+    }
+    return ElevatedButton(
+        onPressed: () {
+                ref.read(userStateProvider.notifier).buyItem(item);
+              },
+        child: Text("${item.price}\$"));
+  }
 
   Widget shopItem(ShopItem item) {
     return Padding(
@@ -28,7 +46,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ElevatedButton(onPressed: () {}, child: Text("Buy: ${item.price}"))
+            buyButton(item),
           ],
         ),
       ),
@@ -62,8 +80,19 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(shopStateProvider.notifier).loadItems();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _shopItems = ref.watch(shopStateProvider);
+    _shopItems.sort((ShopItem a, ShopItem b) {
+      return a.price.compareTo(b.price);
+    });
+    _userState = ref.watch(userStateProvider);
+    print(_shopItems);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Магазин"),
@@ -72,9 +101,13 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Chip(
+                label: Text("Баланс: ${_userState.balance}\$"),
+                backgroundColor: Colors.lightGreen,
+              ),
               bannerListWidget(context: context),
               avatarListWidget(context: context),
             ],
