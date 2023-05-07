@@ -480,11 +480,24 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           .map(
                             (tag) => InputChip(
                                 avatar: CircleAvatar(
-                                  backgroundColor: Colors.grey.shade800,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.background,
                                   foregroundColor: tag.color,
-                                  child: Icon(tag.icon),
+                                  child: Icon(
+                                    tag.icon,
+                                    size: 20,
+                                  ),
                                 ),
-                                label: Text(tag.name),
+                                label: Text(
+                                  tag.name,
+                                  style: TextStyle(
+                                    color: _selectedTags.contains(tag.id)
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                  ),
+                                ),
                                 onDeleted: () {
                                   ref
                                       .read(userTagsProvider.notifier)
@@ -510,8 +523,13 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           .toList(),
                       ActionChip(
                         avatar: CircleAvatar(
-                          backgroundColor: Colors.grey.shade800,
-                          child: const Icon(Icons.add),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.background,
+                          child: Icon(
+                            Icons.add,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
                         label: const Text('Добавить'),
                         onPressed: _showCreateTagDialog,
