@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/states/task_filter_state.dart';
 import '../../entities/tag.dart';
 import '../../entities/task.dart';
-import '../../entities/filter.dart';
 
 class FilterWidget extends ConsumerStatefulWidget {
   const FilterWidget({super.key});
@@ -16,55 +16,10 @@ class _FilterState extends ConsumerState<FilterWidget> {
   late bool _priorities;
   late bool _statuses;
   late bool _tags;
-
-  void _changePriorityState(bool state, Priority priority) {
-    if (state) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var priorities = state.priorities;
-        priorities.add(priority);
-        return state.copyWith(priorities: priorities, tags: state.tags, statuses: state.statuses);
-      });
-    } else if (ref.read(tasksFilterProvider).priorities.contains(priority)) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var priorities = state.priorities;
-        priorities.remove(priority);
-        return state.copyWith(priorities: priorities, tags: state.tags, statuses: state.statuses);
-      });
-    }
-  }
-
-  void _changeStatusState(bool state, bool status) {
-    if (state) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var statuses = state.statuses;
-        statuses.add(status);
-        return state.copyWith(priorities: state.priorities, tags: state.tags, statuses: statuses);
-      });
-    } else if (ref.read(tasksFilterProvider).statuses.contains(status)) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var statuses = state.statuses;
-        statuses.remove(status);
-        return state.copyWith(priorities: state.priorities, tags: state.tags, statuses: statuses);
-      });
-    }
-  }
-
-  void _changeTagState(bool state, Tag tag) {
-    if (state) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var tags = state.tags;
-        tags.add(tag);
-        return state.copyWith(priorities: state.priorities, tags: tags, statuses: state.statuses);
-      });
-    } else if (ref.read(tasksFilterProvider).tags.contains(tag)) {
-      ref.read(tasksFilterProvider.notifier).update((state) {
-        var tags = state.tags;
-        tags.remove(tag);
-        return state.copyWith(priorities: state.priorities, tags: tags, statuses: state.statuses);
-
-      });
-    }
-  }
+  List<Tag> _allTags = [];
+  List<String> _selectedTags = [];
+  List<Priority> _selectedPriorities = [];
+  List<bool> _selectedStatuses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +27,11 @@ class _FilterState extends ConsumerState<FilterWidget> {
     _statuses = ref.read(tasksFilterProvider).statuses.length == 2;
     _tags = ref.read(tasksFilterProvider).tags.length ==
         ref.read(userTagsProvider).length;
-    Filter filter = ref.watch(tasksFilterProvider);
+    FilterState filterState = ref.watch(tasksFilterProvider);
+    _allTags = ref.watch(userTagsProvider);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Filters"),
+          title: const Text("Фильтры"),
         ),
         body: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -94,7 +50,7 @@ class _FilterState extends ConsumerState<FilterWidget> {
                     const Padding(
                         padding: EdgeInsets.only(left: 16),
                         child: Text(
-                          "Priority",
+                          "Приоритет",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -110,53 +66,74 @@ class _FilterState extends ConsumerState<FilterWidget> {
                             value: _priorities,
                             onChanged: (bool? state) {
                               _priorities = state!;
-
-                              _changePriorityState(state, Priority.high);
-                              _changePriorityState(state, Priority.medium);
-                              _changePriorityState(state, Priority.low);
-                              _changePriorityState(state, Priority.none);
-
+                              if (state) {
+                                ref.read(tasksFilterProvider.notifier).addPriority(Priority.high);
+                                ref.read(tasksFilterProvider.notifier).addPriority(Priority.medium);
+                                ref.read(tasksFilterProvider.notifier).addPriority(Priority.low);
+                                ref.read(tasksFilterProvider.notifier).addPriority(Priority.none);
+                              } else {
+                                ref.read(tasksFilterProvider.notifier).deletePriority(Priority.high);
+                                ref.read(tasksFilterProvider.notifier).deletePriority(Priority.medium);
+                                ref.read(tasksFilterProvider.notifier).deletePriority(Priority.low);
+                                ref.read(tasksFilterProvider.notifier).deletePriority(Priority.none);
+                              }
                               setState(() {});
                             }))
                   ]),
                   CheckboxListTile(
                       title: const Text("High"),
-                      value: filter.priorities.contains(Priority.high),
+                      value: filterState.priorities.contains(Priority.high),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-                        _changePriorityState(state, Priority.high);
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addPriority(Priority.high);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deletePriority(Priority.high);
+                        }
                         setState(() {});
                       }),
                   CheckboxListTile(
                       title: const Text("Medium"),
-                      value: filter.priorities.contains(Priority.medium),
+                      value: filterState.priorities.contains(Priority.medium),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-                        _changePriorityState(state, Priority.medium);
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addPriority(Priority.medium);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deletePriority(Priority.medium);
+                        }
                         setState(() {});
                       }),
                   CheckboxListTile(
                       title: const Text("Low"),
-                      value: filter.priorities.contains(Priority.low),
+                      value: filterState.priorities.contains(Priority.low),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-                        _changePriorityState(state, Priority.low);
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addPriority(Priority.low);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deletePriority(Priority.low);
+                        }
                         setState(() {});
                       }),
                   CheckboxListTile(
                       title: const Text("None"),
-                      value: filter.priorities.contains(Priority.none),
+                      value: filterState.priorities.contains(Priority.none),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-                        _changePriorityState(state, Priority.none);
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addPriority(Priority.none);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deletePriority(Priority.none);
+                        }
                         setState(() {});
                       }),
                   Row(children: [
@@ -177,35 +154,42 @@ class _FilterState extends ConsumerState<FilterWidget> {
                             value: _statuses,
                             onChanged: (bool? state) {
                               _statuses = state!;
-
-                              _changeStatusState(state, true);
-                              _changeStatusState(state, false);
-
+                              if (state) {
+                                ref.read(tasksFilterProvider.notifier).addStatus(true);
+                                ref.read(tasksFilterProvider.notifier).addStatus(false);
+                              } else {
+                                ref.read(tasksFilterProvider.notifier).deleteStatus(true);
+                                ref.read(tasksFilterProvider.notifier).deleteStatus(false);
+                              }
                               setState(() {});
                             }))
                   ]),
                   CheckboxListTile(
                       title: const Text("Done"),
-                      value: filter.statuses.contains(true),
+                      value: filterState.statuses.contains(true),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-
-                        _changeStatusState(state, true);
-
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addStatus(true);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deleteStatus(true);
+                        }
                         setState(() {});
                       }),
                   CheckboxListTile(
                       title: const Text("Not done"),
-                      value: filter.statuses.contains(false),
+                      value: filterState.statuses.contains(false),
                       onChanged: (bool? state) {
                         if (state == null) {
                           return;
                         }
-
-                        _changeStatusState(state, false);
-
+                        if (state) {
+                          ref.read(tasksFilterProvider.notifier).addStatus(false);
+                        } else {
+                          ref.read(tasksFilterProvider.notifier).deleteStatus(false);
+                        }
                         setState(() {});
                       }),
                   Row(children: [
@@ -230,35 +214,46 @@ class _FilterState extends ConsumerState<FilterWidget> {
                               for (int i = 0;
                                   i < ref.read(userTagsProvider).length;
                                   ++i) {
-                                _changeTagState(
-                                    state, ref.read(userTagsProvider)[i]);
+                                if (state) {
+                                  ref.read(tasksFilterProvider.notifier).addTag(ref.read(userTagsProvider)[i].id);
+                                } else {
+                                  ref.read(tasksFilterProvider.notifier).deleteTag(ref.read(userTagsProvider)[i].id);
+                                }
                               }
-
                               setState(() {});
                             })),
                   ]),
-                  ListView.builder(
-                      itemCount: ref.read(userTagsProvider).length,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CheckboxListTile(
-                            title: Text(
-                                ref.read(userTagsProvider)[index].name),
-                            secondary: Icon(
-                                ref.read(userTagsProvider)[index].icon),
-                            value: filter.tags
-                                .contains(ref.read(userTagsProvider)[index]),
-                            onChanged: (bool? state) {
-                              if (state == null) {
-                                return;
-                              }
-
-                              _changeTagState(
-                                  state, ref.read(userTagsProvider)[index]);
-
+                  Wrap(
+                    spacing: 10,
+                    children: _allTags
+                          .map(
+                            (tag) => InputChip(
+                            avatar: CircleAvatar(
+                              backgroundColor: Colors.grey.shade800,
+                              foregroundColor: tag.color,
+                              child: Icon(tag.icon),
+                            ),
+                            label: Text(tag.name),
+                            onPressed: () {
                               setState(() {});
-                            });
-                      })
+                              if (!filterState.tags.contains(tag.id)) {
+                                setState(() {
+                                  ref.read(tasksFilterProvider.notifier).addTag(tag.id);
+                                });
+                              } else {
+                                setState(() {
+                                  ref.read(tasksFilterProvider.notifier).deleteTag(tag.id);
+                                });
+                              }
+                            },
+                            backgroundColor: filterState.tags.contains(tag.id)
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context)
+                                .chipTheme
+                                .backgroundColor),
+                      )
+                          .toList(),
+                  ),
                 ]))));
   }
 }

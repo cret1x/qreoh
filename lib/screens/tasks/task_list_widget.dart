@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/task_item.dart';
-import 'package:qreoh/entities/filter.dart';
 import 'package:qreoh/entities/folder.dart';
-import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'task_comparators.dart';
-import 'task_manager_widget.dart';
-import 'task_widget.dart';
-import 'tag_widget.dart';
 import '../../entities/task.dart';
 
 class TaskListWidget extends ConsumerStatefulWidget {
   final Folder folder;
   final SortRule sort;
 
-  TaskListWidget({
+  const TaskListWidget({
     super.key,
     required this.folder,
     required this.sort,
@@ -32,12 +27,11 @@ class TaskListState extends ConsumerState<TaskListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Filter filter = ref.watch(tasksFilterProvider);
     _taskList = ref.watch(taskListStateProvider);
     ref
         .read(taskListStateProvider.notifier)
         .loadTasksFromFolder(widget.folder);
-    List<Task> tasks = _taskList.where(filter.check).toList();
+    List<Task> tasks = _taskList.where(ref.read(tasksFilterProvider.notifier).check).toList();
     tasks.sort(getFunc(widget.sort));
     return DecoratedBox(
       decoration: BoxDecoration(
