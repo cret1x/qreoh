@@ -46,7 +46,7 @@ dependencies:
   path_provider: ^2.0.14
   flutter_colorpicker: ^1.0.3
   image_picker: ^0.8.6+1
-  
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -82,9 +82,25 @@ flutter:
     - graphics/background5.jpg
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+   assets:
+      - achievement_icons/analysis.jpg
+      - achievement_icons/chronometer.jpg
+      - achievement_icons/confetti.jpg
+      - achievement_icons/good-choice.jpg
+      - achievement_icons/idea.jpg
+      - achievement_icons/manager.jpg
+      - achievement_icons/rocket.jpg
+      - achievement_icons/success.jpg
+      - achievement_icons/success2.jpg
+      - achievement_icons/target.jpg
+      - achievement_icons/team.jpg
+      - achievement_icons/teamwork.jpg
+      - avatars/av1.jpg
+      - avatars/av2.jpg
+      - avatars/av3.jpg
+      - avatars/av4.jpg
+      - avatars/av5.jpg
+      - avatars/av6.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qreoh/entities/user_entity.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 
 class MyProfileSettings extends StatefulWidget {
@@ -13,13 +14,73 @@ class MyProfileSettings extends StatefulWidget {
 
 class ProfilePageSettings extends State<MyProfileSettings> {
 
+  File? imageFile;
+
   void save() {
+    if (imageFile != null) {
+      
+    }
   }
 
-void cancel(){
-  NewName = "";
-  Navigator.pop(context);
+  void cancel(){
+    NewName = "";
+    clearImage();
+    Navigator.pop(context);
   }
+
+  Future pickImageGallary() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+ 
+    if (pickedImage != null) {
+      setState(() {
+        imageFile = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future pickImageCamera() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+ 
+    if (pickedImage != null) {
+      setState(() {
+        imageFile = File(pickedImage.path);
+      });
+    }
+  }
+
+  void clearImage() {
+    setState(() {
+      imageFile = null;
+    });
+  }
+
+  void selectPhoto() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text('Выбор фото'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  pickImageGallary();
+                },
+                child: const Text('Галерея'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  pickImageCamera();
+                },
+                child: const Text('Камера'),
+              ),
+            ],
+          );
+        }
+      );
+  }
+
 
   String NewName = "";
 
@@ -79,16 +140,6 @@ void cancel(){
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-            size: 20,
-          ),
-          onPressed: ( ) {
-            Navigator.pushNamed(context, "/shop");
-          },
-        ),
         elevation: 0.0,
         backgroundColor: Color(0xff555555),
         actions: <Widget>[
@@ -99,7 +150,7 @@ void cancel(){
             size: 30,
           ),
           onPressed: () {
-
+            Navigator.pushNamed(context, "/shop");
           },
           ),
         ]
@@ -180,7 +231,9 @@ void cancel(){
                   Icons.edit,
                   color: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  selectPhoto();
+                },
               ),
             ),
           ),
