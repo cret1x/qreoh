@@ -19,14 +19,7 @@ class TaskItemWidget extends ConsumerStatefulWidget {
 }
 
 class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
-  bool _isSelected = false;
   List<Tag> _allTags = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _isSelected = widget.task.done;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +28,8 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TaskWidget(
@@ -44,6 +37,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
               ),
             ),
           );
+          setState(() {});
         },
         child: SizedBox(
           height: 50,
@@ -54,12 +48,11 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 children: [
                   Checkbox(
                     shape: const CircleBorder(),
-                    value: _isSelected,
+                    value: widget.task.done,
                     onChanged: (bool? state) {
-                      widget.task.done = state ?? false;
                       widget.firebaseTaskManager.changeTaskState(widget.task);
                       setState(() {
-                        _isSelected = widget.task.done;
+                        widget.task.done = state ?? false;
                       });
                     },
                   ),

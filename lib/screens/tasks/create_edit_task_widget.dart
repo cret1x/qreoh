@@ -637,13 +637,14 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       .addTask(newTask);
                                 } else {
                                   widget._task!.update(
-                                      _name!,
-                                      _priority,
-                                      _selectedTags,
-                                      _deadline,
-                                      _haveTime,
-                                      _timeRequired,
-                                      _description);
+                                      name: _name!,
+                                      priority: _priority,
+                                      tags: _selectedTags,
+                                      deadline: _deadline,
+                                      haveTime: _haveTime,
+                                      timeRequired: _timeRequired,
+                                      description: _description,
+                                      place: _location);
                                   ref
                                       .read(taskListStateProvider.notifier)
                                       .updateTask(widget._task!);

@@ -94,13 +94,14 @@ class Task {
   }
 
   void update(
-      String name,
-      Priority priority,
-      List<String> tags,
+      {required String name,
+      required Priority priority,
+      required List<String> tags,
       DateTime? deadline,
       bool? haveTime,
       Duration? timeRequired,
-      String? description) {
+      String? description,
+      String? place}) {
     this.name = name;
     this.priority = priority;
     this.tags = tags;
@@ -108,6 +109,7 @@ class Task {
     this.haveTime = haveTime != null && haveTime;
     this.timeRequired = timeRequired;
     this.description = description;
+    this.place = place;
   }
 
   void markAsDone() {
