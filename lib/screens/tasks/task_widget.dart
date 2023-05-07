@@ -228,7 +228,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                         label: Text(tag.name),
                         onPressed: () {},
                         backgroundColor:
-                            Theme.of(context).chipTheme.backgroundColor);
+                            Theme.of(context).chipTheme.backgroundColor,);
                   },
                 ).toList(),
               ),
