@@ -251,13 +251,16 @@ class TaskState extends ConsumerState<TaskWidget> {
                           ),
                         ),
                         onPressed: () async {
-                          int result = await Navigator.push(
+                          int? result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => EditCreateTaskWidget(
                                   widget.task.parent, widget.task),
                             ),
                           );
+                          if (result == null) {
+                            return;
+                          }
                           if (result < 0) {
                             Navigator.pop(context);
                           } else {

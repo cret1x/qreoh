@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
@@ -290,7 +289,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                           _current, null),
                                                 ),
                                               );
-                                              setState(() {});
+                                              ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
                                             },
                                             icon: const Icon(Icons.add),
                                             color: Colors.white,

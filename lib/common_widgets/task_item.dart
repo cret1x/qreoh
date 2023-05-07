@@ -27,7 +27,6 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
     final tags =  _allTags
         .where((element) => widget.task.tags.contains(element.id))
         .toList();
-    print(tags);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
