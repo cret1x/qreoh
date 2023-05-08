@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/folders_widget.dart';
+import 'package:qreoh/screens/tasks/tags_widget.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
 import 'task_comparators.dart';
@@ -256,9 +256,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                     .circular(12)),
                                         child: Center(
                                           child: IconButton(
-                                            onPressed: () {},
+                                            onPressed: () async {
+                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => TagsWidget()));
+                                            },
                                             icon: const Icon(
-                                                Icons.label_important),
+                                                Icons.label_important_outline),
                                             color: Colors.white,
                                           ),
                                         ),
@@ -287,7 +289,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                           _current, null),
                                                 ),
                                               );
-                                              setState(() {});
+                                              ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
                                             },
                                             icon: const Icon(Icons.add),
                                             color: Colors.white,
