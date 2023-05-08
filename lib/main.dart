@@ -46,7 +46,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       title: 'Qreoh app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: Colors.white,
+          background: Color.fromARGB(255, 250, 250, 250),
           primary: Colors.deepOrangeAccent,
           onSurface: Colors.black38,
           secondary: Colors.deepOrangeAccent.shade100,
@@ -62,7 +62,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: Colors.grey.shade800,
+          background: Color.fromARGB(255, 46, 46, 46),
           surface: Colors.grey.shade900,
           onSurface: Colors.white,
           primary: Colors.deepOrangeAccent,
