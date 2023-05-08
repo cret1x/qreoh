@@ -37,9 +37,12 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const Text(
-                "Тема приложения",
-                style: TextStyle(fontSize: 18),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Тема приложения",
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
               Center(
                 child: Wrap(
@@ -78,6 +81,15 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
             ],
           ),
         ),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+              "Фон приложения",
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
         SizedBox(
           height: 200,
           child: ListView(
@@ -92,7 +104,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
                               .changeBackground(background);
                         },
                         child: Container(
-                          width: 120,
+                          width: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
