@@ -204,6 +204,15 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
           child: ListView(
             padding: const EdgeInsets.all(10),
             children: [
+              Container(
+                width: 300,
+                height: 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.0),
+                ),
+                child: const Image(image: AssetImage("graphics/avatars/av1.png"),),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
@@ -230,12 +239,227 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                     fontWeight: FontWeight.bold,
                     fontSize: 24),
               ),
-              Row(
-                  children: [
-                    const Text("Выполненные задания: "),
-                    Text(widget.profile.totalTasksCount.toString()),
-                  ]
-              ),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "50",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "Выполнено заданий",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                //widget.profile.totalTasksCount.toString(),
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                    ],
+                  ),
+                  Text(""),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "Процент выполненных заданий",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "Созданные задания для друзей",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                    ],
+                  ),
+                  Text(""),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "Выполненные задания от друзей",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                //widget.profile.totalTasksCount.toString(),
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                      Container(
+                          padding: const EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white12,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          width: 185,
+                          height: 100,
+                          child:Column(
+                            children: const [
+                              SizedBox(
+                                height: 55,
+                                child: Flexible(
+                                  child: Text(
+                                    "Процент выполненных заданий от друзей",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Colors.white,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                              Divider(color:Colors.white),
+                              Text(
+                                "50",
+                                style: TextStyle(
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                      ),
+                    ],
+                  ),
+                ],
+              )
             ],
           ),
         ),
