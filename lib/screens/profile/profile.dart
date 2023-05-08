@@ -1,24 +1,27 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/common_widgets/buttons.dart';
 import 'package:qreoh/entities/achievement.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
-
+import 'package:qreoh/strings.dart';
 
 class ProfileWidget extends ConsumerStatefulWidget {
   final UserState profile;
   final List<Achievement> achievements;
-  const ProfileWidget({super.key, required this.profile, required this.achievements});
+
+  const ProfileWidget(
+      {super.key, required this.profile, required this.achievements});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
-
   void _showAchievementTip(Achievement achievement) async {
     await showDialog(
       context: context,
@@ -36,31 +39,32 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Условия: ", style: TextStyle(
-                      letterSpacing: 2,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),),
+                  Text(
+                    "Условия: ",
+                    style: TextStyle(
+                        letterSpacing: 2,
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(achievement.condition),
                   ),
-                  Text("Получено: ", style: TextStyle(
-                      letterSpacing: 2,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),),
+                  Text(
+                    "Получено: ",
+                    style: TextStyle(
+                        letterSpacing: 2,
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(widget.profile.achievements.contains(achievement.id)
-                        ? "Да"
-                        : "Нет"),
+                    child: Text(
+                        widget.profile.achievements.contains(achievement.id)
+                            ? "Да"
+                            : "Нет"),
                   ),
                 ],
               ),
@@ -108,7 +112,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 3.0),
                     borderRadius:
-                    const BorderRadius.all(Radius.elliptical(12, 10)),
+                        const BorderRadius.all(Radius.elliptical(12, 10)),
                     image: DecorationImage(image: achievement.image),
                   ),
                 ),
@@ -140,62 +144,63 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("REBUILD PROFILE");
     return Column(
       children: [
         Stack(
           children: [
-             Container(
-               height: 150,
-               decoration: BoxDecoration(
-                 image: DecorationImage(
-                     image: widget.profile.banner,
-                     fit: BoxFit.cover)
-               ),
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: widget.profile.banner, fit: BoxFit.cover)),
             ),
             ClipRect(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4)
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 32),
-                        height: 125,
-                        width: 125,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3.0),
-                          borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                              image: AssetImage("assets/images/banners/desert.jpg"),
-                              fit: BoxFit.cover),
+                    height: 150,
+                    decoration:
+                        BoxDecoration(color: Colors.black.withOpacity(0.4)),
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 32),
+                          height: 125,
+                          width: 125,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3.0),
+                            borderRadius: BorderRadius.circular(12),
+                            image: const DecorationImage(
+                                image: AssetImage(
+                                    "assets/images/banners/desert.jpg"),
+                                fit: BoxFit.cover),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 32.0),
-                        child: Text(widget.profile.login,
-                          style: TextStyle(
+                        Padding(
+                          padding: const EdgeInsets.only(left: 32.0),
+                          child: Text(
+                            widget.profile.login,
+                            style: TextStyle(
+                                letterSpacing: 2,
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24),
+                          ),
+                        ),
+                        Text(
+                          "#${widget.profile.tag}",
+                          style: const TextStyle(
                               letterSpacing: 2,
-                              color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .secondary,
+                              color: Colors.grey,
                               fontWeight: FontWeight.bold,
-                              fontSize: 24),),
-                      ),
-                      Text("#${widget.profile.tag}",
-                        style: const TextStyle(
-                            letterSpacing: 2,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),),
-                    ],
-                  )
-                ),
+                              fontSize: 18),
+                        ),
+                      ],
+                    )),
               ),
             ),
           ],
@@ -209,9 +214,13 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                 height: 180,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.0),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.primary, width: 1.0),
                 ),
-                child: const Image(image: AssetImage("graphics/avatars/av1.png"),),
+                child: Image(
+                  image: widget.profile.avatar,
+                  fit: BoxFit.contain,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
@@ -219,10 +228,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                   "Достижения",
                   style: TextStyle(
                       letterSpacing: 2,
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary,
+                      color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,
                       fontSize: 24),
                 ),
@@ -232,234 +238,276 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                 "Статистика",
                 style: TextStyle(
                     letterSpacing: 2,
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .secondary,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                     fontSize: 24),
               ),
               Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
-                                    "50",
+                                    "Создано заданий",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                                Divider(),
+                                Text(
+                                  "50",
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
                                     "Выполнено заданий",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                //widget.profile.totalTasksCount.toString(),
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                    ],
+                                Divider(),
+                                Text(
+                                  "50",
+                                  //widget.profile.totalTasksCount.toString(),
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
                   ),
-                  Text(""),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
                                     "Процент выполненных заданий",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                                Divider(),
+                                Text(
+                                  "50",
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
                                     "Созданные задания для друзей",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                    ],
+                                Divider(),
+                                Text(
+                                  "50",
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
                   ),
-                  Text(""),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:[
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
                                     "Выполненные задания от друзей",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                //widget.profile.totalTasksCount.toString(),
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(5.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white12,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          width: 185,
-                          height: 100,
-                          child:Column(
-                            children: const [
-                              SizedBox(
-                                height: 55,
-                                child: Flexible(
+                                Divider(),
+                                Text(
+                                  "50",
+                                  //widget.profile.totalTasksCount.toString(),
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.light
+                                      ? Colors.grey.withOpacity(0.3)
+                                      : Colors.black.withOpacity(0.3),
+                                  spreadRadius: 3,
+                                  blurRadius: 5,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            width: 185,
+                            height: 100,
+                            child: Column(
+                              children: const [
+                                SizedBox(
+                                  height: 55,
                                   child: Text(
                                     "Процент выполненных заданий от друзей",
                                     style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Colors.white,
-                                        fontSize: 15),
+                                        letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                              ),
-                              Divider(color:Colors.white),
-                              Text(
-                                "50",
-                                style: TextStyle(
-                                    letterSpacing: 2,
-                                    color: Colors.white,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          )
-                      ),
-                    ],
+                                Divider(),
+                                Text(
+                                  "50",
+                                  style:
+                                      TextStyle(letterSpacing: 2, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
                   ),
                 ],
-              )
+              ),
+              if (widget.profile.uid != FirebaseAuth.instance.currentUser!.uid)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ButtonDanger(
+                      buttonText: "Удалить друга",
+                      warningText: "Вы уверены?",
+                      action: () {
+                        ref
+                            .read(friendsListStateProvider.notifier)
+                            .deleteFriend(widget.profile);
+                        Navigator.pop(context);
+                      }),
+                )
             ],
           ),
         ),
@@ -471,8 +519,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 class HeaderCurvedContainer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) async {
-    Paint paint = Paint()
-      ..color = Colors.blueGrey;
+    Paint paint = Paint()..color = Colors.blueGrey;
     Path path = Path()
       ..relativeLineTo(0, 150)
       ..quadraticBezierTo(size.width / 2, 225, size.width, 150)

@@ -32,6 +32,6 @@ final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, 
 
 final shopStateProvider = StateNotifierProvider<ShopStateNotifier, List<ShopItem>>((ref) => ShopStateNotifier());
 
-final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState>((ref) => UserStateNotifier());
+final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState?>((ref) => UserStateNotifier());
 
 final achievementsProvider = StateNotifierProvider<AchievementsStateNotifier, List<Achievement>>((ref) => AchievementsStateNotifier());

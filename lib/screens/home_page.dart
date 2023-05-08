@@ -24,10 +24,10 @@ class _HomePageState extends State<HomePage> {
     SettingsWidget()
   ];
   static const List<String> _titles = [
-    'Tasks',
-    'Profile',
-    'Friends',
-    'Settings'
+    'Задания',
+    'Профиль',
+    'Друзья',
+    'Настройки'
   ];
 
   void _onNavbarItemTapped(int index) {

@@ -30,6 +30,7 @@ class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
   Widget build(BuildContext context) {
     _friends = ref.watch(friendsListStateProvider).friends;
     return RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       key: _refreshIndicatorKey,
       onRefresh: () {
         return ref

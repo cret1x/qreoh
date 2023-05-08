@@ -14,21 +14,23 @@ class ProfileShop extends ConsumerStatefulWidget {
 
 class _ProfileShopState extends ConsumerState<ProfileShop> {
   List<ShopItem> _shopItems = [];
-  late UserState _userState;
+  UserState? _userState;
 
   Widget buyButton(ShopItem item) {
-    if (_userState.collection.contains(item.id)) {
-      if (_userState.banner.assetName == item.image.assetName) {
+    if (_userState!.collection.contains(item.id)) {
+      if (_userState!.banner.assetName == item.image.assetName) {
         return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
       }
-      return ElevatedButton(onPressed: () {
-        ref.read(userStateProvider.notifier).selectItem(item);
-      }, child: const Text("Выбрать"));
+      return ElevatedButton(
+          onPressed: () {
+            ref.read(userStateProvider.notifier).selectItem(item);
+          },
+          child: const Text("Выбрать"));
     }
     return ElevatedButton(
         onPressed: () {
-                ref.read(userStateProvider.notifier).buyItem(item);
-              },
+          ref.read(userStateProvider.notifier).buyItem(item);
+        },
         child: Text("${item.price}\$"));
   }
 
@@ -92,7 +94,6 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       return a.price.compareTo(b.price);
     });
     _userState = ref.watch(userStateProvider);
-    print(_shopItems);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Магазин"),
@@ -103,14 +104,20 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Chip(
-                label: Text("Баланс: ${_userState.balance}\$"),
-                backgroundColor: Colors.lightGreen,
-              ),
-              bannerListWidget(context: context),
-              avatarListWidget(context: context),
-            ],
+            children: (_userState == null || _shopItems.isEmpty)
+                ? [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ]
+                : [
+                    Chip(
+                      label: Text("Баланс: ${_userState!.balance}\$"),
+                      backgroundColor: Colors.lightGreen,
+                    ),
+                    bannerListWidget(context: context),
+                    avatarListWidget(context: context),
+                  ],
           ),
         ),
       ),

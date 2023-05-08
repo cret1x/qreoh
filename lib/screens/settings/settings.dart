@@ -129,14 +129,14 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
               warningText: "Вы уверены?",
               action: ref.read(authStateProvider.notifier).signOutUser,
             )),
-        Padding(
-            padding:
-                const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
-            child: ButtonDanger(
-              buttonText: "Удалить аккаунт",
-              warningText: "Вы уверены?",
-              action: ref.read(authStateProvider.notifier).deleteUserAccount,
-            ))
+        // Padding(
+        //     padding:
+        //         const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
+        //     child: ButtonDanger(
+        //       buttonText: "Удалить аккаунт",
+        //       warningText: "Вы уверены?",
+        //       action: ref.read(authStateProvider.notifier).deleteUserAccount,
+        //     ))
       ],
     );
   }

@@ -13,6 +13,7 @@ class UserState {
   final String login;
   final int tag;
   final Image? profileImage;
+  final AssetImage avatar;
   final AssetImage banner;
   final int totalTasksCount;
   final int highPriorityTasksCount;
@@ -21,27 +22,30 @@ class UserState {
   final int friendsCount;
   final List<String> achievements;
 
-  UserState({required this.collection,
-    required this.uid,
-    required this.balance,
-    required this.login,
-    required this.tag,
-    required this.banner,
-    required this.profileImage,
-    required this.totalTasksCount,
-    required this.highPriorityTasksCount,
-    required this.mediumPriorityTasksCount,
-    required this.lowPriorityTasksCount,
-    required this.friendsCount,
-    required this.achievements});
+  UserState(
+      {required this.collection,
+      required this.uid,
+      required this.balance,
+      required this.avatar,
+      required this.login,
+      required this.tag,
+      required this.banner,
+      required this.profileImage,
+      required this.totalTasksCount,
+      required this.highPriorityTasksCount,
+      required this.mediumPriorityTasksCount,
+      required this.lowPriorityTasksCount,
+      required this.friendsCount,
+      required this.achievements});
 
   factory UserState.fromFirestore(String uid, Map<String, dynamic> data) {
     return UserState(
-      uid: uid,
+        uid: uid,
         collection: List.from(data['collection']),
         balance: data['balance'],
         login: data['login'],
         tag: data['tag'],
+        avatar: AssetImage("${Strings.avatarsAssetFolder}${data['avatar']}"),
         banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
         profileImage: null,
         totalTasksCount: data['tasksCount'],
@@ -52,69 +56,68 @@ class UserState {
         achievements: List.from(data['achievements']));
   }
 
-  UserState copyWith({
-    List<String>? collection,
-    int? balance,
-    String? login,
-    int? tag,
-    AssetImage? banner,
-    Image? profileImage,
-    int? totalTasksCount,
-    int? highPriorityTasksCount,
-    int? mediumPriorityTasksCount,
-    int? lowPriorityTasksCount,
-    int? friendsCount,
-    List<String>? achievements}) {
-    return UserState(collection: collection ?? this.collection,
+  UserState copyWith(
+      {List<String>? collection,
+      int? balance,
+      String? login,
+      int? tag,
+      AssetImage? banner,
+      AssetImage? avatar,
+      Image? profileImage,
+      int? totalTasksCount,
+      int? highPriorityTasksCount,
+      int? mediumPriorityTasksCount,
+      int? lowPriorityTasksCount,
+      int? friendsCount,
+      List<String>? achievements}) {
+    return UserState(
+        collection: collection ?? this.collection,
         uid: uid,
         balance: balance ?? this.balance,
         login: login ?? this.login,
         tag: tag ?? this.tag,
         banner: banner ?? this.banner,
         profileImage: profileImage,
+        avatar: avatar ?? this.avatar,
         totalTasksCount: totalTasksCount ?? this.totalTasksCount,
-        highPriorityTasksCount: highPriorityTasksCount ?? this.highPriorityTasksCount,
-        mediumPriorityTasksCount: mediumPriorityTasksCount ?? this.mediumPriorityTasksCount,
-        lowPriorityTasksCount: lowPriorityTasksCount ?? this.lowPriorityTasksCount,
+        highPriorityTasksCount:
+            highPriorityTasksCount ?? this.highPriorityTasksCount,
+        mediumPriorityTasksCount:
+            mediumPriorityTasksCount ?? this.mediumPriorityTasksCount,
+        lowPriorityTasksCount:
+            lowPriorityTasksCount ?? this.lowPriorityTasksCount,
         friendsCount: friendsCount ?? this.friendsCount,
         achievements: achievements ?? this.achievements);
   }
 }
 
-class UserStateNotifier extends StateNotifier<UserState> {
+class UserStateNotifier extends StateNotifier<UserState?> {
   final firebaseUserManager = FirebaseUserManager();
 
   UserStateNotifier()
-      : super(UserState(
-    uid: "anon",
-      collection: [],
-      balance: 0,
-      login: "anon",
-      tag: 0,
-      profileImage: null,
-      banner: const AssetImage("${Strings.bannersAssetFolder}desert.jpg"),
-      totalTasksCount: 0,
-      highPriorityTasksCount: 0,
-      mediumPriorityTasksCount: 0,
-      lowPriorityTasksCount: 0,
-      friendsCount: 0,
-      achievements: ["1", "3"]));
+      : super(null);
 
   void getUser() async {
     state = await firebaseUserManager.getUser();
   }
 
   Future<bool> buyItem(ShopItem item) async {
-    if (state.balance >= item.price) {
-      state = state.copyWith(balance: state.balance - item.price, collection: [...state.collection, item.id]);
-      return true;
+    if (state != null) {
+      if (state!.balance >= item.price) {
+        state = state!.copyWith(
+            balance: state!.balance - item.price,
+            collection: [...state!.collection, item.id]);
+        return true;
+      }
     }
     return false;
   }
 
   Future<void> selectItem(ShopItem item) async {
-    if (item.type == ShopItemType.banner) {
-      state = state.copyWith(banner: item.image);
+    if (state != null) {
+      if (item.type == ShopItemType.banner) {
+        state = state!.copyWith(banner: item.image);
+      }
     }
   }
 }

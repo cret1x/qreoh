@@ -14,7 +14,7 @@ class UserProfile extends ConsumerStatefulWidget {
 }
 
 class _UserProfileState extends ConsumerState<UserProfile> {
-  late UserState _currentUser;
+  late UserState? _currentUser;
   List<Achievement> _achievements = [];
   @override
   void initState() {
@@ -26,7 +26,17 @@ class _UserProfileState extends ConsumerState<UserProfile> {
   Widget build(Object context) {
     _currentUser = ref.watch(userStateProvider);
     _achievements = ref.watch(achievementsProvider);
-    return ProfileWidget(profile: _currentUser, achievements: _achievements);
+    if (_achievements.isEmpty || _currentUser == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            CircularProgressIndicator(),
+          ],
+        ),
+      );
+    } else {
+      return ProfileWidget(profile: _currentUser!, achievements: _achievements);
+    }
   }
-
 }
