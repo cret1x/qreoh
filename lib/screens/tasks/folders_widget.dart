@@ -278,31 +278,20 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                           const Align(
                                                         alignment: Alignment
                                                             .centerRight,
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  right: 16),
-                                                          child: Icon(
-                                                            Icons.delete,
-                                                            color: Colors.red,
-                                                          ),
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
                                                         ),
                                                       ),
                                                       background: Align(
                                                         alignment: Alignment
                                                             .centerLeft,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 16),
-                                                          child: Icon(
-                                                            Icons.mode_edit_outlined,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .onSurface,
-                                                          ),
+                                                        child: Icon(
+                                                          Icons.mode_edit_outlined,
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .onSurface,
                                                         ),
                                                       ),
                                                       confirmDismiss:
