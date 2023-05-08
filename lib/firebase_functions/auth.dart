@@ -87,6 +87,8 @@ class FirebaseAuthManager {
       'midTasksCount': 0,
       'lowTasksCount': 0,
       'tasksCount': 0,
+      'experience': 0,
+      'level': 1,
     });
     usersRef
         .doc(uid)

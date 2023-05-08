@@ -8,9 +8,11 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
   TaskListStateNotifier() : super([]);
   final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
-  void addTask(Task task) async {
+  void addTask(Folder folder, Task task) async {
     await firebaseTaskManager.createTask(task);
-    state = [...state, task];
+    if (task.parent.id == folder.id) {
+      state = [...state, task];
+    }
   }
 
   void deleteTask(Task task) async {
@@ -29,11 +31,11 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
     ];
   }
 
-  void updateTask(Task task) async {
+  void updateTask(Folder folder, Task task) async {
     await firebaseTaskManager.updateTask(task);
     state = [
       for (final todo in state)
-        if (todo.id == task.id)
+        if (todo.id == task.id && task.parent.id == folder.id)
           todo.copyWith(
               parent: task.parent,
               name: task.name,

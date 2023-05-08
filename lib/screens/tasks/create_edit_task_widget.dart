@@ -628,7 +628,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   place: _location);
                               ref
                                   .read(taskListStateProvider.notifier)
-                                  .addTask(newTask);
+                                  .addTask(_current, newTask);
                             } else {
                               widget._task!.update(
                                   parent: _current,
@@ -642,7 +642,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   place: _location);
                               ref
                                   .read(taskListStateProvider.notifier)
-                                  .updateTask(widget._task!);
+                                  .updateTask(_current, widget._task!);
                             }
 
                             Navigator.pop(
