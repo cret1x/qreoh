@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/profile/profile.dart';
 import 'package:qreoh/states/user_state.dart';
 
-class FriendProfile extends ConsumerStatefulWidget {
-  final UserState profile;
-
-  const FriendProfile({super.key, required this.profile});
+class UserProfile extends ConsumerStatefulWidget {
+  const UserProfile({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FriendProfileState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _UserProfileState();
 }
 
-class _FriendProfileState extends ConsumerState<FriendProfile> {
+class _UserProfileState extends ConsumerState<UserProfile> {
+  late UserState _currentUser;
   List<Achievement> _achievements = [];
-
   @override
   void initState() {
     super.initState();
+    ref.read(userStateProvider.notifier).getUser();
     ref.read(achievementsProvider.notifier).loadAchievements();
   }
-
   @override
   Widget build(Object context) {
+    _currentUser = ref.watch(userStateProvider);
     _achievements = ref.watch(achievementsProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.profile.login),
-      ),
-      body: ProfileWidget(profile: widget.profile, achievements: _achievements),
-    );
+    return ProfileWidget(profile: _currentUser, achievements: _achievements);
   }
+
 }

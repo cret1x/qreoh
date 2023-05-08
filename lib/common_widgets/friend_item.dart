@@ -1,27 +1,22 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:qreoh/entities/user_entity.dart';
+import 'package:qreoh/screens/friends/friend_profile.dart';
+import 'package:qreoh/states/user_state.dart';
 
 class FriendItem extends StatelessWidget {
-  late final String? login;
-  late final int? tag;
+  final UserState friendState;
   late final Function()? actionAccept;
   late final Function()? actionDeny;
 
-  FriendItem(UserEntity user, {Key? key}) : super(key: key) {
-    login = user.login;
-    tag = user.tag;
+  FriendItem(this.friendState, {Key? key}) : super(key: key) {
     actionAccept = null;
     actionDeny = null;
   }
 
-  FriendItem.withAction(UserEntity user, this.actionAccept, this.actionDeny,
+  FriendItem.withAction(this.friendState, this.actionAccept, this.actionDeny,
       {Key? key})
-      : super(key: key) {
-    login = user.login;
-    tag = user.tag;
-  }
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +24,15 @@ class FriendItem extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fitWidth,
-          image: AssetImage(
-              Theme.of(context).colorScheme.brightness == Brightness.light
-                  ? "graphics/background2.jpg"
-                  : "graphics/background5.jpg"),
+          image: friendState.banner,
         ),
       ),
       child: ListTile(
         onTap: () {
-          //TODO: navigate to friends profile
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FriendProfile(profile: friendState,)));
         },
         leading: CircleAvatar(
           backgroundColor:
@@ -46,10 +41,10 @@ class FriendItem extends StatelessWidget {
           radius: 32,
         ),
         title: Text(
-          login ?? "test",
+          friendState.login,
           style: const TextStyle(fontSize: 22),
         ),
-        subtitle: Text("#$tag"),
+        subtitle: Text("#${friendState.tag}"),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

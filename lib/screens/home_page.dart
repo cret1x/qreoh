@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qreoh/screens/friends/add_friend.dart';
 import 'package:qreoh/screens/friends/friend_requests.dart';
 import 'package:qreoh/screens/friends/friends_widget.dart';
-import 'package:qreoh/screens/profile/profile.dart';
 import 'package:qreoh/screens/profile/profile_settings.dart';
+import 'package:qreoh/screens/profile/user_profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
 import 'package:qreoh/screens/tasks/task_manager_widget.dart';
 
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController(initialPage: 0);
   static final List<Widget> _pages = [
     TaskManagerWidget(),
-    ProfileWidget(),
+    UserProfile(),
     FriendsWidget(),
     SettingsWidget()
   ];
@@ -40,17 +40,19 @@ class _HomePageState extends State<HomePage> {
   List<Widget> getActionsByPage(int index) {
     switch (index) {
       case 1:
-        return [IconButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const MyProfileSettings()));
-          },
-          icon: const Icon(Icons.settings),),
+        return [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MyProfileSettings()));
+            },
+            icon: const Icon(Icons.settings),
+          ),
         ];
       case 2:
-        return  [
+        return [
           IconButton(
               onPressed: () {
                 Navigator.push(
@@ -64,8 +66,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                        const FriendRequestWidget()));
+                        builder: (context) => const FriendRequestWidget()));
               },
               icon: const Icon(Icons.notifications)),
         ];
@@ -84,27 +85,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(_titles.elementAt(_navbarSelectedIndex)),
-          actions: getActionsByPage(_navbarSelectedIndex),
-    ),
-    body: PageView(
-    controller: _pageController,
-    physics: const NeverScrollableScrollPhysics(),
-    children: _pages,
-    ),
-    bottomNavigationBar: BottomNavigationBar(
-    type: BottomNavigationBarType.fixed,
-    currentIndex: _navbarSelectedIndex,
-    onTap: _onNavbarItemTapped,
-    items: const [
-    BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Tasks'),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.person), label: 'Profile'),
-    BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
-    BottomNavigationBarItem(
-    icon: Icon(Icons.settings), label: 'Settings'),
-    ],
-    ),
+        title: Text(_titles.elementAt(_navbarSelectedIndex)),
+        actions: getActionsByPage(_navbarSelectedIndex),
+      ),
+      body: PageView(
+        controller: _pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _navbarSelectedIndex,
+        onTap: _onNavbarItemTapped,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Tasks'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
+        ],
+      ),
     );
   }
 }

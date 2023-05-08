@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/friend_item.dart';
-import 'package:qreoh/entities/user_entity.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/states/user_state.dart';
 
 class FriendRequestWidget extends ConsumerStatefulWidget {
   const FriendRequestWidget({super.key});
@@ -12,7 +12,7 @@ class FriendRequestWidget extends ConsumerStatefulWidget {
 }
 
 class _FriendRequestWidgetState extends ConsumerState<FriendRequestWidget> {
-  List<UserEntity> _requests = [];
+  List<UserState> _requests = [];
   @override
   Widget build(BuildContext context) {
     _requests = ref.watch(friendsListStateProvider).inRequests;

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:qreoh/entities/user_entity.dart';
+import 'package:qreoh/states/user_state.dart';
 
 
 class FirebaseFriendsManager {
@@ -17,7 +17,7 @@ class FirebaseFriendsManager {
   FirebaseFriendsManager._internal();
 
 
-  Future<UserEntity?> searchFriend(String login, int tag) async {
+  Future<UserState?> searchFriend(String login, int tag) async {
     final usersRef = db.collection('users');
     final query =
     usersRef.where('login', isEqualTo: login).where('tag', isEqualTo: tag);
@@ -27,13 +27,13 @@ class FirebaseFriendsManager {
       if (value.docs.first.id == FirebaseAuth.instance.currentUser!.uid) {
         return null;
       }
-      return UserEntity(value.docs.first.id, user['login'], user['tag']);
+      return UserState.fromFirestore(value.docs.first.id, user);
     } else {
       return null;
     }
   }
 
-  Future<void> sendFriendRequest(UserEntity userTo) async {
+  Future<void> sendFriendRequest(UserState userTo) async {
     String fromUid = FirebaseAuth.instance.currentUser!.uid;
     final userRequestsRef = FirebaseDatabase.instance.ref("requests/${userTo.uid}");
     final newRequestRef = userRequestsRef.push();
@@ -42,7 +42,7 @@ class FirebaseFriendsManager {
     });
   }
 
-  Future<void> acceptFriendRequest(UserEntity userFrom) async {
+  Future<void> acceptFriendRequest(UserState userFrom) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     final userRef = db.collection('users').doc(uid);
     final friendRef = db.collection('users').doc(userFrom.uid);
@@ -63,7 +63,7 @@ class FirebaseFriendsManager {
     }
   }
 
-  Future<void> declineFriendRequest(UserEntity userFrom) async {
+  Future<void> declineFriendRequest(UserState userFrom) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     final requestRef = await FirebaseDatabase.instance.ref("requests/$uid").get();
     if (requestRef.exists) {
@@ -76,18 +76,18 @@ class FirebaseFriendsManager {
     }
   }
 
-  Future<UserEntity?> getUserByUid(String uid) async {
+  Future<UserState?> getUserByUid(String uid) async {
     final db = FirebaseFirestore.instance;
     final usersRef = db.collection('users');
     final snapshot = await usersRef.doc(uid).get();
     if (snapshot.exists) {
-      return UserEntity.fromFirestore(snapshot, null);
+      return UserState.fromFirestore(snapshot.id, snapshot.data()!);
     }
     return null;
   }
 
-  Future<List<UserEntity>> getAllFriends() async {
-    List<UserEntity> friends = [];
+  Future<List<UserState>> getAllFriends() async {
+    List<UserState> friends = [];
     String uid = FirebaseAuth.instance.currentUser!.uid;
     final user = await db.collection('users').doc(uid).get();
     final friendsIds = user.data()?['friends'] ?? [];
@@ -95,13 +95,13 @@ class FirebaseFriendsManager {
       final friendsObj = await db.collection('users').where('__name__', whereIn: friendsIds).get();
       final docs = friendsObj.docs;
       for (var element in docs) {
-        friends.add(UserEntity(element.id, element['login'], element['tag']));
+        friends.add(UserState.fromFirestore(element.id, element.data()!));
       }
     }
     return friends;
   }
 
-  Future<void> deleteFriend(UserEntity friend) async {
+  Future<void> deleteFriend(UserState friend) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     final userRef = db.collection('users').doc(uid);
     final friendRef = db.collection('users').doc(friend.uid);

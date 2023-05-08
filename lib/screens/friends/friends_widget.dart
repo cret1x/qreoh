@@ -1,13 +1,9 @@
 import 'dart:math' as math;
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/common_widgets/friend_item.dart';
 import 'package:qreoh/global_providers.dart';
-
-import '../../common_widgets/friend_item.dart';
-import '../../entities/user_entity.dart';
-import '../../firebase_functions/friends.dart';
+import 'package:qreoh/states/user_state.dart';
 
 const List<String> _sortTypes = <String>['A - Z', 'Z - A', 'fav'];
 
@@ -22,7 +18,7 @@ class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
   final _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   String _dropdownValue = _sortTypes.first;
   bool _descending = false;
-  List<UserEntity> _friends = [];
+  List<UserState> _friends = [];
 
   @override
   void initState() {
