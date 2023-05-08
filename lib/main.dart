@@ -40,7 +40,8 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    ref.read(appThemeProvider.notifier).update((state) => (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light);
+    ref.read(appThemeProvider.notifier).update((state) =>
+        (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light);
   }
 
   @override
@@ -58,7 +59,11 @@ class _MyAppState extends ConsumerState<MyApp> {
           primaryContainer: Colors.white.withOpacity(0.4),
           brightness: Brightness.light,
         ),
-
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
@@ -69,6 +74,11 @@ class _MyAppState extends ConsumerState<MyApp> {
           secondary: Colors.orange.shade800,
           primaryContainer: Colors.black26,
           brightness: Brightness.dark,
+        ),
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
         ),
       ),
       themeMode: _themeMode,
@@ -90,7 +100,7 @@ class _StartupPageState extends ConsumerState<StartupPage> {
   @override
   Widget build(BuildContext context) {
     _authState = ref.watch(authStateProvider);
-    switch(_authState.state) {
+    switch (_authState.state) {
       case AuthState.anonymous:
         return const WelcomeWidget();
       case AuthState.registered:

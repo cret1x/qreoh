@@ -46,9 +46,6 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
           child: Row(
             children: [
               Checkbox(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
                 value: widget.task.done,
                 onChanged: (bool? state) {
                   setState(() {
