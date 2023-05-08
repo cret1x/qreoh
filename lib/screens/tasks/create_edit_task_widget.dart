@@ -283,8 +283,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               .bottom,
                                         ),
                                         // Provide a background color for the popup.
-                                        color: CupertinoColors.systemBackground
-                                            .resolveFrom(context),
+                                        color: Theme.of(context).colorScheme.background,
                                         // Use a SafeArea widget to avoid system overlaps.
                                         child: SafeArea(
                                           top: false,
@@ -301,7 +300,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                             },
                                           ),
                                         ),
-                                      ));
+                                      ),);
                             },
                           ),
                           IconButton(
