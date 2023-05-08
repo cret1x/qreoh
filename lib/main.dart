@@ -8,6 +8,7 @@ import 'package:qreoh/screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qreoh/screens/home_page.dart';
+import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/user_auth_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,22 +31,17 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
+  AppThemeState _appThemeState = AppThemeState.base();
 
   @override
   void initState() {
     super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    ref.read(appThemeProvider.notifier).update((state) => (prefs.getBool("dark") ?? false) ? ThemeMode.dark : ThemeMode.light);
+    ref.read(appThemeProvider.notifier).loadFromPrefs();
   }
 
   @override
   Widget build(BuildContext context) {
-    _themeMode = ref.watch(appThemeProvider);
+    _appThemeState = ref.watch(appThemeProvider);
     return MaterialApp(
       title: 'Qreoh app',
       theme: ThemeData(
@@ -58,20 +54,29 @@ class _MyAppState extends ConsumerState<MyApp> {
           primaryContainer: Colors.white.withOpacity(0.4),
           brightness: Brightness.light,
         ),
-
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
           background: Colors.grey.shade800,
-          surface: Colors.black12,
+          surface: Colors.grey.shade900,
           onSurface: Colors.white,
           primary: Colors.deepOrangeAccent,
           secondary: Colors.orange.shade800,
           primaryContainer: Colors.black26,
           brightness: Brightness.dark,
         ),
+          checkboxTheme: CheckboxThemeData(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+          ),
       ),
-      themeMode: _themeMode,
+      themeMode: _appThemeState.themeMode,
       home: const StartupPage(),
     );
   }
@@ -90,7 +95,7 @@ class _StartupPageState extends ConsumerState<StartupPage> {
   @override
   Widget build(BuildContext context) {
     _authState = ref.watch(authStateProvider);
-    switch(_authState.state) {
+    switch (_authState.state) {
       case AuthState.anonymous:
         return const WelcomeWidget();
       case AuthState.registered:

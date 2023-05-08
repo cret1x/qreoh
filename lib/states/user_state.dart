@@ -4,6 +4,7 @@ import 'package:qreoh/entities/achievement.dart';
 import 'package:qreoh/entities/collection_item.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/firebase_functions/user.dart';
+import 'package:qreoh/strings.dart';
 
 class UserState {
   final String uid;
@@ -41,7 +42,7 @@ class UserState {
         balance: data['balance'],
         login: data['login'],
         tag: data['tag'],
-        banner: AssetImage("graphics/${data['banner']}"),
+        banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
         profileImage: null,
         totalTasksCount: data['tasksCount'],
         highPriorityTasksCount: data['highTasksCount'],
@@ -91,7 +92,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
       login: "anon",
       tag: 0,
       profileImage: null,
-      banner: const AssetImage("graphics/background4.jpg"),
+      banner: const AssetImage("${Strings.bannersAssetFolder}desert.jpg"),
       totalTasksCount: 0,
       highPriorityTasksCount: 0,
       mediumPriorityTasksCount: 0,

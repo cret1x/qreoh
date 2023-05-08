@@ -6,6 +6,7 @@ import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/folders_widget.dart';
 import 'package:qreoh/screens/tasks/tags_widget.dart';
+import 'package:qreoh/states/app_theme_state.dart';
 import 'create_edit_task_widget.dart';
 import 'filter_widget.dart';
 import 'task_comparators.dart';
@@ -23,6 +24,7 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
 
 class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   Folder _current = Folder(id: "root", name: "Общее", parent: null);
+  AppThemeState _appThemeState = AppThemeState.base();
   SortRule _sortRule = SortRule.leftAsc;
   static final List<DropdownMenuItem<SortRule>> _menuItems = [
     DropdownMenuItem(
@@ -52,29 +54,25 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   @override
   void initState() {
     super.initState();
-    ref
-        .read(taskListStateProvider.notifier)
-        .loadTasksFromFolder(_current);
-
+    ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
   }
 
   @override
   Widget build(BuildContext context) {
     ref.read(userTagsProvider.notifier).loadTags();
+    _appThemeState = ref.watch(appThemeProvider);
     ref.listen(tasksFilterProvider, (previous, next) {
-      ref
-          .read(taskListStateProvider.notifier)
-          .loadTasksFromFolder(_current);
+      ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
     });
     return Stack(
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints.expand(),
           child: Image(
-            image: AssetImage(
+            image:
                 Theme.of(context).colorScheme.brightness == Brightness.light
-                    ? "graphics/background2.jpg"
-                    : "graphics/background5.jpg"),
+                    ? _appThemeState.lightBackground
+                    : _appThemeState.darkBackground,
             fit: BoxFit.cover,
           ),
         ),
@@ -160,8 +158,10 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                               if (newFolder != null) {
                                                 _current = newFolder;
                                                 ref
-                                                    .read(taskListStateProvider.notifier)
-                                                    .loadTasksFromFolder(_current);
+                                                    .read(taskListStateProvider
+                                                        .notifier)
+                                                    .loadTasksFromFolder(
+                                                        _current);
                                               }
                                               setState(() {});
                                             },
@@ -257,7 +257,18 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                         child: Center(
                                           child: IconButton(
                                             onPressed: () async {
-                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => TagsWidget()));
+                                              await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TagsWidget(),
+                                                ),
+                                              );
+                                              ref
+                                                  .read(taskListStateProvider
+                                                      .notifier)
+                                                  .loadTasksFromFolder(
+                                                      _current);
                                             },
                                             icon: const Icon(
                                                 Icons.label_important_outline),
@@ -289,7 +300,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                           _current, null),
                                                 ),
                                               );
-                                              ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
+                                              ref
+                                                  .read(taskListStateProvider
+                                                      .notifier)
+                                                  .loadTasksFromFolder(
+                                                      _current);
                                             },
                                             icon: const Icon(Icons.add),
                                             color: Colors.white,

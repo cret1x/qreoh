@@ -75,9 +75,13 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - graphics/
-    - graphics/achievement_icons/
-    - graphics/avatars/
+    - assets/images/achievements/
+    - assets/images/avatars/
+    - assets/images/banners/
+    - assets/images/backgrounds/forest/
+    - assets/images/backgrounds/sky/
+    - assets/images/backgrounds/mountains/
+    - assets/images/backgrounds/flat/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

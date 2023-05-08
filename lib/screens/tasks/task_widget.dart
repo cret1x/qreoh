@@ -233,7 +233,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                 ).toList(),
               ),
               const SizedBox(
-                height: 12,
+                height: 60,
               ),
               Row(
                 children: [

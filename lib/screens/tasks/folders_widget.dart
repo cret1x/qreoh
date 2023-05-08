@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/screens/tasks/create_edit_folder.dart';
+import 'package:qreoh/states/app_theme_state.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../entities/folder.dart';
@@ -24,11 +25,13 @@ class FoldersWidget extends ConsumerStatefulWidget {
 
 class FoldersWidgetState extends ConsumerState<FoldersWidget> {
   Folder _current;
+  AppThemeState _appThemeState = AppThemeState.base();
 
   FoldersWidgetState(this._current);
 
   @override
   Widget build(BuildContext context) {
+    _appThemeState = ref.watch(appThemeProvider);
     final children = ref
         .read(taskListStateProvider.notifier)
         .firebaseTaskManager
@@ -48,11 +51,9 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(
-                          Theme.of(context).colorScheme.brightness ==
-                                  Brightness.light
-                              ? "graphics/background2.jpg"
-                              : "graphics/background5.jpg"),
+                      image: Theme.of(context).colorScheme.brightness == Brightness.light
+                          ? _appThemeState.lightBackground
+                          : _appThemeState.darkBackground,
                       fit: BoxFit.cover,
                     ),
                   ),

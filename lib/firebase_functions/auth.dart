@@ -74,7 +74,19 @@ class FirebaseAuthManager {
     final usersRef = FirebaseFirestore.instance.collection('users');
     final snapshot = await usersRef.count().get();
     int tag = snapshot.count;
-    usersRef.doc(uid).set({'login': login, 'tag': tag});
+    usersRef.doc(uid).set({
+      'login': login,
+      'tag': tag,
+      'balance': 100,
+      'banner': 'background1.jpg',
+      'achievements': [],
+      'collection': [],
+      'friends': [],
+      'highTasksCount': 0,
+      'midTasksCount': 0,
+      'lowTasksCount': 0,
+      'tasksCount': 0,
+    });
     usersRef
         .doc(uid)
         .collection("folders")

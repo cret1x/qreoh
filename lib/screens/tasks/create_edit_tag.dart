@@ -13,17 +13,30 @@ const List<IconData> icons = [
 ];
 
 class CreateEditTagWidget extends ConsumerStatefulWidget {
-  const CreateEditTagWidget({super.key});
+  final Tag? _tag;
+
+  const CreateEditTagWidget(this._tag, {super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CreateEditTagState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CreateEditTagState(_tag);
 }
 
 class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
-  final _controller = TextEditingController();
+  late final _controller;
   final uuid = const Uuid();
   Color _selectedColor = Colors.red;
   IconData _selectedIcon = icons.first;
+
+  _CreateEditTagState(Tag? tag) {
+    if (tag != null) {
+      _selectedColor = tag.color;
+      _selectedIcon = tag.icon;
+      _controller = TextEditingController(text: tag.name);
+    } else {
+      _controller = TextEditingController();
+    }
+  }
 
   @override
   void dispose() {
@@ -34,6 +47,10 @@ class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: Text(
+        "Создание тега",
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+      ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(12),
@@ -64,23 +81,57 @@ class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    "Цвет",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                BlockPicker(
-                  pickerColor: _selectedColor,
-                  onColorChanged: (Color color) {
-                    setState(() {
-                      _selectedColor = color;
-                    });
-                  },
-                ),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Цвет",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(12),
+                                    ),
+                                  ),
+                                  content: BlockPicker(
+                                    pickerColor: _selectedColor,
+                                    onColorChanged: (Color color) {
+                                      setState(() {
+                                        _selectedColor = color;
+                                      });
+                                    },
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("OK"),
+                                    ),
+                                  ],
+                                  title: Text(
+                                    "Цвет тега",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: const Text("Выбрать"),
+                        )
+                      ],
+                    )),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
@@ -120,20 +171,30 @@ class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
         TextButton(
             onPressed: _controller.text.isNotEmpty
                 ? () {
-                    ref.read(userTagsProvider.notifier).addTag(Tag(
-                        id: uuid.v1(),
-                        icon: _selectedIcon,
-                        name: _controller.text,
-                        color: _selectedColor));
+                    if (widget._tag == null) {
+                      ref.read(userTagsProvider.notifier).addTag(Tag(
+                          id: uuid.v1(),
+                          icon: _selectedIcon,
+                          name: _controller.text,
+                          color: _selectedColor));
+                    } else {
+                      widget._tag!.update(
+                          name: _controller.text,
+                          color: _selectedColor,
+                          icon: _selectedIcon);
+                      ref
+                          .read(userTagsProvider.notifier)
+                          .updateTag(widget._tag!);
+                    }
                     Navigator.pop(context);
                   }
                 : null,
-            child: const Text("Add")),
+            child: const Text("Сохранить")),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text("Cancel"),
+          child: const Text("Отменить"),
         )
       ],
     );
