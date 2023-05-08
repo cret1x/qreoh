@@ -23,7 +23,8 @@ class Tag {
   }
 
   factory Tag.fromFirestore(String id, Map<String, dynamic> data) {
-    return Tag(id: id,
+    return Tag(
+      id: id,
       icon: IconData(data['icon'], fontFamily: 'MaterialIcons'),
       name: data['name'],
       color: Color(data['color']),
@@ -33,5 +34,16 @@ class Tag {
   @override
   bool operator ==(Object other) {
     return id == (other as Tag).id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  void update({required String name,
+               required Color color,
+               required IconData icon}) {
+    this.name = name;
+    this.color = color;
+    this.icon = icon;
   }
 }

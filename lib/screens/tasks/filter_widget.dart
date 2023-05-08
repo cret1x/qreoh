@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/screens/tasks/create_edit_tag.dart';
 import 'package:qreoh/states/task_filter_state.dart';
 import '../../entities/tag.dart';
 import '../../entities/task.dart';
@@ -296,9 +297,8 @@ class _FilterState extends ConsumerState<FilterWidget> {
                             label: Text(
                               tag.name,
                               style: TextStyle(
-                                color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
                               ),
                             ),
                             onDeleted: () {
@@ -315,11 +315,13 @@ class _FilterState extends ConsumerState<FilterWidget> {
                                       .addTag(tag.id);
                                 });
                               } else {
-                                setState(() {
-                                  ref
-                                      .read(tasksFilterProvider.notifier)
-                                      .deleteTag(tag.id);
-                                });
+                                setState(
+                                  () {
+                                    ref
+                                        .read(tasksFilterProvider.notifier)
+                                        .deleteTag(tag.id);
+                                  },
+                                );
                               }
                             },
                             backgroundColor: filterState.tags.contains(tag.id)
@@ -337,7 +339,12 @@ class _FilterState extends ConsumerState<FilterWidget> {
                       ),
                     ),
                     label: const Text('Добавить'),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => const CreateEditTagWidget(null),
+                      );
+                    },
                   ),
                 ],
               ),

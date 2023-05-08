@@ -70,7 +70,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   void _showCreateTagDialog() async {
     await showDialog(
       context: context,
-      builder: (BuildContext context) => const CreateEditTagWidget(),
+      builder: (BuildContext context) => const CreateEditTagWidget(null),
     );
   }
 
@@ -121,30 +121,35 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                      child: Container(
-                          height: 40,
-                          padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  borderRadius:
-                                      BorderRadiusDirectional.circular(12)),
-                              child:
-                                  Center(child: Text(widget._folder.name))))),
-                  SizedBox(
+                    child: Container(
                       height: 40,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
                       child: DecoratedBox(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius:
-                                  BorderRadiusDirectional.circular(12)),
-                          child: Center(
-                              child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.folder_open),
-                            color: Colors.white,
-                          ))))
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          borderRadius: BorderRadiusDirectional.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(widget._folder.name),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadiusDirectional.circular(12)),
+                      child: Center(
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.folder_open),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -187,19 +192,20 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       },
                     ),
                     Visibility(
-                        visible: _deadline != null,
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ),
-                          iconSize: 20,
-                          onPressed: () {
-                            _haveTime = false;
-                            _deadline = null;
-                            setState(() {});
-                          },
-                        ))
+                      visible: _deadline != null,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
+                        iconSize: 20,
+                        onPressed: () {
+                          _haveTime = false;
+                          _deadline = null;
+                          setState(() {});
+                        },
+                      ),
+                    ),
                   ],
                 )
               ]),
@@ -229,78 +235,77 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             child: Text("${_daysRequired} days"),
                             onPressed: () {
                               showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (context) => Container(
-                                        height: 216,
-                                        padding:
-                                            const EdgeInsets.only(top: 6.0),
-                                        // The bottom margin is provided to align the popup above the system
-                                        // navigation bar.
-                                        margin: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom,
-                                        ),
-                                        // Provide a background color for the popup.
-                                        color: CupertinoColors.systemBackground
-                                            .resolveFrom(context),
-                                        // Use a SafeArea widget to avoid system overlaps.
-                                        child: SafeArea(
-                                          top: false,
-                                          child: CupertinoPicker(
-                                            scrollController:
-                                                FixedExtentScrollController(
-                                                    initialItem: _daysRequired),
-                                            itemExtent: 32,
-                                            onSelectedItemChanged: (int value) {
-                                              _daysRequired = value;
-                                              setState(() {});
-                                            },
-                                            children: List<Widget>.generate(
-                                                61,
-                                                (index) => Center(
-                                                    child: Text(
-                                                        index.toString()))),
-                                          ),
-                                        ),
-                                      ));
+                                context: context,
+                                builder: (context) => Container(
+                                  height: 216,
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  // The bottom margin is provided to align the popup above the system
+                                  // navigation bar.
+                                  margin: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
+                                  // Provide a background color for the popup.
+                                  color: CupertinoColors.systemBackground
+                                      .resolveFrom(context),
+                                  // Use a SafeArea widget to avoid system overlaps.
+                                  child: SafeArea(
+                                    top: false,
+                                    child: CupertinoPicker(
+                                      scrollController:
+                                          FixedExtentScrollController(
+                                              initialItem: _daysRequired),
+                                      itemExtent: 32,
+                                      onSelectedItemChanged: (int value) {
+                                        _daysRequired = value;
+                                        setState(() {});
+                                      },
+                                      children: List<Widget>.generate(
+                                          61,
+                                          (index) => Center(
+                                              child: Text(index.toString()))),
+                                    ),
+                                  ),
+                                ),
+                              );
                             },
                           ),
                           TextButton(
                             child: Text(_durationToString(_timeRequired)),
                             onPressed: () {
                               showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (context) => Container(
-                                        height: 216,
-                                        padding:
-                                            const EdgeInsets.only(top: 6.0),
-                                        // The bottom margin is provided to align the popup above the system
-                                        // navigation bar.
-                                        margin: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom,
-                                        ),
-                                        // Provide a background color for the popup.
-                                        color: Theme.of(context).colorScheme.background,
-                                        // Use a SafeArea widget to avoid system overlaps.
-                                        child: SafeArea(
-                                          top: false,
-                                          child: CupertinoTimerPicker(
-                                            initialTimerDuration:
-                                                _timeRequired!,
-                                            mode: CupertinoTimerPickerMode.hm,
-                                            // This is called when the user changes the timer's
-                                            // duration.
-                                            onTimerDurationChanged:
-                                                (Duration newDuration) {
-                                              setState(() =>
-                                                  _timeRequired = newDuration);
-                                            },
-                                          ),
-                                        ),
-                                      ),);
+                                context: context,
+                                builder: (context) => Container(
+                                  height: 216,
+                                  padding: const EdgeInsets.only(top: 6.0),
+                                  // The bottom margin is provided to align the popup above the system
+                                  // navigation bar.
+                                  margin: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
+                                  ),
+                                  // Provide a background color for the popup.
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                  // Use a SafeArea widget to avoid system overlaps.
+                                  child: SafeArea(
+                                    top: false,
+                                    child: CupertinoTimerPicker(
+                                      initialTimerDuration: _timeRequired!,
+                                      mode: CupertinoTimerPickerMode.hm,
+                                      // This is called when the user changes the timer's
+                                      // duration.
+                                      onTimerDurationChanged:
+                                          (Duration newDuration) {
+                                        setState(
+                                            () => _timeRequired = newDuration);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
                             },
                           ),
                           IconButton(

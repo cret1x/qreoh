@@ -52,19 +52,14 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   @override
   void initState() {
     super.initState();
-    ref
-        .read(taskListStateProvider.notifier)
-        .loadTasksFromFolder(_current);
-
+    ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
   }
 
   @override
   Widget build(BuildContext context) {
     ref.read(userTagsProvider.notifier).loadTags();
     ref.listen(tasksFilterProvider, (previous, next) {
-      ref
-          .read(taskListStateProvider.notifier)
-          .loadTasksFromFolder(_current);
+      ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
     });
     return Stack(
       children: [
@@ -160,8 +155,10 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                               if (newFolder != null) {
                                                 _current = newFolder;
                                                 ref
-                                                    .read(taskListStateProvider.notifier)
-                                                    .loadTasksFromFolder(_current);
+                                                    .read(taskListStateProvider
+                                                        .notifier)
+                                                    .loadTasksFromFolder(
+                                                        _current);
                                               }
                                               setState(() {});
                                             },
@@ -257,7 +254,18 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                         child: Center(
                                           child: IconButton(
                                             onPressed: () async {
-                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => TagsWidget()));
+                                              await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TagsWidget(),
+                                                ),
+                                              );
+                                              ref
+                                                  .read(taskListStateProvider
+                                                      .notifier)
+                                                  .loadTasksFromFolder(
+                                                      _current);
                                             },
                                             icon: const Icon(
                                                 Icons.label_important_outline),
@@ -289,7 +297,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                           _current, null),
                                                 ),
                                               );
-                                              ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
+                                              ref
+                                                  .read(taskListStateProvider
+                                                      .notifier)
+                                                  .loadTasksFromFolder(
+                                                      _current);
                                             },
                                             icon: const Icon(Icons.add),
                                             color: Colors.white,

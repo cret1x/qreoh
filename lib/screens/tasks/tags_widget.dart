@@ -49,7 +49,10 @@ class TagsState extends ConsumerState<TagsWidget> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    showDialog(context: context, builder: (context) => const CreateEditTagWidget());
+                    showDialog(
+                      context: context,
+                      builder: (context) => const CreateEditTagWidget(null),
+                    );
                   },
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all<double>(0),
@@ -86,12 +89,20 @@ class TagsState extends ConsumerState<TagsWidget> {
                               return Dismissible(
                                 key: UniqueKey(),
                                 confirmDismiss: (direction) async {
-                                  if (direction == DismissDirection.startToEnd) {
+                                  if (direction ==
+                                      DismissDirection.startToEnd) {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          CreateEditTagWidget(_allTags[index]),
+                                    );
                                     return false;
                                   }
                                   return true;
                                 },
-                                onDismissed: (direction) => ref.read(userTagsProvider.notifier).deleteTag(_allTags[index]),
+                                onDismissed: (direction) => ref
+                                    .read(userTagsProvider.notifier)
+                                    .deleteTag(_allTags[index]),
                                 secondaryBackground: const Align(
                                   alignment: Alignment.centerRight,
                                   child: Padding(
