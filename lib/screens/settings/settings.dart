@@ -22,6 +22,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
     "forest",
     "mountains",
     "sky",
+    "flat",
   ];
 
   @override
