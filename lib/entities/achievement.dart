@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qreoh/strings.dart';
 
 class Achievement {
-  static const _imagePath = "graphics/achievement_icons/";
   final String id;
   final String name;
   final AssetImage image;
@@ -18,7 +18,7 @@ class Achievement {
     return Achievement(
       id: id,
       name: data['name'],
-      image: AssetImage(_imagePath + data['image']),
+      image: AssetImage(Strings.achievementsAssetFolder + data['image']),
       condition: data['condition'],
     );
   }

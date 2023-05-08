@@ -6,6 +6,7 @@ import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/states/achievements_state.dart';
+import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/friends_list_state.dart';
 import 'package:qreoh/states/network_state.dart';
 import 'package:qreoh/states/shop_state.dart';
@@ -15,7 +16,7 @@ import 'package:qreoh/states/user_auth_state.dart';
 import 'package:qreoh/states/user_state.dart';
 import 'package:qreoh/states/user_tags_state.dart';
 
-final appThemeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
+final appThemeProvider = StateNotifierProvider<AppThemeStateNotifier, AppThemeState>((ref) => AppThemeStateNotifier());
 
 final userTagsProvider = StateNotifierProvider<TagListStateNotifier, List<Tag>>((ref) => TagListStateNotifier());
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qreoh/strings.dart';
 
 enum ShopItemType { banner, avatar }
 
@@ -20,7 +21,9 @@ class ShopItem {
     return ShopItem(
         id: id,
         name: data['name'],
-        image: AssetImage("graphics/${data['image']}"),
+        image: data['type'] == "banner"
+            ? AssetImage("${Strings.bannersAssetFolder}${data['image']}")
+            : AssetImage("${Strings.avatarsAssetFolder}${data['image']}"),
         price: data['price'],
         type: data['type'] == "banner"
             ? ShopItemType.banner

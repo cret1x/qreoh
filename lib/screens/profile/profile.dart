@@ -171,7 +171,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                           border: Border.all(color: Theme.of(context).colorScheme.primary, width: 3.0),
                           borderRadius: BorderRadius.circular(12),
                           image: const DecorationImage(
-                              image: AssetImage("graphics/background3.jpg"),
+                              image: AssetImage("assets/images/banners/desert.jpg"),
                               fit: BoxFit.cover),
                         ),
                       ),

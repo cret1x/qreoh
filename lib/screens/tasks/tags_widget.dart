@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/screens/tasks/create_edit_tag.dart';
+import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/user_tags_state.dart';
 
 import '../../entities/tag.dart';
@@ -18,10 +19,12 @@ class TagsWidget extends ConsumerStatefulWidget {
 
 class TagsState extends ConsumerState<TagsWidget> {
   List<Tag> _allTags = [];
+  AppThemeState _appThemeState = AppThemeState.base();
 
   @override
   Widget build(BuildContext context) {
     _allTags = ref.watch(userTagsProvider);
+    _appThemeState = ref.watch(appThemeProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text("Tags"),
@@ -34,10 +37,9 @@ class TagsState extends ConsumerState<TagsWidget> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(Theme.of(context).colorScheme.brightness ==
-                          Brightness.light
-                      ? "graphics/background2.jpg"
-                      : "graphics/background5.jpg"),
+                  image: Theme.of(context).colorScheme.brightness == Brightness.light
+                      ? _appThemeState.lightBackground
+                      : _appThemeState.darkBackground,
                   fit: BoxFit.cover,
                 ),
               ),

@@ -23,6 +23,7 @@ class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
   @override
   void initState() {
     super.initState();
+    ref.read(friendsListStateProvider.notifier).getAllFriends(_descending);
   }
 
   @override
