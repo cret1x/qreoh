@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/create_edit_tag.dart';
+import 'package:qreoh/screens/tasks/folders_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../firebase_functions/tasks.dart';
@@ -21,7 +22,7 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<EditCreateTaskWidget> createState() {
-    return EditCreateTaskWidgetState(_task);
+    return EditCreateTaskWidgetState(_folder, _task);
   }
 }
 
@@ -36,8 +37,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   String? _description;
   List<Tag> _allTags = [];
   List<String> _selectedTags = [];
+  Folder _current;
 
-  EditCreateTaskWidgetState(Task? task) {
+  EditCreateTaskWidgetState(this._current, Task? task) {
     if (task != null) {
       _name = task.name;
       _deadline = task.deadline;
@@ -126,11 +128,14 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          borderRadius: BorderRadiusDirectional.circular(12),
+                          border: Border(
+                            bottom: BorderSide(
+                                width: 2.0,
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
                         ),
                         child: Center(
-                          child: Text(widget._folder.name),
+                          child: Text(_current.name),
                         ),
                       ),
                     ),
@@ -143,7 +148,19 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           borderRadius: BorderRadiusDirectional.circular(12)),
                       child: Center(
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            Folder? newParent = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FoldersWidget(_current),
+                              ),
+                            );
+                            if (newParent != null) {
+                              setState(() {
+                                _current = newParent;
+                              });
+                            }
+                          },
                           icon: const Icon(Icons.folder_open),
                           color: Colors.white,
                         ),
@@ -596,7 +613,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             if (widget._task == null) {
                               final newTask = Task(
                                   id: widget.uuid.v1(),
-                                  parent: widget._folder,
+                                  parent: _current,
                                   name: _name!,
                                   done: false,
                                   priority: _priority,
@@ -614,6 +631,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   .addTask(newTask);
                             } else {
                               widget._task!.update(
+                                  parent: _current,
                                   name: _name!,
                                   priority: _priority,
                                   tags: _selectedTags,

@@ -94,7 +94,8 @@ class Task {
   }
 
   void update(
-      {required String name,
+      {required Folder parent,
+      required String name,
       required Priority priority,
       required List<String> tags,
       DateTime? deadline,
@@ -102,6 +103,7 @@ class Task {
       Duration? timeRequired,
       String? description,
       String? place}) {
+    this.parent = parent;
     this.name = name;
     this.priority = priority;
     this.tags = tags;
