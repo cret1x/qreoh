@@ -28,6 +28,7 @@ class TaskListState extends ConsumerState<TaskListWidget> {
   @override
   Widget build(BuildContext context) {
     _taskList = ref.watch(taskListStateProvider);
+    ref.watch(tasksFilterProvider);
     List<Task> tasks = _taskList.where(ref.read(tasksFilterProvider.notifier).check).toList();
     tasks.sort(getFunc(widget.sort));
     return DecoratedBox(
@@ -44,7 +45,7 @@ class TaskListState extends ConsumerState<TaskListWidget> {
                 itemCount: tasks.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return TaskItemWidget(task: tasks[index]);
+                  return TaskItemWidget(originFolder: widget.folder, task: tasks[index]);
                 },
                 separatorBuilder: (context, index) {
                   return const Divider();

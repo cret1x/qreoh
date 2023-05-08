@@ -22,7 +22,7 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
   ConsumerState<TaskManagerWidget> createState() => _TaskManagerState();
 }
 
-class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
+class _TaskManagerState extends ConsumerState<TaskManagerWidget> with AutomaticKeepAliveClientMixin{
   Folder _current = Folder(id: "root", name: "Общее", parent: null);
   AppThemeState _appThemeState = AppThemeState.base();
   SortRule _sortRule = SortRule.leftAsc;
@@ -55,15 +55,13 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
   void initState() {
     super.initState();
     ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
+
   }
 
   @override
   Widget build(BuildContext context) {
     ref.read(userTagsProvider.notifier).loadTags();
     _appThemeState = ref.watch(appThemeProvider);
-    ref.listen(tasksFilterProvider, (previous, next) {
-      ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
-    });
     return Stack(
       children: [
         ConstrainedBox(
@@ -233,7 +231,6 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           FilterWidget()));
-                                              setState(() {});
                                             },
                                             icon: const Icon(
                                                 Icons.filter_alt_outlined),
@@ -344,4 +341,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

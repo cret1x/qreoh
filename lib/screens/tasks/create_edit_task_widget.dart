@@ -501,6 +501,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                               ref
                                   .read(userTagsProvider.notifier)
                                   .deleteTag(tag);
+                              if (_selectedTags.contains(tag.id)) {
+                                _selectedTags.remove(tag.id);
+                              }
                             },
                             onPressed: () {
                               if (!_selectedTags.contains(tag.id)) {

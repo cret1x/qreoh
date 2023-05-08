@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
@@ -11,12 +12,13 @@ import 'package:qreoh/states/user_tags_state.dart';
 
 class TaskItemWidget extends ConsumerStatefulWidget {
   final Task task;
+  final Folder originFolder;
   final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
-  TaskItemWidget({super.key, required this.task});
+  TaskItemWidget({super.key, required this.task, required this.originFolder});
 
   @override
-  ConsumerState<TaskItemWidget> createState() => _TaskItemWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TaskItemWidgetState();
 }
 
 class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
@@ -75,7 +77,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
             );
             ref
                 .read(taskListStateProvider.notifier)
-                .loadTasksFromFolder(widget.task.parent);
+                .loadTasksFromFolder(widget.originFolder);
           },
           child: SizedBox(
             height: 50,

@@ -88,7 +88,6 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          print(1111);
           _showAchievementTip(achievement);
         },
         child: Container(
@@ -150,7 +149,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
         Stack(
           children: [
             Container(
-              height: 150,
+              height: 250,
               decoration: BoxDecoration(
                   image: DecorationImage(
                       image: widget.profile.banner, fit: BoxFit.cover)),
@@ -159,48 +158,16 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                 child: Container(
-                    height: 150,
-                    decoration:
-                        BoxDecoration(color: Colors.black.withOpacity(0.4)),
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(left: 32),
-                          height: 125,
-                          width: 125,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 3.0),
-                            borderRadius: BorderRadius.circular(12),
-                            image: const DecorationImage(
-                                image: AssetImage(
-                                    "assets/images/banners/desert.jpg"),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 32.0),
-                          child: Text(
-                            widget.profile.login,
-                            style: TextStyle(
-                                letterSpacing: 2,
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24),
-                          ),
-                        ),
-                        Text(
-                          "#${widget.profile.tag}",
-                          style: const TextStyle(
-                              letterSpacing: 2,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                      ],
-                    )),
+                  height: 250,
+                  decoration:
+                      BoxDecoration(color: Colors.black.withOpacity(0.4)),
+                  child: Center(
+                    child: Image(
+                      image: widget.profile.avatar,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -209,18 +176,43 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
           child: ListView(
             padding: const EdgeInsets.all(10),
             children: [
-              Container(
-                width: 300,
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.primary, width: 1.0),
-                ),
-                child: Image(
-                  image: widget.profile.avatar,
-                  fit: BoxFit.contain,
-                ),
+              Row(
+                children: [
+                  Container(
+                    height: 125,
+                    width: 125,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 3.0),
+                      borderRadius: BorderRadius.circular(12),
+                      image: const DecorationImage(
+                          image: AssetImage(
+                              "assets/images/banners/desert.jpg"),
+                          fit: BoxFit.cover),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: Text(
+                      widget.profile.login,
+                      style: TextStyle(
+                          letterSpacing: 2,
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24),
+                    ),
+                  ),
+                  Text(
+                    "#${widget.profile.tag}",
+                    style: const TextStyle(
+                        letterSpacing: 2,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
@@ -255,7 +247,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context).brightness ==
-                                      Brightness.light
+                                          Brightness.light
                                       ? Colors.grey.withOpacity(0.3)
                                       : Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,
@@ -292,7 +284,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context).brightness ==
-                                      Brightness.light
+                                          Brightness.light
                                       ? Colors.grey.withOpacity(0.3)
                                       : Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,
@@ -338,7 +330,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context).brightness ==
-                                      Brightness.light
+                                          Brightness.light
                                       ? Colors.grey.withOpacity(0.3)
                                       : Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,
@@ -375,7 +367,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context).brightness ==
-                                      Brightness.light
+                                          Brightness.light
                                       ? Colors.grey.withOpacity(0.3)
                                       : Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,
@@ -420,7 +412,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context).brightness ==
-                                      Brightness.light
+                                          Brightness.light
                                       ? Colors.grey.withOpacity(0.3)
                                       : Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,

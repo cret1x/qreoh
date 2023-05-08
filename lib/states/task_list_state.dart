@@ -33,19 +33,23 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
 
   void updateTask(Folder folder, Task task) async {
     await firebaseTaskManager.updateTask(task);
-    state = [
-      for (final todo in state)
-        if (todo.id == task.id && task.parent.id == folder.id)
-          todo.copyWith(
+    List<Task> newState = [];
+    for (final todo in state) {
+      if (todo.id == task.id) {
+        if (task.parent.id == folder.id) {
+          newState.add(todo.copyWith(
               parent: task.parent,
               name: task.name,
               priority: task.priority,
               done: task.done,
               haveTime: task.haveTime,
-              tags: task.tags)
-        else
-          todo,
-    ];
+              tags: task.tags));
+        }
+      } else {
+        newState.add(todo);
+      }
+    }
+    state = newState;
   }
 
   void loadTasksFromFolder(Folder folder) async {
