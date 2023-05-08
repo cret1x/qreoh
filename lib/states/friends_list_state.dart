@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/entities/user_entity.dart';
 import 'package:qreoh/firebase_functions/friends.dart';
+import 'package:qreoh/states/user_state.dart';
 
 class FriendsState {
-  final List<UserEntity> friends;
-  final List<UserEntity> inRequests;
-  final List<UserEntity> outRequests;
+  final List<UserState> friends;
+  final List<UserState> inRequests;
+  final List<UserState> outRequests;
 
   FriendsState(
       {required this.friends,
@@ -15,9 +15,9 @@ class FriendsState {
       required this.outRequests});
 
   FriendsState copyWith({
-    List<UserEntity>? friends,
-    List<UserEntity>? inRequests,
-    List<UserEntity>? outRequests,
+    List<UserState>? friends,
+    List<UserState>? inRequests,
+    List<UserState>? outRequests,
   }) {
     return FriendsState(
         friends: friends ?? this.friends,
@@ -60,16 +60,16 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     getAllFriends(false);
   }
 
-  Future<UserEntity?> searchFriend(String login, int tag) async {
+  Future<UserState?> searchFriend(String login, int tag) async {
     return firebaseFriendsManager.searchFriend(login, tag);
   }
 
-  void sendRequest(UserEntity userTo) async {
+  void sendRequest(UserState userTo) async {
     await firebaseFriendsManager.sendFriendRequest(userTo);
     state = state.copyWith(outRequests: [...state.outRequests, userTo]);
   }
 
-  void acceptRequest(UserEntity userFrom) async {
+  void acceptRequest(UserState userFrom) async {
     await firebaseFriendsManager.acceptFriendRequest(userFrom);
     state = state.copyWith(
       friends: [...state.friends, userFrom],
@@ -80,7 +80,7 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     );
   }
 
-  void declineRequest(UserEntity userFrom) async {
+  void declineRequest(UserState userFrom) async {
     await firebaseFriendsManager.declineFriendRequest(userFrom);
     state = state.copyWith(
       inRequests: [
@@ -90,7 +90,7 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     );
   }
 
-  void deleteFriend(UserEntity friend) async {
+  void deleteFriend(UserState friend) async {
     await firebaseFriendsManager.deleteFriend(friend);
     state = state.copyWith(
       friends: [...state.friends, friend],
@@ -98,9 +98,8 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
   }
 
   Future<void> getAllFriends(bool desc) async {
-    //TODO: change to firebase function call
     final friends = await firebaseFriendsManager.getAllFriends();
-    friends.sort((UserEntity a, UserEntity b) {
+    friends.sort((UserState a, UserState b) {
       return desc ? b.login.compareTo(a.login) : a.login.compareTo(b.login);
     });
     state = state.copyWith(friends: friends);

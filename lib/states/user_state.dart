@@ -6,6 +6,7 @@ import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 
 class UserState {
+  final String uid;
   final List<String> collection;
   final int balance;
   final String login;
@@ -20,6 +21,7 @@ class UserState {
   final List<String> achievements;
 
   UserState({required this.collection,
+    required this.uid,
     required this.balance,
     required this.login,
     required this.tag,
@@ -32,8 +34,9 @@ class UserState {
     required this.friendsCount,
     required this.achievements});
 
-  factory UserState.fromFirestore(Map<String, dynamic> data) {
+  factory UserState.fromFirestore(String uid, Map<String, dynamic> data) {
     return UserState(
+      uid: uid,
         collection: List.from(data['collection']),
         balance: data['balance'],
         login: data['login'],
@@ -62,6 +65,7 @@ class UserState {
     int? friendsCount,
     List<String>? achievements}) {
     return UserState(collection: collection ?? this.collection,
+        uid: uid,
         balance: balance ?? this.balance,
         login: login ?? this.login,
         tag: tag ?? this.tag,
@@ -81,6 +85,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
 
   UserStateNotifier()
       : super(UserState(
+    uid: "anon",
       collection: [],
       balance: 0,
       login: "anon",

@@ -18,6 +18,6 @@ class FirebaseUserManager {
   Future<UserState> getUser() async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     final user = await db.collection('users').doc(uid).get();
-    return UserState.fromFirestore(user.data()!);
+    return UserState.fromFirestore(user.id, user.data()!);
   }
 }

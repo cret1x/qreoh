@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/friend_item.dart';
-import 'package:qreoh/entities/user_entity.dart';
 import 'package:qreoh/global_providers.dart';
-
-import '../../firebase_functions/friends.dart';
+import 'package:qreoh/states/user_state.dart';
 
 class AddFriendWidget extends ConsumerStatefulWidget {
   const AddFriendWidget({super.key});
@@ -17,7 +15,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
   final _loginController = TextEditingController();
   final _tagController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final List<UserEntity> _foundFriend = [];
+  final List<UserState> _foundFriend = [];
 
   @override
   void dispose() {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qreoh/entities/user_entity.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 

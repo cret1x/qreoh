@@ -9,22 +9,15 @@ import 'package:qreoh/states/user_state.dart';
 
 
 class ProfileWidget extends ConsumerStatefulWidget {
-  const ProfileWidget({super.key});
+  final UserState profile;
+  final List<Achievement> achievements;
+  const ProfileWidget({super.key, required this.profile, required this.achievements});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
-  late UserState _userState;
-  List<Achievement> _allAchievements = [];
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userStateProvider.notifier).getUser();
-    ref.read(achievementsProvider.notifier).loadAchievements();
-  }
 
   void _showAchievementTip(Achievement achievement) async {
     await showDialog(
@@ -65,7 +58,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       fontSize: 18),),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(_userState.achievements.contains(achievement.id)
+                    child: Text(widget.profile.achievements.contains(achievement.id)
                         ? "Да"
                         : "Нет"),
                   ),
@@ -98,7 +91,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
           width: 120,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: _userState.achievements.contains(achievement.id)
+            color: widget.profile.achievements.contains(achievement.id)
                 ? Colors.lightGreen
                 : Colors.blueGrey,
             borderRadius: BorderRadius.circular(12),
@@ -139,7 +132,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
         height: 180,
         child: ListView(
           scrollDirection: Axis.horizontal,
-          children: _allAchievements
+          children: widget.achievements
               .map((achievement) => achievementWidget(achievement))
               .toList(),
         ));
@@ -147,8 +140,6 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _allAchievements = ref.watch(achievementsProvider);
-    _userState = ref.watch(userStateProvider);
     return Column(
       children: [
         Stack(
@@ -157,7 +148,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                height: 150,
                decoration: BoxDecoration(
                  image: DecorationImage(
-                     image: _userState.banner,
+                     image: widget.profile.banner,
                      fit: BoxFit.cover)
                ),
             ),
@@ -186,7 +177,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 32.0),
-                        child: Text(_userState.login,
+                        child: Text(widget.profile.login,
                           style: TextStyle(
                               letterSpacing: 2,
                               color: Theme
@@ -196,7 +187,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               fontWeight: FontWeight.bold,
                               fontSize: 24),),
                       ),
-                      Text("#${_userState.tag}",
+                      Text("#${widget.profile.tag}",
                         style: const TextStyle(
                             letterSpacing: 2,
                             color: Colors.grey,
@@ -242,7 +233,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
               Row(
                   children: [
                     const Text("Выполненные задания: "),
-                    Text(_userState.totalTasksCount.toString()),
+                    Text(widget.profile.totalTasksCount.toString()),
                   ]
               ),
             ],
