@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/entities/folder.dart';
+import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../entities/task.dart';
 
@@ -15,11 +18,12 @@ class ShareTaskWidget extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() {
     return ShareTaskState(_task);
   }
-
 }
 
 class ShareTaskState extends ConsumerState<ShareTaskWidget> {
+  final uuid = const Uuid();
   final Task? _task;
+  final firebaseTaskManager = FirebaseTaskManager();
   late final TextEditingController _textEditingController;
   DateTime? _deadline;
   bool _haveTime = false;
@@ -48,7 +52,8 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
     if (_task != null) {
       _deadline = _task!.deadline;
       _haveTime = _task!.haveTime;
-      _daysRequired = _task!.timeRequired == null ? 0 : _task!.timeRequired!.inDays;
+      _daysRequired =
+          _task!.timeRequired == null ? 0 : _task!.timeRequired!.inDays;
       _timeRequired = _task!.timeRequired == null
           ? null
           : _task!.timeRequired! - Duration(days: _daysRequired);
@@ -95,11 +100,13 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                 ),
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text("Deadline",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground),),
+                Text(
+                  "Deadline",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
                 Row(
                   children: [
                     TextButton(
@@ -401,9 +408,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                         } else {
                           _receievers.add(friend);
                         }
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
                       child: SizedBox(
                         height: 85,
@@ -416,19 +421,32 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               child: Stack(
                                 children: [
                                   CircleAvatar(
-                                    backgroundImage: (friend.profileImage != null)
-                                        ? NetworkImage(friend.profileImage!)
-                                        : null,
+                                    backgroundImage:
+                                        (friend.profileImage != null)
+                                            ? NetworkImage(friend.profileImage!)
+                                            : null,
                                     radius: 32,
                                   ),
                                   CircleAvatar(
-                                    backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(_receievers.contains(friend) ? 0.7 : 0),
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .surface
+                                        .withOpacity(
+                                            _receievers.contains(friend)
+                                                ? 0.7
+                                                : 0),
                                     radius: 32,
                                   ),
                                   Visibility(
-                                    visible: _receievers.contains(friend),
-                                    child: Center(child: Icon(Icons.done, color: Theme.of(context).colorScheme.onBackground, size: 40,))
-                                  ),
+                                      visible: _receievers.contains(friend),
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.done,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onBackground,
+                                        size: 40,
+                                      ))),
                                 ],
                               ),
                             ),
@@ -455,7 +473,8 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusDirectional.circular(12),
+                              borderRadius:
+                                  BorderRadiusDirectional.circular(12),
                             )),
                             child: const Text(
                               "Сбросить",
@@ -499,8 +518,31 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusDirectional.circular(12),
                           )),
-                          onPressed: _textEditingController.text.isNotEmpty ? () {
-                          } : null,
+                          onPressed: _textEditingController.text.isNotEmpty
+                              ? () {
+                                  final fff =
+                                      Folder(id: "friends", name: "От друзей");
+                                  for (final reciever in _receievers) {
+                                    var taskToSend = Task(
+                                      id: uuid.v1(),
+                                      parent: fff,
+                                      name: _textEditingController.text,
+                                      priority: _priority,
+                                      done: false,
+                                      haveTime: _haveTime,
+                                      tags: [],
+                                      from: reciever.uid,
+                                      deadline: _deadline,
+                                      description: _description,
+                                      timeRequired: _timeRequired,
+                                      place: _location,
+                                    );
+                                    firebaseTaskManager.sendTaskToFriend(
+                                        taskToSend, reciever);
+                                  }
+                                  Navigator.pop(context);
+                                }
+                              : null,
                           child: const Text(
                             "Отправить",
                             style: TextStyle(

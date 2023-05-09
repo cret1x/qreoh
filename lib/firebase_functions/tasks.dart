@@ -135,6 +135,9 @@ class FirebaseTaskManager {
       'name': 'От друзей',
       'parent': 'root',
     });
+    await db.collection('users').doc(friend.uid).update({
+      'tasksFromFriendsReceived': friend.tasksFromFriendsReceived + 1,
+    });
     await tasksRef.doc(task.id).set(task.toFirestore());
   }
 }

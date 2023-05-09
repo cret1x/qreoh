@@ -87,6 +87,7 @@ class FirebaseAuthManager {
       'tasksFriendsCreated': 0,
       'tasksCreated': 0,
       'tasksCompleted': 0,
+      'tasksFromFriendsReceived': 0,
       'experience': 0,
       'level': 1,
     });
