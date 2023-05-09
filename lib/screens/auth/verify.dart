@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
-
-import '../../firebase_functions/auth.dart';
+import 'package:qreoh/strings.dart';
 
 class VerifyEmailWidget extends ConsumerStatefulWidget {
   const VerifyEmailWidget({super.key});
@@ -43,7 +41,7 @@ class _VerifyEmailWidgetState extends ConsumerState<VerifyEmailWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Сброс пароля"),
+        title: const Text(Strings.confirmEmail),
       ),
       body: Center(
         child: Padding(
@@ -52,14 +50,21 @@ class _VerifyEmailWidgetState extends ConsumerState<VerifyEmailWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  "Вам было отправлено письмо на ",
+                  Strings.confirmMessage1,
                   style: TextStyle(fontSize: 20),
                 ),
-                Text(FirebaseAuth.instance.currentUser!.email ?? "email", style: TextStyle(fontSize: 20),),
-                const Text("для подтверждения почты",
-                  style: TextStyle(fontSize: 20),),
-                const Text("Возможно оно попало в папку спам",
-                  style: TextStyle(fontSize: 20),),
+                Text(
+                  FirebaseAuth.instance.currentUser!.email ?? "email",
+                  style: const TextStyle(fontSize: 20),
+                ),
+                const Text(
+                  Strings.confirmMessage2,
+                  style: TextStyle(fontSize: 20),
+                ),
+                const Text(
+                  Strings.confirmMessage3,
+                  style: TextStyle(fontSize: 20),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
@@ -71,12 +76,12 @@ class _VerifyEmailWidgetState extends ConsumerState<VerifyEmailWidget> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              "Вам было отправлено письмо для подтверждения"),
+                             Strings.confirmMessageSent),
                         ),
                       );
                     },
                     child: const Text(
-                      "Отправить еще раз",
+                      Strings.resendConfirm,
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
@@ -92,7 +97,7 @@ class _VerifyEmailWidgetState extends ConsumerState<VerifyEmailWidget> {
                       await FirebaseAuth.instance.currentUser!.reload();
                     },
                     child: const Text(
-                      "Войти в другой аккаунт",
+                      Strings.loginToAnother,
                       style: TextStyle(fontSize: 20),
                     ),
                   ),

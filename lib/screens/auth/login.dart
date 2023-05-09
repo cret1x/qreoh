@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/auth/reset_password.dart';
-import 'package:qreoh/states/user_auth_state.dart';
+import 'package:qreoh/strings.dart';
 
-import '../../firebase_functions/auth.dart';
 
 class LoginWidget extends ConsumerStatefulWidget {
   const LoginWidget({super.key});
@@ -44,7 +43,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Вход"),
+        title: const Text(Strings.loginLabel),
       ),
       body: Center(
         child: Padding(
@@ -61,13 +60,13 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Введите вашу почту')),
+                            labelText: Strings.enterEmail)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -79,7 +78,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                         controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
@@ -99,7 +98,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Введите ваш пароль')),
+                            labelText: Strings.enterPassword)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -110,7 +109,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                             MaterialPageRoute(
                                 builder: (context) => const ResetPassword()));
                       },
-                      child: const Text('Забыл пароль'),
+                      child: const Text(Strings.forgotPassword),
                     ),
                   ),
                   Padding(
@@ -130,7 +129,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                               if (value == "OK") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text("Успешный вход")));
+                                        content: Text(Strings.successLogin)));
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -139,13 +138,13 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text("Произошла ошибка")));
+                                      content: Text(Strings.errorOccurred)));
                             }
                           });
                         }
                       },
                       child: const Text(
-                        "Войти",
+                        Strings.actionLogin,
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

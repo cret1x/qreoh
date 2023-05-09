@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:qreoh/screens/friends/friend_profile.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class FriendItem extends StatelessWidget {
   final UserState friendState;
@@ -30,7 +31,7 @@ class FriendItem extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: FractionalOffset(0.4, 0),
+            begin: const FractionalOffset(0.4, 0),
             end: FractionalOffset.bottomRight,
             colors: [
               Theme.of(context).colorScheme.surface,
@@ -54,6 +55,9 @@ class FriendItem extends StatelessWidget {
             backgroundColor:
                 Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
                     .withOpacity(1.0),
+            foregroundImage: (friendState.profileImage != null)
+                ? NetworkImage(friendState.profileImage!)
+                : null,
             radius: 32,
           ),
           title: Text(

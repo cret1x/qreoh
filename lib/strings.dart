@@ -1,6 +1,32 @@
 class Strings {
+  static const String defaultPfp = "assets/images/default.jpg";
   static const String backgroundsAssetFolder = "assets/images/backgrounds/";
   static const String avatarsAssetFolder = "assets/images/avatars/";
   static const String achievementsAssetFolder = "assets/images/achievements/";
   static const String bannersAssetFolder = "assets/images/banners/";
+  static const String requiredField = "Обязательное поле";
+  static const String enterEmail = "Введите вашу почту";
+  static const String enterLogin = "Введите ваш логин";
+  static const String enterPassword = "Введите ваш пароль";
+  static const String repeatPassword = "Повторный пароль";
+  static const String welcomeMessage = "Выберете вход или регистрацию";
+  static const String loginLabel = "Вход";
+  static const String actionLogin = "Войти";
+  static const String registerLabel = "Регистрация";
+  static const String actionRegister = "Зарегестрироваться";
+  static const String forgotPassword = "Забыл пароль";
+  static const String successLogin = "Успешный вход";
+  static const String errorOccurred = "Произошла ошибка";
+  static const String mismatchPasswords = "Пароли должны совпадать";
+  static const String accountCreated = "Аккаунт создан";
+  static const String passwordReset = "Сброс пароля";
+  static const String resetMessageSent = "Вам было отправлено письмо для сброса пароля";
+  static const String actionPasswordReset = "Сбросить пароль";
+  static const String confirmEmail = "Подтверждение почты";
+  static const String confirmMessage1 = "Вам было отправлено письмо на ";
+  static const String confirmMessage2 = "для подтверждения почты";
+  static const String confirmMessage3 = "Возможно оно попало в папку спам";
+  static const String confirmMessageSent = "Вам было отправлено письмо для подтверждения";
+  static const String resendConfirm = "Отправить еще раз";
+  static const String loginToAnother = "Войти в другой аккаунт";
 }

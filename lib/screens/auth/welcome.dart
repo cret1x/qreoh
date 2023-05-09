@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qreoh/screens/auth/login.dart';
 import 'package:qreoh/screens/auth/register.dart';
+import 'package:qreoh/strings.dart';
 
 class WelcomeWidget extends StatelessWidget {
   const WelcomeWidget({super.key});
@@ -14,7 +15,7 @@ class WelcomeWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Welcome to app, select login or registration"),
+              const Text(Strings.welcomeMessage),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
@@ -27,7 +28,7 @@ class WelcomeWidget extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => const LoginWidget()));
                     },
-                    child: const Text("Login")),
+                    child: const Text(Strings.loginLabel)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -41,7 +42,7 @@ class WelcomeWidget extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => const RegisterWidget()));
                     },
-                    child: const Text("Register")),
+                    child: const Text(Strings.registerLabel)),
               ),
             ],
           ),

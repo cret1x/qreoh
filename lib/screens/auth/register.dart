@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/strings.dart';
 
-import '../../firebase_functions/auth.dart';
 
 class RegisterWidget extends ConsumerStatefulWidget {
   const RegisterWidget({super.key});
@@ -46,7 +46,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register form"),
+        title: const Text(Strings.registerLabel),
       ),
       body: Center(
         child: Padding(
@@ -64,13 +64,13 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         maxLength: 16,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Введите ваш логин')),
+                            labelText: Strings.enterLogin)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -78,13 +78,13 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Введите вашу почту')),
+                            labelText: Strings.enterEmail)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -96,7 +96,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
@@ -116,7 +116,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Введите ваш пароль')),
+                            labelText: Strings.enterPassword)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -128,10 +128,10 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _passwordCheckController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Обязательное поле";
+                            return Strings.requiredField;
                           }
                           if (value != _passwordController.text) {
-                            return "Пароли должны совпадать";
+                            return Strings.mismatchPasswords;
                           }
                           return null;
                         },
@@ -151,7 +151,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Повторный пароль')),
+                            labelText: Strings.repeatPassword)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -167,14 +167,14 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                             });
                             if (value != null) {
                               if (value == "OK") {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Аккаунт создан")));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.accountCreated)));
                                 ref.read(authStateProvider.notifier).verifyUser();
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
                               }
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("произошла ошибка")));
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.errorOccurred)));
                             }
                           });
                         }
@@ -191,7 +191,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         ),
                       )
                           : const Icon(Icons.feedback),
-                      label: const Text('Зарегестрироваться'),
+                      label: const Text(Strings.actionRegister),
                     ),
                   ),
                 ],

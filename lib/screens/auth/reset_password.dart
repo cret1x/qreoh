@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
-
-import '../../firebase_functions/auth.dart';
+import 'package:qreoh/strings.dart';
 
 class ResetPassword extends ConsumerStatefulWidget {
   const ResetPassword({super.key});
@@ -30,7 +29,7 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Сброс пароля"),
+        title: const Text(Strings.passwordReset),
       ),
       body: Center(
         child: Padding(
@@ -47,13 +46,13 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Email is required";
+                            return Strings.requiredField;
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Enter your email')),
+                            labelText: Strings.enterEmail)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -69,15 +68,14 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
                               .then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                    "Вам было отправлено письмо для сброса пароля"),
+                                content: Text(Strings.resetMessageSent),
                               ),
                             );
                           });
                         }
                       },
                       child: const Text(
-                        "Сбросить пароль",
+                        Strings.actionPasswordReset,
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
