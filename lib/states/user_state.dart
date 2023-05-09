@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
-import 'package:qreoh/entities/collection_item.dart';
+import 'package:qreoh/entities/reward_item.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/strings.dart';
@@ -20,6 +20,8 @@ class UserState {
   final int mediumPriorityTasksCount;
   final int lowPriorityTasksCount;
   final int friendsCount;
+  final int level;
+  final int experience;
   final List<String> achievements;
 
   UserState(
@@ -29,6 +31,8 @@ class UserState {
       required this.avatar,
       required this.login,
       required this.tag,
+      required this.level,
+      required this.experience,
       required this.banner,
       required this.profileImage,
       required this.totalTasksCount,
@@ -45,6 +49,8 @@ class UserState {
         balance: data['balance'],
         login: data['login'],
         tag: data['tag'],
+        level: data['level'],
+        experience: data['experience'],
         avatar: AssetImage("${Strings.avatarsAssetFolder}${data['avatar']}"),
         banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
         profileImage: null,
@@ -65,6 +71,8 @@ class UserState {
       AssetImage? avatar,
       Image? profileImage,
       int? totalTasksCount,
+      int? level,
+      int? experience,
       int? highPriorityTasksCount,
       int? mediumPriorityTasksCount,
       int? lowPriorityTasksCount,
@@ -73,6 +81,8 @@ class UserState {
     return UserState(
         collection: collection ?? this.collection,
         uid: uid,
+        level: level ?? this.level,
+        experience: experience ?? this.experience,
         balance: balance ?? this.balance,
         login: login ?? this.login,
         tag: tag ?? this.tag,
@@ -94,18 +104,47 @@ class UserState {
 class UserStateNotifier extends StateNotifier<UserState?> {
   final firebaseUserManager = FirebaseUserManager();
 
-  UserStateNotifier()
-      : super(null);
+  UserStateNotifier() : super(null);
 
   void getUser() async {
     state = await firebaseUserManager.getUser();
   }
 
+  void addXp(int xp) async {
+    if (state != null) {
+      state = state!.copyWith(experience: state!.experience + xp);
+      firebaseUserManager.updateXp(state!.experience);
+      if (state!.experience >= state!.level * 100) {
+        state = state!.copyWith(
+            level: state!.level + 1,
+            experience: state!.experience - state!.level * 100);
+        firebaseUserManager.updateLevel(state!.level);
+        firebaseUserManager.updateXp(state!.experience);
+      }
+    }
+  }
+
+  void updateProfile() async {}
+
   Future<bool> buyItem(ShopItem item) async {
     if (state != null) {
       if (state!.balance >= item.price) {
+        firebaseUserManager.buyItem(item, state!.balance);
         state = state!.copyWith(
             balance: state!.balance - item.price,
+            collection: [...state!.collection, item.id]);
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> collectReward(RewardItem item) async {
+    if (state != null) {
+      if (state!.level >= item.level) {
+        firebaseUserManager.collectReward(item);
+        state = state!.copyWith(
             collection: [...state!.collection, item.id]);
         return true;
       }
@@ -115,8 +154,22 @@ class UserStateNotifier extends StateNotifier<UserState?> {
 
   Future<void> selectItem(ShopItem item) async {
     if (state != null) {
+      firebaseUserManager.selectItem(item);
       if (item.type == ShopItemType.banner) {
         state = state!.copyWith(banner: item.image);
+      } else {
+        state = state!.copyWith(avatar: item.image);
+      }
+    }
+  }
+
+  Future<void> selectItemReward(RewardItem item) async {
+    if (state != null) {
+      firebaseUserManager.selectRewardItem(item);
+      if (item.type == ShopItemType.banner) {
+        state = state!.copyWith(banner: item.image);
+      } else {
+        state = state!.copyWith(avatar: item.image);
       }
     }
   }

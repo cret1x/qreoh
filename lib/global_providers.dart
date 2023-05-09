@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
+import 'package:qreoh/entities/reward_item.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
@@ -9,6 +10,7 @@ import 'package:qreoh/states/achievements_state.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/friends_list_state.dart';
 import 'package:qreoh/states/network_state.dart';
+import 'package:qreoh/states/rewards_items_state.dart';
 import 'package:qreoh/states/shop_state.dart';
 import 'package:qreoh/states/task_filter_state.dart';
 import 'package:qreoh/states/task_list_state.dart';
@@ -35,3 +37,5 @@ final shopStateProvider = StateNotifierProvider<ShopStateNotifier, List<ShopItem
 final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState?>((ref) => UserStateNotifier());
 
 final achievementsProvider = StateNotifierProvider<AchievementsStateNotifier, List<Achievement>>((ref) => AchievementsStateNotifier());
+
+final rewardsStateProvider = StateNotifierProvider<RewardsStateNotifier, List<RewardItem>>((ref) => RewardsStateNotifier());

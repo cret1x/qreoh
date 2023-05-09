@@ -143,7 +143,6 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("REBUILD PROFILE");
     return Column(
       children: [
         Stack(
@@ -195,23 +194,56 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 32.0),
-                    child: Text(
-                      widget.profile.login,
-                      style: TextStyle(
-                          letterSpacing: 2,
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.profile.login,
+                              style: TextStyle(
+                                  letterSpacing: 2,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24),
+                            ),
+                            Text(
+                              "#${widget.profile.tag}",
+                              style: const TextStyle(
+                                  letterSpacing: 2,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ],
+                        ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.blueGrey,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Chip(label: Text("${widget.profile.level}")),
+                                SizedBox(
+                                  width: 100,
+                                  height: 10,
+                                  child: LinearProgressIndicator(
+                                    value: widget.profile.experience / (widget.profile.level * 100),
+                                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.lightGreenAccent),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                  Text(
-                    "#${widget.profile.tag}",
-                    style: const TextStyle(
-                        letterSpacing: 2,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
+                  )
+
                 ],
               ),
               Padding(

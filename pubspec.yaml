@@ -39,7 +39,6 @@ dependencies:
   firebase_database: ^10.1.0
   firebase_auth: ^4.4.0
   cloud_firestore: ^4.5.1
-  firebase_messaging: ^14.5.0
   flutter_riverpod: ^2.3.4
   uuid: ^3.0.7
   path: ^1.8.2

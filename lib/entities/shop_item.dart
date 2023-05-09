@@ -6,6 +6,7 @@ enum ShopItemType { banner, avatar }
 class ShopItem {
   final String id;
   final String name;
+  final String file;
   final AssetImage image;
   final int price;
   final ShopItemType type;
@@ -13,6 +14,7 @@ class ShopItem {
   ShopItem(
       {required this.id,
       required this.name,
+        required this.file,
       required this.image,
       required this.price,
       required this.type});
@@ -25,6 +27,7 @@ class ShopItem {
             ? AssetImage("${Strings.bannersAssetFolder}${data['image']}")
             : AssetImage("${Strings.avatarsAssetFolder}${data['image']}"),
         price: data['price'],
+        file: data['image'],
         type: data['type'] == "banner"
             ? ShopItemType.banner
             : ShopItemType.avatar);
