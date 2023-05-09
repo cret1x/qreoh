@@ -80,7 +80,7 @@ class FirebaseAuthManager {
       'tag': tag,
       'balance': 100,
       'banner': 'torii.jpg',
-      'avatar': 'eboy.jpg',
+      'avatar': 'eboy.png',
       'achievements': [],
       'collection': ['h9o8MYCjvMK4UxXvoa7z', 'sEth2BoQoV41l8AOWp9G'],
       'friends': [],
