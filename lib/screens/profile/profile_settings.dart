@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:qreoh/screens/profile/profile_shop.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:qreoh/strings.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MyProfileSettings extends ConsumerStatefulWidget {
@@ -94,7 +95,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   }
 
   Widget avatarListWidget({required BuildContext context}) {
-    return Container(
+    return SizedBox(
       height: 200,
       child: ListView(
           scrollDirection: Axis.horizontal,
@@ -107,8 +108,8 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
 
   bool checkForChanges() {
     return _newLogin == _userState!.login &&
-        _selectedBanner?.image.assetName == _userState!.banner.assetName &&
-        _selectedAvatar?.image.assetName == _userState!.avatar.assetName &&
+        (_selectedBanner == null || _selectedBanner?.image.assetName == _userState!.banner.assetName) &&
+        (_selectedAvatar == null || _selectedAvatar?.image.assetName == _userState!.avatar.assetName) &&
         !_imageFileChanged;
   }
 
@@ -116,7 +117,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     if (_imageFile == null) {
       if (_userState?.profileImage == null) {
         return Image.asset(
-          "assets/images/banners/desert.jpg",
+          Strings.defaultPfp,
           fit: BoxFit.cover,
         );
       }
@@ -133,7 +134,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   }
 
   Widget bannerListWidget({required BuildContext context}) {
-    return Container(
+    return SizedBox(
       height: 200,
       child: ListView(
           scrollDirection: Axis.horizontal,
@@ -215,17 +216,13 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     if (_userState != null) {
       _newLogin ??= _userState!.login;
       if (_rewardItems.isNotEmpty) {
-        var selAv =  _rewardItems
-            .where(
-                (item) => _userState!.avatar.assetName == item.image.assetName);
-        var selBan = _rewardItems
-            .where(
-                (item) => _userState!.banner.assetName == item.image.assetName);
-        if (selAv.isNotEmpty) {
-          _selectedAvatar ??= selAv.first;
-        }
-        if (selBan.isNotEmpty) {
-          _selectedBanner ??= selBan.first;
+        for (final item in _rewardItems) {
+          if (item.image.assetName == _userState!.avatar.assetName) {
+            _selectedAvatar = item;
+          }
+          if (item.image.assetName == _userState!.banner.assetName) {
+            _selectedBanner = item;
+          }
         }
       }
     }
@@ -240,17 +237,25 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
             await Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const ProfileShop()));
             setState(() {
-              var selAv =  _rewardItems
-                  .where(
-                      (item) => _userState!.avatar.assetName == item.image.assetName);
-              var selBan = _rewardItems
-                  .where(
-                      (item) => _userState!.banner.assetName == item.image.assetName);
-              if (selAv.isNotEmpty) {
-                _selectedAvatar = selAv.first;
+              if (_selectedAvatar != null) {
+                if (_userState!.avatar.assetName !=
+                    _selectedAvatar!.image.assetName) {
+                  _selectedAvatar = null;
+                }
               }
-              if (selBan.isNotEmpty) {
-                _selectedBanner = selBan.first;
+              if (_selectedBanner != null) {
+                if (_userState!.banner.assetName !=
+                    _selectedBanner!.image.assetName) {
+                  _selectedBanner = null;
+                }
+              }
+              for (final item in _rewardItems) {
+                if (item.image.assetName == _userState!.avatar.assetName) {
+                  _selectedAvatar = item;
+                }
+                if (item.image.assetName == _userState!.banner.assetName) {
+                  _selectedBanner = item;
+                }
               }
             });
           },
@@ -400,14 +405,16 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                         onPressed: checkForChanges()
                             ? null
                             : () {
-                                if (_selectedBanner?.image.assetName !=
-                                    _userState!.banner.assetName) {
+                                if (_selectedBanner != null &&
+                                    _selectedBanner!.image.assetName !=
+                                        _userState!.banner.assetName) {
                                   ref
                                       .read(userStateProvider.notifier)
                                       .selectItemReward(_selectedBanner!);
                                 }
-                                if (_selectedAvatar?.image.assetName !=
-                                    _userState!.avatar.assetName) {
+                                if (_selectedAvatar != null &&
+                                    _selectedAvatar?.image.assetName !=
+                                        _userState!.avatar.assetName) {
                                   ref
                                       .read(userStateProvider.notifier)
                                       .selectItemReward(_selectedAvatar!);
@@ -433,20 +440,4 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
             ),
     );
   }
-}
-
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Color(0xff555555);
-    Path path = Path()
-      ..relativeLineTo(0, 150)
-      ..quadraticBezierTo(size.width / 2, 225, size.width, 150)
-      ..relativeLineTo(0, -150)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

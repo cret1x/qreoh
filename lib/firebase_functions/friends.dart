@@ -21,6 +21,7 @@ class FirebaseFriendsManager {
     final usersRef = db.collection('users');
     final query =
     usersRef.where('login', isEqualTo: login).where('tag', isEqualTo: tag);
+    final currentUser = await usersRef.doc(FirebaseAuth.instance.currentUser!.uid).get();
     final value = await query.get();
     if (value.size != 0) {
       final user = value.docs.first.data();
