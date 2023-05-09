@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qreoh/strings.dart';
 
 
 class FirebaseAuthManager {
@@ -29,9 +30,9 @@ class FirebaseAuthManager {
       return "OK";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
+        return Strings.weakPassword;
       } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
+        return Strings.accountTaken;
       }
     } catch (e) {
       print(e);
@@ -48,9 +49,9 @@ class FirebaseAuthManager {
       return "OK";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
+        return Strings.noAccountForEmail;
       } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided for that user.';
+        return Strings.wrongPassword;
       }
     } catch (e) {
       print(e);

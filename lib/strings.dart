@@ -29,6 +29,10 @@ class Strings {
   static const String confirmMessageSent = "Вам было отправлено письмо для подтверждения";
   static const String resendConfirm = "Отправить еще раз";
   static const String loginToAnother = "Войти в другой аккаунт";
+  static const String weakPassword = "Ненадежный пароль";
+  static const String noAccountForEmail = "Нет аккаунта с такой почтой";
+  static const String accountTaken = "Почта уже занята";
+  static const String wrongPassword = "Неверный пароль";
 
   static const String appTitleTasks = "Задания";
   static const String appTitleProfile = "Профиль";
