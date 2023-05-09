@@ -68,6 +68,7 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
 
   void signOutUser() {
     state = UserAuthState.anonymous();
+    firebaseAuthManager.signOutUser();
   }
 
   void deleteUserAccount() {

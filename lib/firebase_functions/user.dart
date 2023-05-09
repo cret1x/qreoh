@@ -80,6 +80,13 @@ class FirebaseUserManager {
     });
   }
 
+  Future<void> getAchievement(String id) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    await db.collection('users').doc(uid).update({
+      'achievements': FieldValue.arrayUnion([id]),
+    });
+  }
+
   void collectReward(RewardItem item) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await db.collection('users').doc(uid).update({

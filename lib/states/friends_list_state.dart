@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/friends.dart';
+import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/states/user_state.dart';
 
 class FriendsState {
@@ -28,6 +29,7 @@ class FriendsState {
 
 class FriendListStateNotifier extends StateNotifier<FriendsState> {
   final firebaseFriendsManager = FirebaseFriendsManager();
+  final firebaseUserManager = FirebaseUserManager();
 
   FriendListStateNotifier()
       : super(FriendsState(friends: [], inRequests: [], outRequests: [])) {
@@ -103,6 +105,12 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
       return desc ? b.login.compareTo(a.login) : a.login.compareTo(b.login);
     });
     state = state.copyWith(friends: friends);
+    if (state.friends.length >= 10) {
+      firebaseUserManager.getAchievement("wAkHXdvXxwg6v61l9iOF");
+    }
+    if (state.friends.length >= 30) {
+      firebaseUserManager.getAchievement("RrTvf6eeIk7KbVuskIOD");
+    }
     return friends;
   }
 }

@@ -111,8 +111,8 @@ class UserState {
 class UserStateNotifier extends StateNotifier<UserState?> {
   final firebaseUserManager = FirebaseUserManager();
   final firebaseStorageManager = FirebaseStorageManager();
-
-  UserStateNotifier() : super(null);
+  final Ref ref;
+  UserStateNotifier(this.ref) : super(null);
 
   Future<void> getUser() async {
     state = await firebaseUserManager.getUser();
@@ -204,6 +204,28 @@ class UserStateNotifier extends StateNotifier<UserState?> {
         tasksFriendsCreated: tasksFriendsCreated,
         tasksCreated: tasksCreated,
         tasksCompleted: tasksCompleted);
+    // Achievements
+    if ((tasksCompleted ?? 0) >= 5) {
+      firebaseUserManager.getAchievement("O2odVXVywvNwMQIY5bnh");
+    }
+    if ((tasksCompleted ?? 0) >= 25) {
+      firebaseUserManager.getAchievement("fx82rivViNdrOxUWlDsH");
+    }
+    if ((tasksCreated ?? 0) >= 30) {
+      firebaseUserManager.getAchievement("YCaZyKpkYCl02ijZTCPP");
+    }
+    if ((tasksCreated ?? 0) >= 50) {
+      firebaseUserManager.getAchievement("PudEGukirhWiwa1nIkku");
+    }
+    if ((tasksFriendsCreated ?? 0) >= 20) {
+      firebaseUserManager.getAchievement("GrYAn0VDPtHaGSdmBTtC");
+    }
+    if ((tasksFriendsCompleted ?? 0) >= 10) {
+      firebaseUserManager.getAchievement("Nwcqbn0bC5E5lkWbZA86");
+    }
+    if ((tasksFriendsCompleted ?? 0) >= 25) {
+      firebaseUserManager.getAchievement("wAkHXdvXxwg6v61l9iOF");
+    }
     if (state != null) {
       state = state!.copyWith(
           tasksFriendsCompleted: tasksFriendsCompleted,
@@ -212,5 +234,4 @@ class UserStateNotifier extends StateNotifier<UserState?> {
           tasksCompleted: tasksCompleted);
     }
   }
-
 }
