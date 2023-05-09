@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../global_providers.dart';
+
 class CreateEditFolderWidget extends StatefulWidget {
   final String? _oldName;
   CreateEditFolderWidget(this._oldName, {super.key});

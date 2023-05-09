@@ -647,11 +647,11 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   .read(taskListStateProvider.notifier)
                                   .updateTask(widget._folder, widget._task!);
                             }
-
+                            ref.read(tasksListRebuildProvider).notify();
                             Navigator.pop(
                                 context, widget._task == null ? 1 : 0);
                           },
-                        )),
+                        ),),
                   ),
                 ],
               ),
@@ -695,6 +695,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                   ],
                                 ),
                               );
+                              ref.read(tasksListRebuildProvider).notify();
                               if (result) {
                                 ref
                                     .read(taskListStateProvider.notifier)

@@ -51,7 +51,8 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: Theme.of(context).colorScheme.brightness == Brightness.light
+                      image: Theme.of(context).colorScheme.brightness ==
+                              Brightness.light
                           ? _appThemeState.lightBackground
                           : _appThemeState.darkBackground,
                       fit: BoxFit.cover,
@@ -287,11 +288,12 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                         alignment: Alignment
                                                             .centerLeft,
                                                         child: Icon(
-                                                          Icons.mode_edit_outlined,
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .onSurface,
+                                                          Icons
+                                                              .mode_edit_outlined,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .onSurface,
                                                         ),
                                                       ),
                                                       confirmDismiss:
@@ -314,15 +316,25 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                             snapshot
                                                                 .data![index]
                                                                 .rename(result);
-                                                            widget
+                                                            await widget
                                                                 ._firebaseTaskManager
                                                                 .updateFolder(
                                                                     snapshot.data![
                                                                         index]);
+                                                            ref
+                                                                .read(
+                                                                folderStateProvider
+                                                                    .notifier)
+                                                                .reload();
                                                           }
                                                           setState(() {});
                                                           return false;
                                                         }
+                                                        ref
+                                                            .read(
+                                                                folderStateProvider
+                                                                    .notifier)
+                                                            .reload();
                                                         widget
                                                             ._firebaseTaskManager
                                                             .deleteFolder(

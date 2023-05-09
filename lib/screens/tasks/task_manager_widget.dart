@@ -22,8 +22,9 @@ class TaskManagerWidget extends ConsumerStatefulWidget {
   ConsumerState<TaskManagerWidget> createState() => _TaskManagerState();
 }
 
-class _TaskManagerState extends ConsumerState<TaskManagerWidget> with AutomaticKeepAliveClientMixin{
-  Folder _current = Folder(id: "root", name: "Общее", parent: null);
+class _TaskManagerState extends ConsumerState<TaskManagerWidget>
+    with AutomaticKeepAliveClientMixin {
+  late Folder _current;
   AppThemeState _appThemeState = AppThemeState.base();
   SortRule _sortRule = SortRule.leftAsc;
   static final List<DropdownMenuItem<SortRule>> _menuItems = [
@@ -52,14 +53,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> with AutomaticK
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
+    super.build(context);
+    _current = ref.watch(folderStateProvider);
     ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
 
-  }
-
-  @override
-  Widget build(BuildContext context) {
     ref.read(userTagsProvider.notifier).loadTags();
     _appThemeState = ref.watch(appThemeProvider);
     return Stack(
@@ -67,10 +65,9 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> with AutomaticK
         ConstrainedBox(
           constraints: const BoxConstraints.expand(),
           child: Image(
-            image:
-                Theme.of(context).colorScheme.brightness == Brightness.light
-                    ? _appThemeState.lightBackground
-                    : _appThemeState.darkBackground,
+            image: Theme.of(context).colorScheme.brightness == Brightness.light
+                ? _appThemeState.lightBackground
+                : _appThemeState.darkBackground,
             fit: BoxFit.cover,
           ),
         ),
@@ -154,14 +151,11 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget> with AutomaticK
                                                               FoldersWidget(
                                                                   _current)));
                                               if (newFolder != null) {
-                                                _current = newFolder;
                                                 ref
-                                                    .read(taskListStateProvider
+                                                    .read(folderStateProvider
                                                         .notifier)
-                                                    .loadTasksFromFolder(
-                                                        _current);
+                                                    .changeFolder(newFolder);
                                               }
-                                              setState(() {});
                                             },
                                             icon: const Icon(Icons.folder_open),
                                             color: Colors.white,

@@ -1,8 +1,15 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
+
+class TaskListRebuildNotifier with ChangeNotifier {
+  void notify() {
+    notifyListeners();
+  }
+}
 
 class TaskListStateNotifier extends StateNotifier<List<Task>> {
   TaskListStateNotifier() : super([]);
