@@ -25,27 +25,28 @@ class UserState {
   final int tasksCreated;
   final int tasksCompleted;
   final int friendsCount;
+  final int tasksFromFriendsReceived;
   final int level;
   final int experience;
   final List<String> achievements;
 
-  UserState(
-      {required this.collection,
-      required this.uid,
-      required this.balance,
-      required this.avatar,
-      required this.login,
-      required this.tag,
-      required this.level,
-      required this.experience,
-      required this.banner,
-      required this.profileImage,
-      required this.tasksFriendsCompleted,
-      required this.tasksFriendsCreated,
-      required this.tasksCreated,
-      required this.tasksCompleted,
-      required this.friendsCount,
-      required this.achievements});
+  UserState({required this.collection,
+    required this.uid,
+    required this.balance,
+    required this.avatar,
+    required this.login,
+    required this.tag,
+    required this.level,
+    required this.experience,
+    required this.banner,
+    required this.tasksFromFriendsReceived,
+    required this.profileImage,
+    required this.tasksFriendsCompleted,
+    required this.tasksFriendsCreated,
+    required this.tasksCreated,
+    required this.tasksCompleted,
+    required this.friendsCount,
+    required this.achievements});
 
   factory UserState.fromFirestore(String uid, Map<String, dynamic> data) {
     return UserState(
@@ -62,27 +63,28 @@ class UserState {
         tasksFriendsCompleted: data['tasksFriendsCompleted'],
         tasksFriendsCreated: data['tasksFriendsCreated'],
         tasksCreated: data['tasksCreated'],
+        tasksFromFriendsReceived: data['tasksFromFriendsReceived'],
         tasksCompleted: data['tasksCompleted'],
         friendsCount: data['friends'] == null ? 0 : data['friends'].length,
         achievements: List.from(data['achievements']));
   }
 
-  UserState copyWith(
-      {List<String>? collection,
-      int? balance,
-      String? login,
-      int? tag,
-      AssetImage? banner,
-      AssetImage? avatar,
-      String? profileImage,
-      int? tasksCompleted,
-      int? level,
-      int? experience,
-      int? tasksFriendsCompleted,
-      int? tasksFriendsCreated,
-      int? tasksCreated,
-      int? friendsCount,
-      List<String>? achievements}) {
+  UserState copyWith({List<String>? collection,
+    int? balance,
+    String? login,
+    int? tag,
+    AssetImage? banner,
+    AssetImage? avatar,
+    String? profileImage,
+    int? tasksFromFriendsReceived,
+    int? tasksCompleted,
+    int? level,
+    int? experience,
+    int? tasksFriendsCompleted,
+    int? tasksFriendsCreated,
+    int? tasksCreated,
+    int? friendsCount,
+    List<String>? achievements}) {
     return UserState(
         collection: collection ?? this.collection,
         uid: uid,
@@ -93,9 +95,11 @@ class UserState {
         tag: tag ?? this.tag,
         banner: banner ?? this.banner,
         profileImage: profileImage,
+        tasksFromFriendsReceived: tasksFromFriendsReceived ??
+            this.tasksFromFriendsReceived,
         avatar: avatar ?? this.avatar,
         tasksFriendsCompleted:
-            tasksFriendsCompleted ?? this.tasksFriendsCompleted,
+        tasksFriendsCompleted ?? this.tasksFriendsCompleted,
         tasksFriendsCreated: tasksFriendsCreated ?? this.tasksFriendsCreated,
         tasksCreated: tasksCreated ?? this.tasksCreated,
         tasksCompleted: tasksCompleted ?? this.tasksCompleted,
@@ -195,17 +199,18 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     int? tasksCreated,
     int? tasksCompleted,
   }) async {
-    await firebaseUserManager.updateStats(tasksFriendsCompleted: tasksFriendsCompleted,
+    await firebaseUserManager.updateStats(
+        tasksFriendsCompleted: tasksFriendsCompleted,
         tasksFriendsCreated: tasksFriendsCreated,
         tasksCreated: tasksCreated,
         tasksCompleted: tasksCompleted);
     if (state != null) {
       state = state!.copyWith(
-    tasksFriendsCompleted: tasksFriendsCompleted,
-    tasksFriendsCreated: tasksFriendsCreated,
-    tasksCreated: tasksCreated,
-    tasksCompleted: tasksCompleted);
-  }
+          tasksFriendsCompleted: tasksFriendsCompleted,
+          tasksFriendsCreated: tasksFriendsCreated,
+          tasksCreated: tasksCreated,
+          tasksCompleted: tasksCompleted);
     }
+  }
 
 }

@@ -85,7 +85,11 @@ class Task {
       Priority? priority,
       bool? done,
       bool? haveTime,
-        String? from,
+      String? from,
+      DateTime? deadline,
+      Duration? timeRequired,
+      String? description,
+      String? place,
       List<String>? tags}) {
     return Task(
       id: id,
@@ -96,6 +100,10 @@ class Task {
       haveTime: haveTime ?? this.haveTime,
       from: from ?? this.from,
       tags: tags ?? this.tags,
+      deadline: deadline ?? this.deadline,
+      timeRequired: timeRequired ?? this.timeRequired,
+      description: description ?? this.description,
+      place: place ?? this.place,
     );
   }
 
@@ -108,7 +116,7 @@ class Task {
       bool? haveTime,
       Duration? timeRequired,
       String? description,
-        String? from,
+      String? from,
       String? place}) {
     this.parent = parent;
     this.name = name;

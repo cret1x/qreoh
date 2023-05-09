@@ -191,16 +191,18 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                           image: AssetImage(Strings.defaultPfp),
                           fit: BoxFit.cover),
                     ),
-                    child: widget.profile.profileImage != null ? DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: widget.profile.profileImage!,
-                        fit: BoxFit.cover,
-                      ),
-                    ) : null,
+                    child: widget.profile.profileImage != null
+                        ? DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: widget.profile.profileImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : null,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 32.0),
@@ -213,7 +215,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               widget.profile.login,
                               style: TextStyle(
                                   letterSpacing: 2,
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24),
                             ),
@@ -242,8 +245,11 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                   width: 100,
                                   height: 10,
                                   child: LinearProgressIndicator(
-                                    value: widget.profile.experience / (widget.profile.level * 100),
-                                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.lightGreenAccent),
+                                    value: widget.profile.experience /
+                                        (widget.profile.level * 100),
+                                    valueColor:
+                                        const AlwaysStoppedAnimation<Color>(
+                                            Colors.lightGreenAccent),
                                   ),
                                 ),
                               ],
@@ -253,7 +259,6 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       ],
                     ),
                   )
-
                 ],
               ),
               Padding(
@@ -397,7 +402,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 const Divider(),
                                 Text(
-                                  "${widget.profile.tasksCreated <= 0 ? 0 : widget.profile.tasksCompleted / widget.profile.tasksCreated * 100}%",
+                                  "${widget.profile.tasksCreated <= 0 ? 0 : double.parse((widget.profile.tasksCompleted / widget.profile.tasksCreated * 100).toStringAsFixed(2))}%",
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
                                 ),
@@ -468,7 +473,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children:  [
+                              children: [
                                 SizedBox(
                                   height: 55,
                                   child: Text(
@@ -479,7 +484,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  widget.profile.tasksFriendsCompleted.toString(),
+                                  widget.profile.tasksFriendsCompleted
+                                      .toString(),
                                   //widget.profile.totalTasksCount.toString(),
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
@@ -507,8 +513,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
-                                SizedBox(
+                              children: [
+                                const SizedBox(
                                   height: 55,
                                   child: Text(
                                     "Процент выполненных заданий от друзей",
@@ -518,7 +524,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  "50",
+                                  "${widget.profile.tasksFromFriendsReceived <= 0 ? 0 : double.parse((widget.profile.tasksFriendsCompleted / widget.profile.tasksFromFriendsReceived * 100).toStringAsFixed(2))}%",
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
                                 ),
