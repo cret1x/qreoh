@@ -264,7 +264,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
-                  "Достижения",
+                  "Достижения ${widget.profile.achievements.length}/${widget.achievements.length}",
                   style: TextStyle(
                       letterSpacing: 2,
                       color: Theme.of(context).colorScheme.secondary,
