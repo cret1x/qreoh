@@ -34,7 +34,6 @@ class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('friend build');
     ref.listen(friendsListStateProvider, (previous, next) {
       setState(() {
         _friends = next.friends;

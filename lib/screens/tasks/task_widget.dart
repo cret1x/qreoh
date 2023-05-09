@@ -36,7 +36,15 @@ class TaskState extends ConsumerState<TaskWidget> {
         .where((element) => widget.task.tags.contains(element.id))
         .toList();
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                //TODO navigate to create task for friends screen
+              },
+              icon: const Icon(Icons.share)),
+        ],
+      ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(

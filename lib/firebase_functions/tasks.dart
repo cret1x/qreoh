@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qreoh/entities/folder.dart';
+import 'package:qreoh/states/user_state.dart';
 
 import '../entities/task.dart';
 
@@ -39,8 +40,11 @@ class FirebaseTaskManager {
   }
 
   Future<void> changeTaskState(Task task) async {
-    final taskRef =
-        db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("tasks").doc(task.id);
+    final taskRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("tasks")
+        .doc(task.id);
     taskRef.update({
       "done": task.done,
     });
@@ -78,12 +82,18 @@ class FirebaseTaskManager {
   }
 
   Future<void> createFolder(Folder folder) async {
-    final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
+    final foldersRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("folders");
     foldersRef.doc(folder.id).set(folder.toFirestore());
   }
 
   Future<void> deleteFolder(Folder folder) async {
-    final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
+    final foldersRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("folders");
     foldersRef.doc(folder.id).delete();
     final subTasks = await getTasksInFolder(folder);
     final subs = await getSubFolders(folder);
@@ -97,17 +107,34 @@ class FirebaseTaskManager {
   }
 
   Future<void> updateFolder(Folder folder) async {
-    final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
+    final foldersRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("folders");
     foldersRef.doc(folder.id).set(folder.toFirestore());
   }
 
   Future<Folder> reloadFolder(Folder folder) async {
-    final foldersRef = db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("folders");
+    final foldersRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("folders");
     final doc = await foldersRef.doc(folder.id).get();
     if (doc.data() != null) {
       folder.rename(doc.data()!['name']);
       return folder;
     }
     return reloadFolder(folder.parent!);
+  }
+
+  Future<void> sendTaskToFriend(Task task, UserState friend) async {
+    final foldersRef =
+        db.collection('users').doc(friend.uid).collection("folders");
+    final tasksRef = db.collection('users').doc(friend.uid).collection("tasks");
+    await foldersRef.doc("friends").set({
+      'name': 'От друзей',
+      'parent': 'root',
+    });
+    await tasksRef.doc(task.id).set(task.toFirestore());
   }
 }
