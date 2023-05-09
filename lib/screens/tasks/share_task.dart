@@ -416,12 +416,19 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               child: Stack(
                                 children: [
                                   CircleAvatar(
-                                    foregroundImage: (friend.profileImage != null)
+                                    backgroundImage: (friend.profileImage != null)
                                         ? NetworkImage(friend.profileImage!)
                                         : null,
                                     radius: 32,
                                   ),
-                                  
+                                  CircleAvatar(
+                                    backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(_receievers.contains(friend) ? 0.7 : 0),
+                                    radius: 32,
+                                  ),
+                                  Visibility(
+                                    visible: _receievers.contains(friend),
+                                    child: Center(child: Icon(Icons.done, color: Theme.of(context).colorScheme.onBackground, size: 40,))
+                                  ),
                                 ],
                               ),
                             ),
