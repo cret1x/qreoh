@@ -84,11 +84,9 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 Checkbox(
                   value: widget.task.done,
                   onChanged: (bool? state) {
-                    setState(() {
-                      widget.task.done = state ?? false;
-                      ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
-                      //widget.firebaseTaskManager.changeTaskState(widget.task);
-                    });
+                    widget.task.done = state ?? false;
+                    ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
+                    ref.read(tasksListRebuildProvider).notify();
                   },
                 ),
                 Expanded(
