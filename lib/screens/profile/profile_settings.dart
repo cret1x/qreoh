@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:qreoh/screens/profile/profile_shop.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class MyProfileSettings extends ConsumerStatefulWidget {
   const MyProfileSettings({super.key});
@@ -20,8 +21,12 @@ class MyProfileSettings extends ConsumerStatefulWidget {
 
 class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   UserState? _userState;
-  File? imageFile;
+  File? _imageFile;
+  String? _newLogin;
+  bool _imageFileChanged = false;
   List<RewardItem> _rewardItems = [];
+  RewardItem? _selectedBanner;
+  RewardItem? _selectedAvatar;
   final _loginController = TextEditingController();
 
   @override
@@ -39,23 +44,32 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
 
   Widget buyButton(RewardItem item) {
     if (_userState!.collection.contains(item.id)) {
-      if (_userState!.banner.assetName == item.image.assetName) {
+      if (_selectedBanner?.id == item.id || _selectedAvatar?.id == item.id) {
         return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
       }
       return ElevatedButton(
           onPressed: () {
-            ref.read(userStateProvider.notifier).selectItemReward(item);
+            if (item.type == ShopItemType.banner) {
+              setState(() {
+                _selectedBanner = item;
+              });
+            } else {
+              setState(() {
+                _selectedAvatar = item;
+              });
+            }
           },
           child: const Text("Выбрать"));
     }
     if (_userState!.level >= item.level) {
-      return ElevatedButton(onPressed: () {
-        ref.read(userStateProvider.notifier).collectReward(item);
-      }, child: const Text("Получить"));
+      return ElevatedButton(
+          onPressed: () {
+            ref.read(userStateProvider.notifier).collectReward(item);
+          },
+          child: const Text("Получить"));
     } else {
       return ElevatedButton(onPressed: null, child: Text("Lvl ${item.level}"));
     }
-
   }
 
   Widget rewardIcon(RewardItem item) {
@@ -91,6 +105,33 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     );
   }
 
+  bool checkForChanges() {
+    return _newLogin == _userState!.login &&
+        _selectedBanner?.image.assetName == _userState!.banner.assetName &&
+        _selectedAvatar?.image.assetName == _userState!.avatar.assetName &&
+        !_imageFileChanged;
+  }
+
+  Widget getProfileImage() {
+    if (_imageFile == null) {
+      if (_userState?.profileImage == null) {
+        return Image.asset(
+          "assets/images/banners/desert.jpg",
+          fit: BoxFit.cover,
+        );
+      }
+      return FadeInImage.memoryNetwork(
+        placeholder: kTransparentImage,
+        image: _userState!.profileImage!,
+        fit: BoxFit.cover,
+      );
+    }
+    return Image.file(
+      _imageFile!,
+      fit: BoxFit.cover,
+    );
+  }
+
   Widget bannerListWidget({required BuildContext context}) {
     return Container(
       height: 200,
@@ -103,17 +144,15 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     );
   }
 
-  void save() {
-    if (imageFile != null) {}
-  }
-
-  Future pickImageGallary() async {
+  Future pickImageGallery() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       setState(() {
-        imageFile = File(pickedImage.path);
+        _imageFile = File(pickedImage.path);
+        _imageFileChanged = true;
+        Navigator.pop(context);
       });
     }
   }
@@ -124,14 +163,16 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
 
     if (pickedImage != null) {
       setState(() {
-        imageFile = File(pickedImage.path);
+        _imageFile = File(pickedImage.path);
+        _imageFileChanged = true;
+        Navigator.pop(context);
       });
     }
   }
 
   void clearImage() {
     setState(() {
-      imageFile = null;
+      _imageFile = null;
     });
   }
 
@@ -140,11 +181,16 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: Text('Выбор фото'),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
+            ),
+            title: const Text('Выбор фото'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
-                  pickImageGallary();
+                  pickImageGallery();
                 },
                 child: const Text('Галерея'),
               ),
@@ -167,224 +213,217 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
       return a.level.compareTo(b.level);
     });
     if (_userState != null) {
-      _loginController.text = _userState!.login;
+      _newLogin ??= _userState!.login;
+      if (_rewardItems.isNotEmpty) {
+        _selectedAvatar ??= _rewardItems
+            .where(
+                (item) => _userState!.avatar.assetName == item.image.assetName)
+            .first;
+        _selectedBanner ??= _rewardItems
+            .where(
+                (item) => _userState!.banner.assetName == item.image.assetName)
+            .first;
+      }
     }
     return Scaffold(
-        appBar: AppBar(actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.shopping_bag,
-              size: 30,
-            ),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ProfileShop()));
-            },
+      appBar: AppBar(actions: [
+        IconButton(
+          icon: const Icon(
+            Icons.shopping_bag,
+            size: 30,
           ),
-        ]),
-        body: _userState == null
-            ? Center(
-                child: Column(
-                  children: const [CircularProgressIndicator()],
-                ),
-              )
-            : Column(
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        height: 250,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: _userState!.banner, fit: BoxFit.cover)),
-                      ),
-                      ClipRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                          child: Container(
-                            height: 250,
-                            decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.4)),
-                            child: Center(
-                              child: Image(
-                                image: _userState!.avatar,
-                                fit: BoxFit.contain,
-                              ),
+          onPressed: () async {
+            await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProfileShop()));
+            setState(() {
+              _selectedAvatar = _rewardItems
+                  .where((item) =>
+                      _userState!.avatar.assetName == item.image.assetName)
+                  .first;
+              _selectedBanner = _rewardItems
+                  .where((item) =>
+                      _userState!.banner.assetName == item.image.assetName)
+                  .first;
+            });
+          },
+        ),
+      ]),
+      body: _userState == null
+          ? Center(
+              child: Column(
+                children: const [CircularProgressIndicator()],
+              ),
+            )
+          : Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 250,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  _selectedBanner?.image ?? _userState!.banner,
+                              fit: BoxFit.cover)),
+                    ),
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          height: 250,
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4)),
+                          child: Center(
+                            child: Image(
+                              image:
+                                  _selectedAvatar?.image ?? _userState!.avatar,
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.all(10),
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 125,
-                              width: 125,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(10),
+                    children: [
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: selectPhoto,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 125,
+                                  width: 125,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 3.0),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: getProfileImage(),
+                                ),
+                                ClipRect(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    height: 125,
+                                    width: 125,
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 32.0),
+                              child: TextFormField(
+                                initialValue: _userState?.login,
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    _newLogin = value ?? _newLogin;
+                                  });
+                                },
+                                maxLength: 16,
+                                decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                  labelText: "Имя пользователя",
+                                  labelStyle: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.primary,
-                                    width: 3.0),
-                                borderRadius: BorderRadius.circular(12),
-                                image: const DecorationImage(
-                                    image: AssetImage(
-                                        "assets/images/banners/desert.jpg"),
-                                    fit: BoxFit.cover),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32.0),
-                                child: TextFormField(
-                                  controller: _loginController,
-                                  decoration: InputDecoration(
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary),
-                                    ),
-                                    labelText: "Имя пользователя",
-                                    labelStyle: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            "Баннеры",
-                            style: TextStyle(
-                                letterSpacing: 2,
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24),
                           ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          "Баннеры",
+                          style: TextStyle(
+                              letterSpacing: 2,
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: bannerListWidget(context: context),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: bannerListWidget(context: context),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Text(
+                          "Аватары",
+                          style: TextStyle(
+                              letterSpacing: 2,
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Text(
-                            "Аватары",
-                            style: TextStyle(
-                                letterSpacing: 2,
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: avatarListWidget(context: context),
-                        ),
-                        ElevatedButton(
-                            onPressed: () {}, child: const Text("Сохранить"))
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: avatarListWidget(context: context),
+                      ),
+                      ElevatedButton(
+                        onPressed: checkForChanges()
+                            ? null
+                            : () {
+                                if (_selectedBanner!.image.assetName !=
+                                    _userState!.banner.assetName) {
+                                  ref
+                                      .read(userStateProvider.notifier)
+                                      .selectItemReward(_selectedBanner!);
+                                }
+                                if (_selectedAvatar!.image.assetName !=
+                                    _userState!.avatar.assetName) {
+                                  ref
+                                      .read(userStateProvider.notifier)
+                                      .selectItemReward(_selectedBanner!);
+                                }
+                                if (_newLogin != null &&
+                                    _newLogin != _userState!.login) {
+                                  ref
+                                      .read(userStateProvider.notifier)
+                                      .updateLogin(_newLogin!);
+                                }
+                                if (_imageFile != null && _imageFileChanged) {
+                                  ref
+                                      .read(userStateProvider.notifier)
+                                      .updateProfileImage(_imageFile!);
+                                }
+                              },
+                        child: const Text("Сохранить"),
+                      )
+                    ],
                   ),
-                ],
-              )
-        // Stack(
-        //   alignment: Alignment.center,
-        //   children: [
-        //     Column(
-        //       mainAxisAlignment: MainAxisAlignment.end,
-        //       children: [
-        //         Container(
-        //           height: 400,
-        //           width: double.infinity,
-        //           margin: EdgeInsets.symmetric(horizontal: 10),
-        //           child: Column(
-        //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //             crossAxisAlignment: CrossAxisAlignment.end,
-        //             children: [
-        //               textfield(
-        //                 hintText: 'Username',
-        //               ),
-        //               Container(
-        //                 height: 180,
-        //                 child: Column(
-        //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //                   children: [
-        //                     textbotton(
-        //                       hintText: 'Save',
-        //                       function: save,
-        //                     ),
-        //                     textbotton(
-        //                       hintText: 'Cansel',
-        //                       function: cancel,
-        //                     ),
-        //                   ],
-        //                 ),
-        //               )
-        //             ],
-        //           ),
-        //         )
-        //       ],
-        //     ),
-        //     CustomPaint(
-        //       painter: HeaderCurvedContainer(),
-        //       child: SizedBox(
-        //         width: MediaQuery.of(context).size.width,
-        //         height: MediaQuery.of(context).size.height,
-        //       ),
-        //     ),
-        //     Column(
-        //       crossAxisAlignment: CrossAxisAlignment.stretch,
-        //       children: [
-        //         Align(
-        //           child: Container(
-        //             height: 125,
-        //             width: 125,
-        //             margin: const EdgeInsets.only(top: 120, left: 40, right: 40),
-        //             decoration: BoxDecoration(
-        //               color: Colors.white,
-        //               border: Border.all(color: Colors.black, width: 0.0),
-        //               borderRadius: const BorderRadius.all(Radius.elliptical(50, 50)),
-        //             ),
-        //             child: Text(''),
-        //             //image: DecorationImage(
-        //             //fit: BoxFit.cover,
-        //             //image: Image.network('images/profile.png'),
-        //             //),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //     Padding(
-        //       padding: EdgeInsets.only(bottom: 270, left: 110, top:90),
-        //       child: CircleAvatar(
-        //         backgroundColor: Colors.black54,
-        //         child: IconButton(
-        //           icon: const Icon(
-        //             Icons.edit,
-        //             color: Colors.white,
-        //           ),
-        //           onPressed: () {
-        //             selectPhoto();
-        //           },
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        );
+                ),
+              ],
+            ),
+    );
   }
 }
 

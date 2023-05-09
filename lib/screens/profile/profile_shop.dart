@@ -24,6 +24,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       return ElevatedButton(
           onPressed: () {
             ref.read(userStateProvider.notifier).selectItem(item);
+            ref.read(userStateProvider.notifier).getUser();
           },
           child: const Text("Выбрать"));
     }

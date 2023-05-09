@@ -44,7 +44,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login form"),
+        title: const Text("Вход"),
       ),
       body: Center(
         child: Padding(
@@ -61,13 +61,13 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Email is required";
+                            return "Обязательное поле";
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Enter your email')),
+                            labelText: 'Введите вашу почту')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -79,7 +79,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                         controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Password is required";
+                            return "Обязательное поле";
                           }
                           return null;
                         },
@@ -99,7 +99,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Enter your password')),
+                            labelText: 'Введите ваш пароль')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -110,7 +110,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                             MaterialPageRoute(
                                 builder: (context) => const ResetPassword()));
                       },
-                      child: const Text('I forgot'),
+                      child: const Text('Забыл пароль'),
                     ),
                   ),
                   Padding(
@@ -130,7 +130,7 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                               if (value == "OK") {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                        content: Text("Login success")));
+                                        content: Text("Успешный вход")));
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -139,13 +139,13 @@ class _LoginWidgetState extends ConsumerState<LoginWidget>
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text("Error occurred")));
+                                      content: Text("Произошла ошибка")));
                             }
                           });
                         }
                       },
                       child: const Text(
-                        "Login",
+                        "Войти",
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

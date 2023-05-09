@@ -61,15 +61,16 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
                         controller: _loginController,
+                        maxLength: 16,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Login is required";
+                            return "Обязательное поле";
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Enter your login')),
+                            labelText: 'Введите ваш логин')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -77,13 +78,13 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _emailController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Email is required";
+                            return "Обязательное поле";
                           }
                           return null;
                         },
                         decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Enter your email')),
+                            labelText: 'Введите вашу почту')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -95,7 +96,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Password is required";
+                            return "Обязательное поле";
                           }
                           return null;
                         },
@@ -115,7 +116,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Enter your password')),
+                            labelText: 'Введите ваш пароль')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -127,10 +128,10 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         controller: _passwordCheckController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Password is required";
+                            return "Обязательное поле";
                           }
                           if (value != _passwordController.text) {
-                            return "Passwords must be same";
+                            return "Пароли должны совпадать";
                           }
                           return null;
                         },
@@ -150,7 +151,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                               ),
                             ),
                             border: const OutlineInputBorder(),
-                            labelText: 'Repeat your password')),
+                            labelText: 'Повторный пароль')),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -166,14 +167,14 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                             });
                             if (value != null) {
                               if (value == "OK") {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Account created!")));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Аккаунт создан")));
                                 ref.read(authStateProvider.notifier).verifyUser();
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(value)));
                               }
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error occurred")));
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("произошла ошибка")));
                             }
                           });
                         }
@@ -190,7 +191,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         ),
                       )
                           : const Icon(Icons.feedback),
-                      label: const Text('Register'),
+                      label: const Text('Зарегестрироваться'),
                     ),
                   ),
                 ],

@@ -23,7 +23,7 @@ class CreateEditTagWidget extends ConsumerStatefulWidget {
 }
 
 class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
-  late final _controller;
+  late final TextEditingController _controller;
   final uuid = const Uuid();
   Color _selectedColor = Colors.red;
   IconData _selectedIcon = icons.first;

@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
 import 'package:qreoh/entities/reward_item.dart';
 import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/firebase_functions/shop.dart';
+import 'package:qreoh/firebase_functions/storage.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/strings.dart';
 
@@ -12,7 +17,7 @@ class UserState {
   final int balance;
   final String login;
   final int tag;
-  final Image? profileImage;
+  final String? profileImage;
   final AssetImage avatar;
   final AssetImage banner;
   final int totalTasksCount;
@@ -53,7 +58,7 @@ class UserState {
         experience: data['experience'],
         avatar: AssetImage("${Strings.avatarsAssetFolder}${data['avatar']}"),
         banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
-        profileImage: null,
+        profileImage: data['profileImage'],
         totalTasksCount: data['tasksCount'],
         highPriorityTasksCount: data['highTasksCount'],
         mediumPriorityTasksCount: data['midTasksCount'],
@@ -69,7 +74,7 @@ class UserState {
       int? tag,
       AssetImage? banner,
       AssetImage? avatar,
-      Image? profileImage,
+      String? profileImage,
       int? totalTasksCount,
       int? level,
       int? experience,
@@ -103,6 +108,7 @@ class UserState {
 
 class UserStateNotifier extends StateNotifier<UserState?> {
   final firebaseUserManager = FirebaseUserManager();
+  final firebaseStorageManager = FirebaseStorageManager();
 
   UserStateNotifier() : super(null);
 
@@ -124,7 +130,20 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     }
   }
 
-  void updateProfile() async {}
+  void updateProfileImage(File image) async {
+    if (state != null) {
+      final url = await firebaseStorageManager.uploadProfilePicture(image);
+      state = state!.copyWith(profileImage: url);
+    }
+
+  }
+
+  void updateLogin(String login) async {
+    if (state != null) {
+      await firebaseUserManager.updateLogin(login);
+      state = state!.copyWith(login: login);
+    }
+  }
 
   Future<bool> buyItem(ShopItem item) async {
     if (state != null) {

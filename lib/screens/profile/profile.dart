@@ -9,6 +9,7 @@ import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
 import 'package:qreoh/strings.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ProfileWidget extends ConsumerStatefulWidget {
   final UserState profile;
@@ -191,6 +192,11 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                               "assets/images/banners/desert.jpg"),
                           fit: BoxFit.cover),
                     ),
+                    child: widget.profile.profileImage != null ? FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: widget.profile.profileImage!,
+                      fit: BoxFit.cover,
+                    ) : null,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 32.0),
