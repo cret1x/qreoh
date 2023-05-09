@@ -1,14 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/screens/tasks/folders/folders_widget.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../firebase_functions/tasks.dart';
-import 'task_manager_widget.dart';
 import '../../../entities/tag.dart';
 import '../../../entities/folder.dart';
 import '../../../entities/task.dart';
