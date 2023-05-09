@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/friends/add_friend.dart';
 import 'package:qreoh/screens/friends/friend_requests.dart';
 import 'package:qreoh/screens/friends/friends_widget.dart';
@@ -8,14 +10,14 @@ import 'package:qreoh/screens/settings/settings.dart';
 import 'package:qreoh/screens/tasks/tasks/task_manager_widget.dart';
 import 'package:qreoh/strings.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   int _navbarSelectedIndex = 0;
   final PageController _pageController = PageController(initialPage: 0);
   static final List<Widget> _pages = [
@@ -74,6 +76,17 @@ class _HomePageState extends State<HomePage> {
       default:
         return [];
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(userStateProvider.notifier).getUser();
+    ref.read(userTagsProvider.notifier).loadTags();
+    ref.read(friendsListStateProvider.notifier).getAllFriends(false);
+    ref.read(shopStateProvider.notifier).loadItems();
+    ref.read(rewardsStateProvider.notifier).loadItems();
+    ref.read(achievementsProvider.notifier).loadAchievements();
   }
 
   @override
