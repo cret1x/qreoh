@@ -5,7 +5,7 @@ import 'package:qreoh/screens/friends/friends_widget.dart';
 import 'package:qreoh/screens/profile/profile_settings.dart';
 import 'package:qreoh/screens/profile/user_profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
-import 'package:qreoh/screens/tasks/task_manager_widget.dart';
+import 'package:qreoh/screens/tasks/tasks/task_manager_widget.dart';
 import 'package:qreoh/strings.dart';
 
 class HomePage extends StatefulWidget {
