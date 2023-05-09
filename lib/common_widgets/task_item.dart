@@ -26,7 +26,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _allTags = ref.read(userTagsProvider);
+    _allTags = ref.watch(userTagsProvider);
     final tags = _allTags
         .where((element) => widget.task.tags.contains(element.id))
         .toList();
@@ -45,6 +45,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
             return false;
           }
           ref.read(taskListStateProvider.notifier).deleteTask(widget.task);
+          ref.read(tasksListRebuildProvider).notify();
           return true;
         },
         secondaryBackground: const Align(
@@ -67,7 +68,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
         key: UniqueKey(),
         child: InkWell(
           onTap: () async {
-            await Navigator.push(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => TaskWidget(
@@ -75,9 +76,6 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 ),
               ),
             );
-            ref
-                .read(taskListStateProvider.notifier)
-                .loadTasksFromFolder(widget.originFolder);
           },
           child: SizedBox(
             height: 50,
@@ -94,7 +92,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 ),
                 Expanded(
                   child: widget.task.deadline != null ||
-                          widget.task.tags.isNotEmpty
+                          tags.isNotEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
