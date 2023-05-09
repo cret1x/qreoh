@@ -29,4 +29,31 @@ class Strings {
   static const String confirmMessageSent = "Вам было отправлено письмо для подтверждения";
   static const String resendConfirm = "Отправить еще раз";
   static const String loginToAnother = "Войти в другой аккаунт";
+
+  static const String appTitleTasks = "Задания";
+  static const String appTitleProfile = "Профиль";
+  static const String appTitleFriends = "Друзья";
+  static const String appTitleSettings = "Настройки";
+
+  static const String addFriend = "Добавить друга";
+  static const String friendLogin = "Логин друга";
+  static const String friendTag = "Тэг друга";
+  static const String friendNotFound = "Такого пользователя нет";
+  static const String search = "Поиск";
+  static const String sentFriendRequest = "Запрос отправлен";
+
+  static const String incomingRequests = "Входящие запросы";
+  static const String requestAccept = "Запрос принят";
+  static const String requestDecline = "Запрос отклонен";
+  static const String noIncomingRequests = "Нет входящих запросов в друзья";
+  static const String noFriends = "У вас нет друзей";
+
+  static const String appBackground = "Фон приложения";
+  static const String appTheme = "Тема приложения";
+  static const String themeSystem = "Системная";
+  static const String themeDark = "Темная";
+  static const String themeLight = "Светлая";
+  static const String logOut = "Выйти из аккаунта";
+  static const String areYouSure = "Вы уверены?";
+
 }

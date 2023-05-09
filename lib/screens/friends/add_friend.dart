@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/friend_item.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:qreoh/strings.dart';
 
 class AddFriendWidget extends ConsumerStatefulWidget {
   const AddFriendWidget({super.key});
@@ -28,7 +29,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add friend"),
+        title: const Text(Strings.addFriend),
       ),
       body: Column(
         children: [
@@ -47,13 +48,13 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           autocorrect: false,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Login is required";
+                              return Strings.requiredField;
                             }
                             return null;
                           },
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Friend login'),
+                              labelText: Strings.friendLogin),
                         ),
                       ),
                     ),
@@ -67,13 +68,13 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           autocorrect: false,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Tag is required";
+                              return Strings.requiredField;
                             }
                             return null;
                           },
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Friend tag'),
+                              labelText: Strings.friendTag),
                         ),
                       ),
                     ),
@@ -91,13 +92,13 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                               _foundFriend.add(value);
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("User not found")));
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.friendNotFound)));
                           }
                         });
                       }
                     },
                     icon: const Icon(Icons.search),
-                    label: const Text('Search'),
+                    label: const Text(Strings.search),
                     style: ElevatedButton.styleFrom(
                      // backgroundColor: Colors.blue,
                       minimumSize: const Size.fromHeight(48),
@@ -115,7 +116,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                   padding: const EdgeInsets.all(8.0),
                   child: FriendItem.withAction(_foundFriend.first, () {
                     ref.read(friendsListStateProvider.notifier).sendRequest(_foundFriend.first);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Sent request")));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.sentFriendRequest)));
                   }, null),
                 );
               },

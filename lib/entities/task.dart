@@ -9,6 +9,7 @@ enum Notification { week, threeDays, aDay, threeHours, anHour, atm }
 
 class Task {
   String id;
+  String? from;
   Folder parent;
   bool done;
   String name;
@@ -29,6 +30,7 @@ class Task {
     required this.done,
     required this.haveTime,
     required this.tags,
+    this.from,
     this.deadline,
     this.description,
     this.timeRequired,
@@ -44,6 +46,7 @@ class Task {
       "priority": priority.index,
       "done": done,
       "haveTime": haveTime,
+      "from": from,
       if (deadline != null) "deadline": deadline,
       if (description != null) "description": description,
       if (timeRequired != null) "timeRequired": timeRequired!.inMinutes,
@@ -60,6 +63,7 @@ class Task {
       id: data['id'],
       parent: parent,
       name: data['name'],
+      from: data['from'],
       priority: Priority.values[data['priority']],
       done: data['done'],
       haveTime: data['haveTime'],
@@ -81,6 +85,7 @@ class Task {
       Priority? priority,
       bool? done,
       bool? haveTime,
+        String? from,
       List<String>? tags}) {
     return Task(
       id: id,
@@ -89,6 +94,7 @@ class Task {
       priority: priority ?? this.priority,
       done: done ?? this.done,
       haveTime: haveTime ?? this.haveTime,
+      from: from ?? this.from,
       tags: tags ?? this.tags,
     );
   }
@@ -102,6 +108,7 @@ class Task {
       bool? haveTime,
       Duration? timeRequired,
       String? description,
+        String? from,
       String? place}) {
     this.parent = parent;
     this.name = name;
@@ -112,6 +119,7 @@ class Task {
     this.timeRequired = timeRequired;
     this.description = description;
     this.place = place;
+    this.from = from;
   }
 
   void markAsDone() {

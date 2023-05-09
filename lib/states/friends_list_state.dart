@@ -93,15 +93,16 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
   void deleteFriend(UserState friend) async {
     await firebaseFriendsManager.deleteFriend(friend);
     state = state.copyWith(
-      friends: [...state.friends, friend],
+      friends: [for (final fr in state.friends) if (fr.uid != friend.uid) fr],
     );
   }
 
-  Future<void> getAllFriends(bool desc) async {
+  Future<List<UserState>> getAllFriends(bool desc) async {
     final friends = await firebaseFriendsManager.getAllFriends();
     friends.sort((UserState a, UserState b) {
       return desc ? b.login.compareTo(a.login) : a.login.compareTo(b.login);
     });
     state = state.copyWith(friends: friends);
+    return friends;
   }
 }

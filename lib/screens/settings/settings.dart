@@ -4,9 +4,6 @@ import 'package:qreoh/common_widgets/buttons.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/strings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../firebase_functions/auth.dart';
 
 class SettingsWidget extends ConsumerStatefulWidget {
   const SettingsWidget({super.key});
@@ -40,7 +37,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "Тема приложения",
+                  Strings.appTheme,
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -49,7 +46,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
                   spacing: 5.0,
                   children: [
                     ChoiceChip(
-                      label: const Text("Системная"),
+                      label: const Text(Strings.themeSystem),
                       selected: _appThemeState.themeMode == ThemeMode.system,
                       onSelected: (bool selected) {
                         ref
@@ -58,7 +55,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
                       },
                     ),
                     ChoiceChip(
-                      label: const Text("Светлая"),
+                      label: const Text(Strings.themeLight),
                       selected: _appThemeState.themeMode == ThemeMode.light,
                       onSelected: (bool selected) {
                         ref
@@ -67,7 +64,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
                       },
                     ),
                     ChoiceChip(
-                      label: const Text("Темная"),
+                      label: const Text(Strings.themeDark),
                       selected: _appThemeState.themeMode == ThemeMode.dark,
                       onSelected: (bool selected) {
                         ref
@@ -85,7 +82,7 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
           padding: EdgeInsets.all(8.0),
           child: Center(
             child: Text(
-              "Фон приложения",
+              Strings.appBackground,
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -108,7 +105,9 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: _appThemeState.background == background ? Theme.of(context).colorScheme.primary : Colors.black,
+                                color: _appThemeState.background == background
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.black,
                                 width: 5),
                             image: DecorationImage(
                                 image: AssetImage(
@@ -123,20 +122,13 @@ class _SettingsWidgetState extends ConsumerState<SettingsWidget>
         ),
         const Spacer(),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ButtonDanger(
-              buttonText: "Выйти из аккаунта",
-              warningText: "Вы уверены?",
-              action: ref.read(authStateProvider.notifier).signOutUser,
-            )),
-        // Padding(
-        //     padding:
-        //         const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 32),
-        //     child: ButtonDanger(
-        //       buttonText: "Удалить аккаунт",
-        //       warningText: "Вы уверены?",
-        //       action: ref.read(authStateProvider.notifier).deleteUserAccount,
-        //     ))
+          padding: const EdgeInsets.all(8.0),
+          child: ButtonDanger(
+            buttonText: Strings.logOut,
+            warningText: Strings.areYouSure,
+            action: ref.read(authStateProvider.notifier).signOutUser,
+          ),
+        ),
       ],
     );
   }

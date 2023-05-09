@@ -6,6 +6,7 @@ import 'package:qreoh/screens/profile/profile_settings.dart';
 import 'package:qreoh/screens/profile/user_profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
 import 'package:qreoh/screens/tasks/task_manager_widget.dart';
+import 'package:qreoh/strings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,10 +25,10 @@ class _HomePageState extends State<HomePage> {
     SettingsWidget()
   ];
   static const List<String> _titles = [
-    'Задания',
-    'Профиль',
-    'Друзья',
-    'Настройки'
+    Strings.appTitleTasks,
+    Strings.appTitleProfile,
+    Strings.appTitleFriends,
+    Strings.appTitleSettings,
   ];
 
   void _onNavbarItemTapped(int index) {
@@ -98,11 +99,11 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _navbarSelectedIndex,
         onTap: _onNavbarItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Tasks'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Friends'),
+          BottomNavigationBarItem(icon: Icon(Icons.check), label: Strings.appTitleTasks),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: Strings.appTitleProfile),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: Strings.appTitleFriends),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+              icon: Icon(Icons.settings), label: Strings.appTitleSettings),
         ],
       ),
     );
