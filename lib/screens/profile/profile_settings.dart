@@ -215,14 +215,18 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     if (_userState != null) {
       _newLogin ??= _userState!.login;
       if (_rewardItems.isNotEmpty) {
-        _selectedAvatar ??= _rewardItems
+        var selAv =  _rewardItems
             .where(
-                (item) => _userState!.avatar.assetName == item.image.assetName)
-            .first;
-        _selectedBanner ??= _rewardItems
+                (item) => _userState!.avatar.assetName == item.image.assetName);
+        var selBan = _rewardItems
             .where(
-                (item) => _userState!.banner.assetName == item.image.assetName)
-            .first;
+                (item) => _userState!.banner.assetName == item.image.assetName);
+        if (selAv.isNotEmpty) {
+          _selectedAvatar ??= selAv.first;
+        }
+        if (selBan.isNotEmpty) {
+          _selectedBanner ??= selBan.first;
+        }
       }
     }
     return Scaffold(
@@ -236,14 +240,18 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
             await Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const ProfileShop()));
             setState(() {
-              _selectedAvatar = _rewardItems
-                  .where((item) =>
-                      _userState!.avatar.assetName == item.image.assetName)
-                  .first;
-              _selectedBanner = _rewardItems
-                  .where((item) =>
-                      _userState!.banner.assetName == item.image.assetName)
-                  .first;
+              var selAv =  _rewardItems
+                  .where(
+                      (item) => _userState!.avatar.assetName == item.image.assetName);
+              var selBan = _rewardItems
+                  .where(
+                      (item) => _userState!.banner.assetName == item.image.assetName);
+              if (selAv.isNotEmpty) {
+                _selectedAvatar = selAv.first;
+              }
+              if (selBan.isNotEmpty) {
+                _selectedBanner = selBan.first;
+              }
             });
           },
         ),
@@ -392,17 +400,17 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                         onPressed: checkForChanges()
                             ? null
                             : () {
-                                if (_selectedBanner!.image.assetName !=
+                                if (_selectedBanner?.image.assetName !=
                                     _userState!.banner.assetName) {
                                   ref
                                       .read(userStateProvider.notifier)
                                       .selectItemReward(_selectedBanner!);
                                 }
-                                if (_selectedAvatar!.image.assetName !=
+                                if (_selectedAvatar?.image.assetName !=
                                     _userState!.avatar.assetName) {
                                   ref
                                       .read(userStateProvider.notifier)
-                                      .selectItemReward(_selectedBanner!);
+                                      .selectItemReward(_selectedAvatar!);
                                 }
                                 if (_newLogin != null &&
                                     _newLogin != _userState!.login) {

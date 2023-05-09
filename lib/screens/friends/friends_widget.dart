@@ -34,11 +34,7 @@ class _FriendsWidgetState extends ConsumerState<FriendsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(friendsListStateProvider, (previous, next) {
-      setState(() {
-        _friends = next.friends;
-      });
-    });
+    _friends = ref.watch(friendsListStateProvider).friends;
     if (_friends == null) {
       return Center(
         child: Column(

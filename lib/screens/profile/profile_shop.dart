@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/global_providers.dart';
-import 'package:qreoh/kastom.dart';
 import 'package:qreoh/states/user_state.dart';
 
 class ProfileShop extends ConsumerStatefulWidget {
@@ -18,7 +17,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
 
   Widget buyButton(ShopItem item) {
     if (_userState!.collection.contains(item.id)) {
-      if (_userState!.banner.assetName == item.image.assetName) {
+      if (_userState!.banner.assetName == item.image.assetName || _userState!.avatar.assetName == item.image.assetName) {
         return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
       }
       return ElevatedButton(
