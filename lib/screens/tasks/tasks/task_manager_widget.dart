@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
-import 'package:qreoh/screens/tasks/folders_widget.dart';
-import 'package:qreoh/screens/tasks/tags_widget.dart';
+import 'package:qreoh/screens/tasks/folders/folders_widget.dart';
+import 'package:qreoh/screens/tasks/tags/tags_widget.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'create_edit_task_widget.dart';
-import 'filter_widget.dart';
+import '../filter/filter_widget.dart';
 import 'task_comparators.dart';
 import 'task_list_widget.dart';
-import '../../entities/folder.dart';
+import '../../../entities/folder.dart';
 
 class TaskManagerWidget extends ConsumerStatefulWidget {
   final _firebaseTaskManager = FirebaseTaskManager();

@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
-import 'package:qreoh/screens/tasks/create_edit_tag.dart';
+import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/user_tags_state.dart';
 
-import '../../entities/tag.dart';
-import '../../global_providers.dart';
+import '../../../entities/tag.dart';
+import '../../../global_providers.dart';
 
 class TagsWidget extends ConsumerStatefulWidget {
   @override

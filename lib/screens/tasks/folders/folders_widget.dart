@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
-import 'package:qreoh/screens/tasks/create_edit_folder.dart';
+import 'package:qreoh/screens/tasks/folders/create_edit_folder.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../entities/folder.dart';
-import '../../global_providers.dart';
+import '../../../entities/folder.dart';
+import '../../../global_providers.dart';
 
 class FoldersWidget extends ConsumerStatefulWidget {
   final Folder _initialFolder;

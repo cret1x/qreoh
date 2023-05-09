@@ -1,4 +1,4 @@
-import '../../entities/task.dart';
+import '../../../entities/task.dart';
 
 enum SortRule {
   leftAsc,

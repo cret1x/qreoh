@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../entities/tag.dart';
+import '../../../entities/tag.dart';
 
 class TagItem extends StatelessWidget {
   final Tag _tag;

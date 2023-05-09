@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
 
-import '../../entities/task.dart';
+import '../../../entities/task.dart';
 
 class ShareTaskWidget extends ConsumerStatefulWidget {
   final Task? _task;

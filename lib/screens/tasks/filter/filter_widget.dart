@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
-import 'package:qreoh/screens/tasks/create_edit_tag.dart';
+import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/states/task_filter_state.dart';
-import '../../entities/tag.dart';
-import '../../entities/task.dart';
+import '../../../entities/tag.dart';
+import '../../../entities/task.dart';
 
 class FilterWidget extends ConsumerStatefulWidget {
   const FilterWidget({super.key});

@@ -5,9 +5,9 @@ import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
-import 'package:qreoh/screens/tasks/create_edit_task_widget.dart';
-import 'package:qreoh/screens/tasks/tag_widget.dart';
-import 'package:qreoh/screens/tasks/task_widget.dart';
+import 'package:qreoh/screens/tasks/tasks/create_edit_task_widget.dart';
+import 'package:qreoh/screens/tasks/tags/tag_widget.dart';
+import 'package:qreoh/screens/tasks/tasks/task_widget.dart';
 import 'package:qreoh/states/user_tags_state.dart';
 
 class TaskItemWidget extends ConsumerStatefulWidget {

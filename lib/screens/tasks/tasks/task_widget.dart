@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
-import 'package:qreoh/screens/tasks/share_task.dart';
+import 'package:qreoh/screens/tasks/tasks/share_task.dart';
 import 'create_edit_task_widget.dart';
 import 'task_manager_widget.dart';
-import '../../entities/task.dart';
+import '../../../entities/task.dart';
 
 class TaskWidget extends ConsumerStatefulWidget {
   final Task task;

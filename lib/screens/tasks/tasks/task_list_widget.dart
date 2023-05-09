@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/task_item.dart';
 import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/global_providers.dart';
-import '../../states/task_list_state.dart';
+import '../../../states/task_list_state.dart';
 import 'task_comparators.dart';
-import '../../entities/task.dart';
+import '../../../entities/task.dart';
 
 class TaskListWidget extends ConsumerStatefulWidget {
   final Folder folder;
