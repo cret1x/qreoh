@@ -188,14 +188,18 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                           width: 3.0),
                       borderRadius: BorderRadius.circular(12),
                       image: const DecorationImage(
-                          image: AssetImage(
-                              "assets/images/banners/desert.jpg"),
+                          image: AssetImage(Strings.defaultPfp),
                           fit: BoxFit.cover),
                     ),
-                    child: widget.profile.profileImage != null ? FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: widget.profile.profileImage!,
-                      fit: BoxFit.cover,
+                    child: widget.profile.profileImage != null ? DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: widget.profile.profileImage!,
+                        fit: BoxFit.cover,
+                      ),
                     ) : null,
                   ),
                   Padding(
