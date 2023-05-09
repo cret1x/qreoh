@@ -86,7 +86,8 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                   onChanged: (bool? state) {
                     setState(() {
                       widget.task.done = state ?? false;
-                      widget.firebaseTaskManager.changeTaskState(widget.task);
+                      ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
+                      //widget.firebaseTaskManager.changeTaskState(widget.task);
                     });
                   },
                 ),

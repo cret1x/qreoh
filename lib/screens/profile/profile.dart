@@ -303,8 +303,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
-                                SizedBox(
+                              children: [
+                                const SizedBox(
                                   height: 55,
                                   child: Text(
                                     "Создано заданий",
@@ -314,7 +314,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  "50",
+                                  widget.profile.tasksCreated.toString(),
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
                                 ),
@@ -340,8 +340,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
-                                SizedBox(
+                              children: [
+                                const SizedBox(
                                   height: 55,
                                   child: Text(
                                     "Выполнено заданий",
@@ -351,7 +351,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  "50",
+                                  widget.profile.tasksCompleted.toString(),
                                   //widget.profile.totalTasksCount.toString(),
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
@@ -386,8 +386,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
-                                SizedBox(
+                              children: [
+                                const SizedBox(
                                   height: 55,
                                   child: Text(
                                     "Процент выполненных заданий",
@@ -395,9 +395,9 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                         letterSpacing: 2, fontSize: 15),
                                   ),
                                 ),
-                                Divider(),
+                                const Divider(),
                                 Text(
-                                  "50",
+                                  "${widget.profile.tasksCreated <= 0 ? 0 : widget.profile.tasksCompleted / widget.profile.tasksCreated * 100}%",
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
                                 ),
@@ -423,8 +423,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
-                                SizedBox(
+                              children: [
+                                const SizedBox(
                                   height: 55,
                                   child: Text(
                                     "Созданные задания для друзей",
@@ -434,7 +434,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  "50",
+                                  widget.profile.tasksFriendsCreated.toString(),
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),
                                 ),
@@ -468,7 +468,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             width: 185,
                             height: 100,
                             child: Column(
-                              children: const [
+                              children:  [
                                 SizedBox(
                                   height: 55,
                                   child: Text(
@@ -479,7 +479,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                 ),
                                 Divider(),
                                 Text(
-                                  "50",
+                                  widget.profile.tasksFriendsCompleted.toString(),
                                   //widget.profile.totalTasksCount.toString(),
                                   style:
                                       TextStyle(letterSpacing: 2, fontSize: 15),

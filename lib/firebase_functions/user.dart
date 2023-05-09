@@ -6,7 +6,6 @@ import 'package:qreoh/entities/reward_item.dart';
 import 'package:qreoh/entities/shop_item.dart';
 import 'package:qreoh/states/user_state.dart';
 
-
 class FirebaseUserManager {
   final db = FirebaseFirestore.instance;
   static final FirebaseUserManager _singleton = FirebaseUserManager._internal();
@@ -63,6 +62,21 @@ class FirebaseUserManager {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     await db.collection('users').doc(uid).update({
       'login': newLogin,
+    });
+  }
+
+  Future<void> updateStats({
+    int? tasksFriendsCompleted,
+    int? tasksFriendsCreated,
+    int? tasksCreated,
+    int? tasksCompleted,
+  }) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    await db.collection('users').doc(uid).update({
+      if (tasksFriendsCompleted != null) 'tasksFriendsCompleted': tasksFriendsCompleted,
+      if (tasksFriendsCreated != null) 'tasksFriendsCreated': tasksFriendsCreated,
+      if (tasksCreated != null) 'tasksCreated': tasksCreated,
+      if (tasksCompleted != null) 'tasksCompleted': tasksCompleted,
     });
   }
 

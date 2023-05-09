@@ -20,10 +20,10 @@ class UserState {
   final String? profileImage;
   final AssetImage avatar;
   final AssetImage banner;
-  final int totalTasksCount;
-  final int highPriorityTasksCount;
-  final int mediumPriorityTasksCount;
-  final int lowPriorityTasksCount;
+  final int tasksFriendsCompleted;
+  final int tasksFriendsCreated;
+  final int tasksCreated;
+  final int tasksCompleted;
   final int friendsCount;
   final int level;
   final int experience;
@@ -40,10 +40,10 @@ class UserState {
       required this.experience,
       required this.banner,
       required this.profileImage,
-      required this.totalTasksCount,
-      required this.highPriorityTasksCount,
-      required this.mediumPriorityTasksCount,
-      required this.lowPriorityTasksCount,
+      required this.tasksFriendsCompleted,
+      required this.tasksFriendsCreated,
+      required this.tasksCreated,
+      required this.tasksCompleted,
       required this.friendsCount,
       required this.achievements});
 
@@ -59,10 +59,10 @@ class UserState {
         avatar: AssetImage("${Strings.avatarsAssetFolder}${data['avatar']}"),
         banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
         profileImage: data['profileImage'],
-        totalTasksCount: data['tasksCount'],
-        highPriorityTasksCount: data['highTasksCount'],
-        mediumPriorityTasksCount: data['midTasksCount'],
-        lowPriorityTasksCount: data['lowTasksCount'],
+        tasksFriendsCompleted: data['tasksFriendsCompleted'],
+        tasksFriendsCreated: data['tasksFriendsCreated'],
+        tasksCreated: data['tasksCreated'],
+        tasksCompleted: data['tasksCompleted'],
         friendsCount: data['friends'] == null ? 0 : data['friends'].length,
         achievements: List.from(data['achievements']));
   }
@@ -75,12 +75,12 @@ class UserState {
       AssetImage? banner,
       AssetImage? avatar,
       String? profileImage,
-      int? totalTasksCount,
+      int? tasksCompleted,
       int? level,
       int? experience,
-      int? highPriorityTasksCount,
-      int? mediumPriorityTasksCount,
-      int? lowPriorityTasksCount,
+      int? tasksFriendsCompleted,
+      int? tasksFriendsCreated,
+      int? tasksCreated,
       int? friendsCount,
       List<String>? achievements}) {
     return UserState(
@@ -94,13 +94,11 @@ class UserState {
         banner: banner ?? this.banner,
         profileImage: profileImage,
         avatar: avatar ?? this.avatar,
-        totalTasksCount: totalTasksCount ?? this.totalTasksCount,
-        highPriorityTasksCount:
-            highPriorityTasksCount ?? this.highPriorityTasksCount,
-        mediumPriorityTasksCount:
-            mediumPriorityTasksCount ?? this.mediumPriorityTasksCount,
-        lowPriorityTasksCount:
-            lowPriorityTasksCount ?? this.lowPriorityTasksCount,
+        tasksFriendsCompleted:
+            tasksFriendsCompleted ?? this.tasksFriendsCompleted,
+        tasksFriendsCreated: tasksFriendsCreated ?? this.tasksFriendsCreated,
+        tasksCreated: tasksCreated ?? this.tasksCreated,
+        tasksCompleted: tasksCompleted ?? this.tasksCompleted,
         friendsCount: friendsCount ?? this.friendsCount,
         achievements: achievements ?? this.achievements);
   }
@@ -112,11 +110,11 @@ class UserStateNotifier extends StateNotifier<UserState?> {
 
   UserStateNotifier() : super(null);
 
-  void getUser() async {
+  Future<void> getUser() async {
     state = await firebaseUserManager.getUser();
   }
 
-  void addXp(int xp) async {
+  Future<void> addXp(int xp) async {
     if (state != null) {
       state = state!.copyWith(experience: state!.experience + xp);
       firebaseUserManager.updateXp(state!.experience);
@@ -135,7 +133,6 @@ class UserStateNotifier extends StateNotifier<UserState?> {
       final url = await firebaseStorageManager.uploadProfilePicture(image);
       state = state!.copyWith(profileImage: url);
     }
-
   }
 
   void updateLogin(String login) async {
@@ -163,8 +160,7 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     if (state != null) {
       if (state!.level >= item.level) {
         firebaseUserManager.collectReward(item);
-        state = state!.copyWith(
-            collection: [...state!.collection, item.id]);
+        state = state!.copyWith(collection: [...state!.collection, item.id]);
         return true;
       }
     }
@@ -192,4 +188,24 @@ class UserStateNotifier extends StateNotifier<UserState?> {
       }
     }
   }
+
+  Future<void> updateStats({
+    int? tasksFriendsCompleted,
+    int? tasksFriendsCreated,
+    int? tasksCreated,
+    int? tasksCompleted,
+  }) async {
+    await firebaseUserManager.updateStats(tasksFriendsCompleted: tasksFriendsCompleted,
+        tasksFriendsCreated: tasksFriendsCreated,
+        tasksCreated: tasksCreated,
+        tasksCompleted: tasksCompleted);
+    if (state != null) {
+      state = state!.copyWith(
+    tasksFriendsCompleted: tasksFriendsCompleted,
+    tasksFriendsCreated: tasksFriendsCreated,
+    tasksCreated: tasksCreated,
+    tasksCompleted: tasksCompleted);
+  }
+    }
+
 }
