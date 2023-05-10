@@ -24,7 +24,7 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
 }
 
 class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
-  String? _name;
+  late final TextEditingController _textEditingController;
   DateTime? _deadline;
   bool _haveTime = false;
   Duration? _timeRequired;
@@ -37,8 +37,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   Folder _current;
 
   EditCreateTaskWidgetState(this._current, Task? task) {
+    _textEditingController =
+        TextEditingController(text: task != null ? task!.name : null);
     if (task != null) {
-      _name = task.name;
       _deadline = task.deadline;
       _haveTime = task.haveTime;
       _daysRequired = task.timeRequired == null ? 0 : task.timeRequired!.inDays;
@@ -97,9 +98,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                 padding: const EdgeInsets.only(left: 3, right: 3, bottom: 12),
                 child: TextFormField(
                   maxLength: 30,
-                  initialValue: _name,
+                  controller: _textEditingController,
                   onChanged: (String? value) {
-                    _name = value;
+                    setState(() {});
                   },
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.primary),
@@ -585,36 +586,12 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                               shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusDirectional.circular(12),
                           )),
-                          child: const Text(
-                            "Save",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_name == null || _name!.isEmpty) {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content:
-                                          const Text("Name must not be empty."),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text("OK"))
-                                      ],
-                                    );
-                                  });
-                              return;
-                            }
+                          onPressed: _textEditingController.text.isEmpty ? null : () {
                             if (widget._task == null) {
                               final newTask = Task(
                                   id: widget.uuid.v1(),
                                   parent: _current,
-                                  name: _name!,
+                                  name: _textEditingController.text,
                                   done: false,
                                   priority: _priority,
                                   tags: _selectedTags,
@@ -632,7 +609,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             } else {
                               widget._task!.update(
                                   parent: _current,
-                                  name: _name!,
+                                  name: _textEditingController.text,
                                   priority: _priority,
                                   tags: _selectedTags,
                                   deadline: _deadline,
@@ -648,6 +625,12 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             Navigator.pop(
                                 context, widget._task == null ? 1 : 0);
                           },
+                          child: const Text(
+                            "Save",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),),
                   ),
                 ],
