@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/common_widgets/task_item.dart';
+import 'package:qreoh/screens/tasks/tasks/task_item.dart';
 import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/global_providers.dart';
 import '../../../states/task_list_state.dart';
