@@ -108,7 +108,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                                 Flexible(
                                   child: SizedBox(
                                     height: 20,
-                                    child: TagsWidget(tags),
+                                    child: TagsListWidget(tags),
                                   ),
                                 ),
                                 SizedBox(
