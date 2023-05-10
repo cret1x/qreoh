@@ -218,7 +218,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                   color:
                                       Theme.of(context).colorScheme.secondary,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 24),
+                                  fontSize: 20),
                             ),
                             Text(
                               "#${widget.profile.tag}",
