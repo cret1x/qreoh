@@ -15,12 +15,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'global_providers.dart';
 
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(ProviderBase<Object?> provider, Object? previousValue, Object? newValue, ProviderContainer container) {
+    print("${provider.name ?? provider.runtimeType} => $newValue");
+  }
+
+  @override
+  void didDisposeProvider(ProviderBase<Object?> provider, ProviderContainer container) {
+    print("Provider disposed: ${provider.name ?? provider.runtimeType}");
+  }
+
+  @override
+  void didAddProvider(ProviderBase<Object?> provider, Object? value, ProviderContainer container) {
+    print("Provider Added: ${provider.name ?? provider.runtimeType}");
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(observers: [Logger()], child: const MyApp()));
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -46,7 +63,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       title: 'Qreoh app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: Color.fromARGB(255, 250, 250, 250),
+          background: const Color.fromARGB(255, 250, 250, 250),
           primary: Colors.deepOrangeAccent,
           onSurface: Colors.black38,
           secondary: Colors.deepOrangeAccent.shade100,

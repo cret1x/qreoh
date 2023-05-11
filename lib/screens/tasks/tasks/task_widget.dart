@@ -78,9 +78,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                         onChanged: (bool? state) {
                           setState(() {
                             widget.task.done = state!;
-                            ref.read(taskListStateProvider.notifier).toggleTask(widget.task).then((value) {
-                              ref.read(tasksListRebuildProvider.notifier).notify();
-                            });
+                            ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
                             _isSelected = widget.task.done;
                           });
                         },

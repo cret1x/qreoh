@@ -10,11 +10,13 @@ import '../../../entities/task.dart';
 class TaskListWidget extends ConsumerStatefulWidget {
   final Folder folder;
   final SortRule sort;
+  final List<Task> tasks;
 
   const TaskListWidget({
     super.key,
     required this.folder,
     required this.sort,
+    required this.tasks,
   });
 
   @override
@@ -24,32 +26,31 @@ class TaskListWidget extends ConsumerStatefulWidget {
 }
 
 class TaskListState extends ConsumerState<TaskListWidget> {
-  List<Task> _taskList = [];
+  @override
+  void dispose() {
+    print("TASK LIST DISPOSE");
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    ref.read(tasksListRebuildProvider).addListener(() { 
-      setState(() {});
-    });
-    _taskList = ref.read(taskListStateProvider);
-    ref.watch(tasksFilterProvider);
-    List<Task> tasks = _taskList.where(ref.read(tasksFilterProvider.notifier).check).toList();
-    tasks.sort(getFunc(widget.sort));
+    print('TASK LIST REBUILD');
+    widget.tasks.sort(getFunc(widget.sort));
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: SizedBox(
-        child: tasks.isNotEmpty
+        child: widget.tasks.isNotEmpty
             ? ListView.separated(
                 scrollDirection: Axis.vertical,
                 physics: const ScrollPhysics(),
                 padding: const EdgeInsets.all(8),
-                itemCount: tasks.length,
+                itemCount: widget.tasks.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return TaskItemWidget(originFolder: widget.folder, task: tasks[index]);
+                  return TaskItemWidget(originFolder: widget.folder, task: widget.tasks[index]);
                 },
                 separatorBuilder: (context, index) {
                   return const Divider();

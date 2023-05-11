@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qreoh/entities/reward_item.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/custom_avatar.dart';
+import 'package:qreoh/entities/customisation/custom_banner.dart';
+import 'package:qreoh/entities/customisation/reward_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/global_providers.dart';
 import 'dart:io';
 
@@ -26,16 +28,9 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   String? _newLogin;
   bool _imageFileChanged = false;
   List<RewardItem> _rewardItems = [];
-  RewardItem? _selectedBanner;
-  RewardItem? _selectedAvatar;
+  CustomBanner? _selectedBanner;
+  CustomAvatar? _selectedAvatar;
   final _loginController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(userStateProvider.notifier).getUser();
-    ref.read(rewardsStateProvider.notifier).loadItems();
-  }
 
   @override
   void dispose() {
@@ -44,19 +39,19 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   }
 
   Widget buyButton(RewardItem item) {
-    if (_userState!.collection.contains(item.id)) {
+    if (_userState!.collection.contains(item.item)) {
       if (_selectedBanner?.id == item.id || _selectedAvatar?.id == item.id) {
         return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
       }
       return ElevatedButton(
           onPressed: () {
-            if (item.type == ShopItemType.banner) {
+            if (item.item is CustomBanner) {
               setState(() {
-                _selectedBanner = item;
+                _selectedBanner = item.item as CustomBanner;
               });
             } else {
               setState(() {
-                _selectedAvatar = item;
+                _selectedAvatar = item.item as CustomAvatar;
               });
             }
           },
@@ -82,7 +77,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
               color: Theme.of(context).colorScheme.primary, width: 5),
-          image: DecorationImage(image: item.image, fit: BoxFit.cover),
+          image: DecorationImage(image: item.item.asset, fit: BoxFit.cover),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -100,22 +95,22 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: _rewardItems
-              .where((element) => element.type == ShopItemType.avatar)
+              .where((element) => element.item is CustomAvatar)
               .map((item) => rewardIcon(item))
               .toList()),
     );
   }
 
   bool checkForChanges() {
-    return _newLogin == _userState!.login &&
-        (_selectedBanner == null || _selectedBanner?.image.assetName == _userState!.banner.assetName) &&
-        (_selectedAvatar == null || _selectedAvatar?.image.assetName == _userState!.avatar.assetName) &&
+    return
+        (_selectedBanner == null || _selectedBanner?.id == _userState!.banner.id) &&
+        (_selectedAvatar == null || _selectedAvatar?.id == _userState!.avatar.id) &&
         !_imageFileChanged;
   }
 
   Widget getProfileImage() {
     if (_imageFile == null) {
-      if (_userState?.profileImage == null) {
+      if (_userState?.profileImageUrl == null) {
         return Image.asset(
           Strings.defaultPfp,
           fit: BoxFit.cover,
@@ -123,7 +118,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
       }
       return FadeInImage.memoryNetwork(
         placeholder: kTransparentImage,
-        image: _userState!.profileImage!,
+        image: _userState!.profileImageUrl!,
         fit: BoxFit.cover,
       );
     }
@@ -139,7 +134,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: _rewardItems
-              .where((element) => element.type == ShopItemType.banner)
+              .where((element) => element.item is CustomBanner)
               .map((item) => rewardIcon(item))
               .toList()),
     );
@@ -213,19 +208,13 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     _rewardItems.sort((RewardItem a, RewardItem b) {
       return a.level.compareTo(b.level);
     });
-    if (_userState != null) {
-      _newLogin ??= _userState!.login;
-      if (_rewardItems.isNotEmpty) {
-        for (final item in _rewardItems) {
-          if (item.image.assetName == _userState!.avatar.assetName) {
-            _selectedAvatar = item;
-          }
-          if (item.image.assetName == _userState!.banner.assetName) {
-            _selectedBanner = item;
-          }
-        }
-      }
-    }
+    _selectedAvatar ??= _userState?.avatar;
+    _selectedBanner ??= _userState?.banner;
+    ref.listen(userStateProvider, (prev, next) {
+      _selectedBanner = next?.banner;
+      _selectedAvatar = next?.avatar;
+      _newLogin ??= _userState?.login;
+    });
     return Scaffold(
       appBar: AppBar(actions: [
         IconButton(
@@ -236,28 +225,6 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
           onPressed: () async {
             await Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const ProfileShop()));
-            setState(() {
-              if (_selectedAvatar != null) {
-                if (_userState!.avatar.assetName !=
-                    _selectedAvatar!.image.assetName) {
-                  _selectedAvatar = null;
-                }
-              }
-              if (_selectedBanner != null) {
-                if (_userState!.banner.assetName !=
-                    _selectedBanner!.image.assetName) {
-                  _selectedBanner = null;
-                }
-              }
-              for (final item in _rewardItems) {
-                if (item.image.assetName == _userState!.avatar.assetName) {
-                  _selectedAvatar = item;
-                }
-                if (item.image.assetName == _userState!.banner.assetName) {
-                  _selectedBanner = item;
-                }
-              }
-            });
           },
         ),
       ]),
@@ -275,8 +242,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       height: 250,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image:
-                                  _selectedBanner?.image ?? _userState!.banner,
+                              image: _selectedBanner?.asset ?? _userState!.banner.asset,
                               fit: BoxFit.cover)),
                     ),
                     ClipRect(
@@ -289,7 +255,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                           child: Center(
                             child: Image(
                               image:
-                                  _selectedAvatar?.image ?? _userState!.avatar,
+                                  _selectedAvatar?.asset ?? _userState!.avatar.asset,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -405,22 +371,9 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                         onPressed: checkForChanges()
                             ? null
                             : () {
-                                if (_selectedBanner != null &&
-                                    _selectedBanner!.image.assetName !=
-                                        _userState!.banner.assetName) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .selectItemReward(_selectedBanner!);
-                                }
-                                if (_selectedAvatar != null &&
-                                    _selectedAvatar?.image.assetName !=
-                                        _userState!.avatar.assetName) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .selectItemReward(_selectedAvatar!);
-                                }
-                                if (_newLogin != null &&
-                                    _newLogin != _userState!.login) {
+                            ref.read(userStateProvider.notifier).selectRewardItem(_selectedBanner, _selectedAvatar);
+
+                                  if(  _newLogin != _userState!.login) {
                                   ref
                                       .read(userStateProvider.notifier)
                                       .updateLogin(_newLogin!);

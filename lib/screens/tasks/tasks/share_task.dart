@@ -422,8 +422,8 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                        (friend.profileImage != null)
-                                            ? NetworkImage(friend.profileImage!)
+                                        (friend.profileImageUrl != null)
+                                            ? NetworkImage(friend.profileImageUrl!)
                                             : null,
                                     radius: 32,
                                   ),

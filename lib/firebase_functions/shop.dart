@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 
 
 class FirebaseShopManager {
@@ -16,9 +16,9 @@ class FirebaseShopManager {
 
   Future<List<ShopItem>> getShopItems() async {
     List<ShopItem> shopItems = [];
-    final itemsRef = await db.collection('shop').get();
+    final itemsRef = await db.collection('shop_2').get();
     for (var item in itemsRef.docs) {
-      shopItems.add(ShopItem.fromFirestore(item.id, item.data()));
+      shopItems.add(ShopItem.fromFirestore(item, null));
     }
     return shopItems;
   }

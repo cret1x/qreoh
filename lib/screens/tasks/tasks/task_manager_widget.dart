@@ -55,11 +55,10 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    print('TASK MANAGER BUILD');
     _current = ref.watch(folderStateProvider);
-    ref.read(taskListStateProvider.notifier).loadTasksFromFolder(_current);
-
-    ref.read(userTagsProvider.notifier).loadTags();
     _appThemeState = ref.watch(appThemeProvider);
+    final tasksList = ref.watch(taskListFilteredProvider);
     return Stack(
       children: [
         ConstrainedBox(
@@ -255,11 +254,6 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
                                                       TagsWidget(),
                                                 ),
                                               );
-                                              ref
-                                                  .read(taskListStateProvider
-                                                      .notifier)
-                                                  .loadTasksFromFolder(
-                                                      _current);
                                             },
                                             icon: const Icon(
                                                 Icons.label_important_outline),
@@ -291,11 +285,6 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
                                                           _current, null),
                                                 ),
                                               );
-                                              ref
-                                                  .read(taskListStateProvider
-                                                      .notifier)
-                                                  .loadTasksFromFolder(
-                                                      _current);
                                             },
                                             icon: const Icon(Icons.add),
                                             color: Colors.white,
@@ -323,6 +312,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
                         child: TaskListWidget(
                           folder: snapshot.hasData ? snapshot.data! : _current,
                           sort: _sortRule,
+                          tasks: tasksList,
                         ),
                       ),
                     ),

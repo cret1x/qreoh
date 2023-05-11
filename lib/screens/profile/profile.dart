@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/common_widgets/buttons.dart';
 import 'package:qreoh/entities/achievement.dart';
-import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
 import 'package:qreoh/strings.dart';
@@ -13,16 +12,16 @@ import 'package:transparent_image/transparent_image.dart';
 
 class ProfileWidget extends ConsumerStatefulWidget {
   final UserState profile;
-  final List<Achievement> achievements;
 
   const ProfileWidget(
-      {super.key, required this.profile, required this.achievements});
+      {super.key, required this.profile});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
+  List<Achievement> _achievements = [];
   void _showAchievementTip(Achievement achievement) async {
     await showDialog(
       context: context,
@@ -136,7 +135,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
         height: 180,
         child: ListView(
           scrollDirection: Axis.horizontal,
-          children: widget.achievements
+          children: _achievements
               .map((achievement) => achievementWidget(achievement))
               .toList(),
         ));
@@ -144,6 +143,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _achievements = ref.watch(achievementsProvider);
     return Column(
       children: [
         Stack(
@@ -152,7 +152,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
               height: 250,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: widget.profile.banner, fit: BoxFit.cover)),
+                      image: widget.profile.banner.asset, fit: BoxFit.cover)),
             ),
             ClipRect(
               child: BackdropFilter(
@@ -163,7 +163,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       BoxDecoration(color: Colors.black.withOpacity(0.4)),
                   child: Center(
                     child: Image(
-                      image: widget.profile.avatar,
+                      image: widget.profile.avatar.asset,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -191,14 +191,14 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                           image: AssetImage(Strings.defaultPfp),
                           fit: BoxFit.cover),
                     ),
-                    child: widget.profile.profileImage != null
+                    child: widget.profile.profileImageUrl != null
                         ? DecoratedBox(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: FadeInImage.memoryNetwork(
                               placeholder: kTransparentImage,
-                              image: widget.profile.profileImage!,
+                              image: widget.profile.profileImageUrl!,
                               fit: BoxFit.cover,
                             ),
                           )
@@ -264,7 +264,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
-                  "Достижения ${widget.profile.achievements.length}/${widget.achievements.length}",
+                  "Достижения ${widget.profile.achievements.length}/${_achievements.length}",
                   style: TextStyle(
                       letterSpacing: 2,
                       color: Theme.of(context).colorScheme.secondary,
@@ -281,6 +281,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                     fontWeight: FontWeight.bold,
                     fontSize: 24),
               ),
+              /*
               Column(
                 children: [
                   Padding(
@@ -535,6 +536,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                   ),
                 ],
               ),
+              */
               if (widget.profile.uid != FirebaseAuth.instance.currentUser!.uid)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -554,20 +556,4 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
       ],
     );
   }
-}
-
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) async {
-    Paint paint = Paint()..color = Colors.blueGrey;
-    Path path = Path()
-      ..relativeLineTo(0, 150)
-      ..quadraticBezierTo(size.width / 2, 225, size.width, 150)
-      ..relativeLineTo(0, -150)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

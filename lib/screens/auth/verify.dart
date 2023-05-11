@@ -94,7 +94,7 @@ class _VerifyEmailWidgetState extends ConsumerState<VerifyEmailWidget> {
                     ),
                     onPressed: () async {
                       ref.read(authStateProvider.notifier).signOutUser();
-                      await FirebaseAuth.instance.currentUser!.reload();
+                      await FirebaseAuth.instance.currentUser?.reload();
                     },
                     child: const Text(
                       Strings.loginToAnother,

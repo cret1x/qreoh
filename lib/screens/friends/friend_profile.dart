@@ -15,22 +15,13 @@ class FriendProfile extends ConsumerStatefulWidget {
 }
 
 class _FriendProfileState extends ConsumerState<FriendProfile> {
-  List<Achievement> _achievements = [];
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(achievementsProvider.notifier).loadAchievements();
-  }
-
   @override
   Widget build(Object context) {
-    _achievements = ref.watch(achievementsProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.profile.login),
       ),
-      body: ProfileWidget(profile: widget.profile, achievements: _achievements),
+      body: ProfileWidget(profile: widget.profile),
     );
   }
 }

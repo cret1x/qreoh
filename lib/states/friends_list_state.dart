@@ -5,6 +5,8 @@ import 'package:qreoh/firebase_functions/friends.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/states/user_state.dart';
 
+enum FriendsFilterType {asc, desc}
+
 class FriendsState {
   final List<UserState> friends;
   final List<UserState> inRequests;
@@ -98,6 +100,20 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
       friends: [for (final fr in state.friends) if (fr.uid != friend.uid) fr],
     );
   }
+
+  Future<void> loadFromDB() async {
+    final friends = await firebaseFriendsManager.getAllFriends();
+    state = state.copyWith(friends: friends);
+  }
+
+  Future<void> sortFriends(bool desc) async {
+    final friends = state.friends;
+    friends.sort((UserState a, UserState b) {
+      return desc ? b.login.compareTo(a.login) : a.login.compareTo(b.login);
+    });
+    state = state.copyWith(friends: friends);
+  }
+
 
   Future<List<UserState>> getAllFriends(bool desc) async {
     final friends = await firebaseFriendsManager.getAllFriends();

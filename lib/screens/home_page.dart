@@ -81,12 +81,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
-    ref.read(userStateProvider.notifier).getUser();
-    ref.read(userTagsProvider.notifier).loadTags();
-    ref.read(friendsListStateProvider.notifier).getAllFriends(false);
-    ref.read(shopStateProvider.notifier).loadItems();
-    ref.read(rewardsStateProvider.notifier).loadItems();
-    ref.read(achievementsProvider.notifier).loadAchievements();
   }
 
   @override

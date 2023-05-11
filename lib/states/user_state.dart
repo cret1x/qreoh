@@ -1,90 +1,143 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/entities/achievement.dart';
-import 'package:qreoh/entities/reward_item.dart';
-import 'package:qreoh/entities/shop_item.dart';
-import 'package:qreoh/firebase_functions/shop.dart';
+import 'package:qreoh/entities/customisation/custom_avatar.dart';
+import 'package:qreoh/entities/customisation/custom_banner.dart';
+import 'package:qreoh/entities/customisation/custom_item.dart';
+import 'package:qreoh/entities/customisation/reward_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/firebase_functions/storage.dart';
 import 'package:qreoh/firebase_functions/user.dart';
-import 'package:qreoh/strings.dart';
 
 class UserState {
   final String uid;
-  final List<String> collection;
+  final List<CustomItem> collection;
   final int balance;
   final String login;
   final int tag;
-  final String? profileImage;
-  final AssetImage avatar;
-  final AssetImage banner;
+  final String? profileImageUrl;
+  final CustomAvatar avatar;
+  final CustomBanner banner;
   final int tasksFriendsCompleted;
   final int tasksFriendsCreated;
   final int tasksCreated;
   final int tasksCompleted;
-  final int friendsCount;
   final int tasksFromFriendsReceived;
   final int level;
   final int experience;
   final List<String> achievements;
 
-  UserState({required this.collection,
-    required this.uid,
-    required this.balance,
-    required this.avatar,
-    required this.login,
-    required this.tag,
-    required this.level,
-    required this.experience,
-    required this.banner,
-    required this.tasksFromFriendsReceived,
-    required this.profileImage,
-    required this.tasksFriendsCompleted,
-    required this.tasksFriendsCreated,
-    required this.tasksCreated,
-    required this.tasksCompleted,
-    required this.friendsCount,
-    required this.achievements});
+  UserState(
+      {required this.collection,
+      required this.uid,
+      required this.balance,
+      required this.avatar,
+      required this.login,
+      required this.tag,
+      required this.level,
+      required this.experience,
+      required this.banner,
+      required this.tasksFromFriendsReceived,
+      this.profileImageUrl,
+      required this.tasksFriendsCompleted,
+      required this.tasksFriendsCreated,
+      required this.tasksCreated,
+      required this.tasksCompleted,
+      required this.achievements});
+
+  factory UserState.init(String uid, String login, int tag) {
+    return UserState(
+      collection: [
+        CustomAvatar(
+            id: "Uz6gZ1t3pSnGqOHvAD13",
+            res: "dino_red.png",
+            type: CustomItemType.avatar),
+        CustomBanner(
+            id: "mIJxTwVuryce10ctFsRl",
+            res: "torii.jpg",
+            type: CustomItemType.banner),
+      ],
+      uid: uid,
+      balance: 100,
+      avatar: CustomAvatar(
+          id: "Uz6gZ1t3pSnGqOHvAD13",
+          res: "dino_red.png",
+          type: CustomItemType.avatar),
+      login: login,
+      tag: tag,
+      level: 1,
+      experience: 0,
+      banner: CustomBanner(
+          id: "mIJxTwVuryce10ctFsRl",
+          res: "torii.jpg",
+          type: CustomItemType.banner),
+      tasksFromFriendsReceived: 0,
+      tasksFriendsCompleted: 0,
+      tasksFriendsCreated: 0,
+      tasksCreated: 0,
+      tasksCompleted: 0,
+      achievements: [],
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'login': login,
+      'tag': tag,
+      'balance': balance,
+      'banner': banner.toFirestore(),
+      'avatar': avatar.toFirestore(),
+      'achievements': achievements,
+      'collection': collection.map((e)=>e.toFirestore()).toList(),
+      'friends': [],
+      'tasksFriendsCompleted': tasksFriendsCompleted,
+      'tasksFriendsCreated': tasksFriendsCreated,
+      'tasksCreated': tasksCreated,
+      'tasksCompleted': tasksCompleted,
+      'tasksFromFriendsReceived': tasksFromFriendsReceived,
+      'experience': experience,
+      'level': level,
+    };
+  }
 
   factory UserState.fromFirestore(String uid, Map<String, dynamic> data) {
     return UserState(
         uid: uid,
-        collection: List.from(data['collection']),
+        collection: List.from(
+            (data['collection'] as Iterable).map((e) => CustomItem.fromMap(e))),
         balance: data['balance'],
         login: data['login'],
         tag: data['tag'],
         level: data['level'],
         experience: data['experience'],
-        avatar: AssetImage("${Strings.avatarsAssetFolder}${data['avatar']}"),
-        banner: AssetImage("${Strings.bannersAssetFolder}${data['banner']}"),
-        profileImage: data['profileImage'],
+        avatar: CustomItem.fromMap(data['avatar']) as CustomAvatar,
+        banner: CustomItem.fromMap(data['banner']) as CustomBanner,
+        profileImageUrl: data['profileImage'],
         tasksFriendsCompleted: data['tasksFriendsCompleted'],
         tasksFriendsCreated: data['tasksFriendsCreated'],
         tasksCreated: data['tasksCreated'],
         tasksFromFriendsReceived: data['tasksFromFriendsReceived'],
         tasksCompleted: data['tasksCompleted'],
-        friendsCount: data['friends'] == null ? 0 : data['friends'].length,
         achievements: List.from(data['achievements']));
   }
 
-  UserState copyWith({List<String>? collection,
-    int? balance,
-    String? login,
-    int? tag,
-    AssetImage? banner,
-    AssetImage? avatar,
-    String? profileImage,
-    int? tasksFromFriendsReceived,
-    int? tasksCompleted,
-    int? level,
-    int? experience,
-    int? tasksFriendsCompleted,
-    int? tasksFriendsCreated,
-    int? tasksCreated,
-    int? friendsCount,
-    List<String>? achievements}) {
+  UserState copyWith(
+      {int? balance,
+      String? login,
+      int? tag,
+      CustomBanner? banner,
+      CustomAvatar? avatar,
+      String? profileImage,
+      int? tasksFromFriendsReceived,
+      int? tasksCompleted,
+      int? level,
+      int? experience,
+      int? tasksFriendsCompleted,
+      int? tasksFriendsCreated,
+      int? tasksCreated,
+      int? friendsCount,
+      List<CustomItem>? collection,
+      List<String>? achievements}) {
     return UserState(
         collection: collection ?? this.collection,
         uid: uid,
@@ -94,16 +147,15 @@ class UserState {
         login: login ?? this.login,
         tag: tag ?? this.tag,
         banner: banner ?? this.banner,
-        profileImage: profileImage,
-        tasksFromFriendsReceived: tasksFromFriendsReceived ??
-            this.tasksFromFriendsReceived,
+        profileImageUrl: profileImage,
+        tasksFromFriendsReceived:
+            tasksFromFriendsReceived ?? this.tasksFromFriendsReceived,
         avatar: avatar ?? this.avatar,
         tasksFriendsCompleted:
-        tasksFriendsCompleted ?? this.tasksFriendsCompleted,
+            tasksFriendsCompleted ?? this.tasksFriendsCompleted,
         tasksFriendsCreated: tasksFriendsCreated ?? this.tasksFriendsCreated,
         tasksCreated: tasksCreated ?? this.tasksCreated,
         tasksCompleted: tasksCompleted ?? this.tasksCompleted,
-        friendsCount: friendsCount ?? this.friendsCount,
         achievements: achievements ?? this.achievements);
   }
 }
@@ -112,9 +164,12 @@ class UserStateNotifier extends StateNotifier<UserState?> {
   final firebaseUserManager = FirebaseUserManager();
   final firebaseStorageManager = FirebaseStorageManager();
   final Ref ref;
-  UserStateNotifier(this.ref) : super(null);
 
-  Future<void> getUser() async {
+  UserStateNotifier(this.ref) : super(null) {
+    loadFromDB();
+  }
+
+  Future<void> loadFromDB() async {
     state = await firebaseUserManager.getUser();
   }
 
@@ -141,7 +196,6 @@ class UserStateNotifier extends StateNotifier<UserState?> {
 
   void updateLogin(String login) async {
     if (state != null) {
-      await firebaseUserManager.updateLogin(login);
       state = state!.copyWith(login: login);
     }
   }
@@ -152,7 +206,7 @@ class UserStateNotifier extends StateNotifier<UserState?> {
         firebaseUserManager.buyItem(item, state!.balance);
         state = state!.copyWith(
             balance: state!.balance - item.price,
-            collection: [...state!.collection, item.id]);
+            collection: [...state!.collection, item.item]);
 
         return true;
       }
@@ -164,31 +218,33 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     if (state != null) {
       if (state!.level >= item.level) {
         firebaseUserManager.collectReward(item);
-        state = state!.copyWith(collection: [...state!.collection, item.id]);
+        state = state!.copyWith(collection: [...state!.collection, item.item]);
         return true;
       }
     }
     return false;
   }
 
-  Future<void> selectItem(ShopItem item) async {
+  Future<void> selectShopItem(ShopItem item) async {
     if (state != null) {
-      firebaseUserManager.selectItem(item);
-      if (item.type == ShopItemType.banner) {
-        state = state!.copyWith(banner: item.image);
+      firebaseUserManager.selectItem(item.item);
+      if (item.item is CustomBanner) {
+        state = state!.copyWith(banner: item.item as CustomBanner);
       } else {
-        state = state!.copyWith(avatar: item.image);
+        state = state!.copyWith(avatar: item.item as CustomAvatar);
       }
     }
   }
 
-  Future<void> selectItemReward(RewardItem item) async {
+  Future<void> selectRewardItem(
+      CustomBanner? banner, CustomAvatar? avatar) async {
     if (state != null) {
-      firebaseUserManager.selectRewardItem(item);
-      if (item.type == ShopItemType.banner) {
-        state = state!.copyWith(banner: item.image);
-      } else {
-        state = state!.copyWith(avatar: item.image);
+      state = state!.copyWith(banner: banner, avatar: avatar);
+      if (avatar != null) {
+        firebaseUserManager.selectItem(avatar);
+      }
+      if (banner != null) {
+        firebaseUserManager.selectItem(banner);
       }
     }
   }

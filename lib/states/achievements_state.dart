@@ -8,9 +8,11 @@ import 'package:qreoh/firebase_functions/achievements.dart';
 class AchievementsStateNotifier extends StateNotifier<List<Achievement>> {
   final firebaseAchievementsManager = FirebaseAchievementsManager();
   final Ref ref;
-  AchievementsStateNotifier(this.ref) : super([]);
+  AchievementsStateNotifier(this.ref) : super([]) {
+    loadFromDB();
+  }
 
-  Future<void> loadAchievements() async {
+  Future<void> loadFromDB() async {
     state = await firebaseAchievementsManager.getAchievements();
   }
 }

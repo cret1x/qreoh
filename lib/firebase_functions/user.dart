@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:qreoh/entities/reward_item.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/custom_banner.dart';
+import 'package:qreoh/entities/customisation/custom_item.dart';
+import 'package:qreoh/entities/customisation/reward_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/states/user_state.dart';
 
 class FirebaseUserManager {
@@ -24,43 +26,36 @@ class FirebaseUserManager {
 
   Future<void> updateXp(int xp) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
+    db.collection('users').doc(uid).update({
       'experience': xp,
     });
   }
 
   Future<void> updateLevel(int level) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
+    db.collection('users').doc(uid).update({
       'level': level,
     });
   }
 
   Future<void> buyItem(ShopItem item, int balance) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
-      "collection": FieldValue.arrayUnion([item.id]),
+    db.collection('users').doc(uid).update({
+      "collection": FieldValue.arrayUnion([item.item.toFirestore()]),
       'balance': balance - item.price,
     });
   }
 
-  Future<void> selectItem(ShopItem item) async {
+  Future<void> selectItem(CustomItem item) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
-      item.type == ShopItemType.banner ? 'banner' : "avatar": item.file,
-    });
-  }
-
-  Future<void> selectRewardItem(RewardItem item) async {
-    String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
-      item.type == ShopItemType.banner ? 'banner' : "avatar": item.file,
+    db.collection('users').doc(uid).update({
+      (item is CustomBanner ? 'banner' : "avatar"): item.toFirestore(),
     });
   }
 
   Future<void> updateLogin(String newLogin) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
+    db.collection('users').doc(uid).update({
       'login': newLogin,
     });
   }
@@ -72,7 +67,7 @@ class FirebaseUserManager {
     int? tasksCompleted,
   }) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
+    db.collection('users').doc(uid).update({
       if (tasksFriendsCompleted != null) 'tasksFriendsCompleted': tasksFriendsCompleted,
       if (tasksFriendsCreated != null) 'tasksFriendsCreated': tasksFriendsCreated,
       if (tasksCreated != null) 'tasksCreated': tasksCreated,
@@ -82,15 +77,15 @@ class FirebaseUserManager {
 
   Future<void> getAchievement(String id) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
+    db.collection('users').doc(uid).update({
       'achievements': FieldValue.arrayUnion([id]),
     });
   }
 
   void collectReward(RewardItem item) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    await db.collection('users').doc(uid).update({
-      "collection": FieldValue.arrayUnion([item.id]),
+    db.collection('users').doc(uid).update({
+      "collection": FieldValue.arrayUnion([item.item.toFirestore()]),
     });
   }
 }

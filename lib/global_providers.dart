@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/achievement.dart';
-import 'package:qreoh/entities/reward_item.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/reward_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/states/achievements_state.dart';
@@ -33,8 +33,6 @@ final taskListStateProvider = StateNotifierProvider<TaskListStateNotifier, List<
 
 final authStateProvider = StateNotifierProvider<UserAuthStateNotifier, UserAuthState>((ref) => UserAuthStateNotifier());
 
-final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier());
-
 final shopStateProvider = StateNotifierProvider<ShopStateNotifier, List<ShopItem>>((ref) => ShopStateNotifier());
 
 final userStateProvider = StateNotifierProvider<UserStateNotifier, UserState?>((ref) => UserStateNotifier(ref));
@@ -45,4 +43,14 @@ final rewardsStateProvider = StateNotifierProvider<RewardsStateNotifier, List<Re
 
 final folderStateProvider = StateNotifierProvider<FolderStateNotifier, Folder>((ref) => FolderStateNotifier());
 
-final tasksListRebuildProvider = ChangeNotifierProvider<TaskListRebuildNotifier>((ref) => TaskListRebuildNotifier());
+final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier());
+final friendsFilterProvider = StateProvider<FriendsFilterType>((ref) => FriendsFilterType.asc);
+final filteredFriendsListProvider = Provider((ref) {
+  final FriendsFilterType filter = ref.watch(friendsFilterProvider);
+});
+
+final taskListFilteredProvider = Provider<List<Task>>((ref) {
+  final filter = ref.watch(tasksFilterProvider);
+  final tasks = ref.watch(taskListStateProvider);
+  return tasks.where(filter.check).toList();
+});

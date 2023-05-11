@@ -25,7 +25,7 @@ class FriendItem extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fill,
-          image: friendState.banner,
+          image: friendState.banner.asset,
         ),
       ),
       child: DecoratedBox(
@@ -55,8 +55,8 @@ class FriendItem extends StatelessWidget {
             backgroundColor:
                 Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
                     .withOpacity(1.0),
-            foregroundImage: (friendState.profileImage != null)
-                ? NetworkImage(friendState.profileImage!)
+            foregroundImage: (friendState.profileImageUrl != null)
+                ? NetworkImage(friendState.profileImageUrl!)
                 : null,
             radius: 32,
           ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:qreoh/strings.dart';
 
@@ -14,12 +15,13 @@ class Achievement {
     required this.condition,
   });
 
-  factory Achievement.fromFirestore(String id, Map<String, dynamic> data) {
+  factory Achievement.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
+    final data = snapshot.data();
     return Achievement(
-      id: id,
-      name: data['name'],
-      image: AssetImage(Strings.achievementsAssetFolder + data['image']),
-      condition: data['condition'],
+      id: snapshot.id,
+      name: data?['name'] ?? "Achievement",
+      image: AssetImage(Strings.achievementsAssetFolder + (data?['image'] ?? 'rocket.jpg')),
+      condition: data?['condition'] ?? "Condition",
     );
   }
 }

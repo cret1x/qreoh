@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qreoh/states/user_state.dart';
 import 'package:qreoh/strings.dart';
 
 
@@ -75,23 +76,8 @@ class FirebaseAuthManager {
     final usersRef = FirebaseFirestore.instance.collection('users');
     final snapshot = await usersRef.count().get();
     int tag = snapshot.count;
-    usersRef.doc(uid).set({
-      'login': login,
-      'tag': tag,
-      'balance': 100,
-      'banner': 'torii.jpg',
-      'avatar': 'eboy.png',
-      'achievements': [],
-      'collection': ['h9o8MYCjvMK4UxXvoa7z', 'sEth2BoQoV41l8AOWp9G'],
-      'friends': [],
-      'tasksFriendsCompleted': 0,
-      'tasksFriendsCreated': 0,
-      'tasksCreated': 0,
-      'tasksCompleted': 0,
-      'tasksFromFriendsReceived': 0,
-      'experience': 0,
-      'level': 1,
-    });
+    final initUser = UserState.init(uid, login, tag);
+    usersRef.doc(uid).set(initUser.toFirestore());
     usersRef
         .doc(uid)
         .collection("folders")

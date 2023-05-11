@@ -14,6 +14,31 @@ class FilterState {
     required this.tags,
   });
 
+  bool check(Task task) {
+    bool flag =
+        priorities.isEmpty || priorities.contains(task.priority);
+    if (!flag) {
+      return false;
+    }
+
+    flag = statuses.isEmpty || statuses.contains(task.done);
+    if (!flag) {
+      return false;
+    }
+
+    if (tags.isEmpty) {
+      return true;
+    }
+
+    for (var tag in tags) {
+      flag = task.tags.contains(tag);
+      if (!flag) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   FilterState copyWith(
           {Set<String>? tags,
           Set<Priority>? priorities,
@@ -78,30 +103,5 @@ class FilterStateNotifier extends StateNotifier<FilterState> {
           if (st != status) st
       },
     );
-  }
-
-  bool check(Task task) {
-    bool flag =
-        state.priorities.isEmpty || state.priorities.contains(task.priority);
-    if (!flag) {
-      return false;
-    }
-
-    flag = state.statuses.isEmpty || state.statuses.contains(task.done);
-    if (!flag) {
-      return false;
-    }
-
-    if (state.tags.isEmpty) {
-      return true;
-    }
-
-    for (var tag in state.tags) {
-      flag = task.tags.contains(tag);
-      if (!flag) {
-        return false;
-      }
-    }
-    return true;
   }
 }

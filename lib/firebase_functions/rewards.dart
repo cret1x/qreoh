@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qreoh/entities/reward_item.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/reward_item.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 
 
 class FirebaseRewardsManager {
@@ -17,9 +17,9 @@ class FirebaseRewardsManager {
 
   Future<List<RewardItem>> getRewardsItems() async {
     List<RewardItem> rewardItems = [];
-    final itemsRef = await db.collection('rewards').get();
+    final itemsRef = await db.collection('rewards_2').get();
     for (var item in itemsRef.docs) {
-      rewardItems.add(RewardItem.fromFirestore(item.id, item.data()));
+      rewardItems.add(RewardItem.fromFirestore(item, null));
     }
     return rewardItems;
   }

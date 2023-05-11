@@ -20,7 +20,7 @@ class FirebaseAchievementsManager {
     List<Achievement> achievements = [];
     final achRef = await db.collection('achievements').get();
     for (var ach in achRef.docs) {
-      achievements.add(Achievement.fromFirestore(ach.id, ach.data()));
+      achievements.add(Achievement.fromFirestore(ach, null));
     }
     return achievements;
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qreoh/entities/shop_item.dart';
+import 'package:qreoh/entities/customisation/custom_avatar.dart';
+import 'package:qreoh/entities/customisation/custom_banner.dart';
+import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
 
@@ -16,14 +18,13 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
   UserState? _userState;
 
   Widget buyButton(ShopItem item) {
-    if (_userState!.collection.contains(item.id)) {
-      if (_userState!.banner.assetName == item.image.assetName || _userState!.avatar.assetName == item.image.assetName) {
+    if (_userState!.collection.contains(item.item)) {
+      if (_userState!.banner.id == item.id || _userState!.avatar.id == item.id) {
         return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
       }
       return ElevatedButton(
           onPressed: () {
-            ref.read(userStateProvider.notifier).selectItem(item);
-            ref.read(userStateProvider.notifier).getUser();
+            ref.read(userStateProvider.notifier).selectShopItem(item);
           },
           child: const Text("Выбрать"));
     }
@@ -43,7 +44,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
               color: Theme.of(context).colorScheme.primary, width: 5),
-          image: DecorationImage(image: item.image, fit: BoxFit.cover),
+          image: DecorationImage(image: item.item.asset, fit: BoxFit.cover),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -62,7 +63,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: _shopItems
-              .where((element) => element.type == ShopItemType.avatar)
+              .where((element) => element.item is CustomAvatar)
               .map((item) => shopItem(item))
               .toList()),
     );
@@ -75,16 +76,10 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: _shopItems
-              .where((element) => element.type == ShopItemType.banner)
+              .where((element) => element.item is CustomBanner)
               .map((item) => shopItem(item))
               .toList()),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(shopStateProvider.notifier).loadItems();
   }
 
   @override
@@ -123,20 +118,4 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       ),
     );
   }
-}
-
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Color(0xff555555);
-    Path path = Path()
-      ..relativeLineTo(0, 150)
-      ..quadraticBezierTo(size.width / 2, 225, size.width, 150)
-      ..relativeLineTo(0, -150)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
