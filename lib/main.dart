@@ -66,7 +66,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           surface: Colors.grey.shade900,
           onSurface: Colors.white,
           primary: Colors.deepOrangeAccent,
-          secondary: Colors.orange.shade800,
+          secondary: Colors.deepOrangeAccent.shade100,
           primaryContainer: Colors.black26,
           brightness: Brightness.dark,
         ),
