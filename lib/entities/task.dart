@@ -20,6 +20,7 @@ class Task {
   String? place;
   bool haveTime;
   List<String> tags;
+  List<Notification>? notifications;
 
   Task({
     required this.id,
@@ -34,6 +35,7 @@ class Task {
     this.description,
     this.timeRequired,
     this.place,
+    this.notifications,
   });
 
   Map<String, dynamic> toFirestore() {
