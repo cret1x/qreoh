@@ -108,8 +108,10 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
 
   bool checkForChanges() {
     return _newLogin == _userState!.login &&
-        (_selectedBanner == null || _selectedBanner?.image.assetName == _userState!.banner.assetName) &&
-        (_selectedAvatar == null || _selectedAvatar?.image.assetName == _userState!.avatar.assetName) &&
+        (_selectedBanner == null ||
+            _selectedBanner?.image.assetName == _userState!.banner.assetName) &&
+        (_selectedAvatar == null ||
+            _selectedAvatar?.image.assetName == _userState!.avatar.assetName) &&
         !_imageFileChanged;
   }
 
@@ -267,12 +269,12 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                 children: const [CircularProgressIndicator()],
               ),
             )
-          : Column(
+          : Stack(
               children: [
                 Stack(
                   children: [
                     Container(
-                      height: 250,
+                      height: 265,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image:
@@ -283,7 +285,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                         child: Container(
-                          height: 250,
+                          height: 265,
                           decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.4)),
                           child: Center(
@@ -298,143 +300,193 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                     ),
                   ],
                 ),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(10),
-                    children: [
-                      Row(
+                Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
                         children: [
-                          InkWell(
-                            onTap: selectPhoto,
-                            child: Stack(
-                              children: [
-                                Container(
-                                  height: 125,
-                                  width: 125,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        width: 3.0),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: getProfileImage(),
+                          const SizedBox(
+                            height: 250,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.background,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  spreadRadius: 6,
+                                  blurRadius: 8, // changes position of shadow
                                 ),
-                                ClipRect(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    height: 125,
-                                    width: 125,
-                                    child: const Center(
-                                      child: Icon(
-                                        Icons.edit,
-                                        color: Colors.white,
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: selectPhoto,
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            height: 125,
+                                            width: 125,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
+                                                  width: 3.0),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: getProfileImage(),
+                                          ),
+                                          ClipRect(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.black
+                                                    .withOpacity(0.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              height: 125,
+                                              width: 125,
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
+                                    Expanded(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 32.0),
+                                        child: TextFormField(
+                                          initialValue: _userState?.login,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              _newLogin = value ?? _newLogin;
+                                            });
+                                          },
+                                          maxLength: 16,
+                                          decoration: InputDecoration(
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary),
+                                            ),
+                                            labelText: "Имя пользователя",
+                                            labelStyle: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                    "Баннеры",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24),
                                   ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: bannerListWidget(context: context),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                    "Аватары",
+                                    style: TextStyle(
+                                        letterSpacing: 2,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 24),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: avatarListWidget(context: context),
+                                ),
+                                ElevatedButton(
+                                  onPressed: checkForChanges()
+                                      ? null
+                                      : () {
+                                          if (_selectedBanner != null &&
+                                              _selectedBanner!
+                                                      .image.assetName !=
+                                                  _userState!
+                                                      .banner.assetName) {
+                                            ref
+                                                .read(
+                                                    userStateProvider.notifier)
+                                                .selectItemReward(
+                                                    _selectedBanner!);
+                                          }
+                                          if (_selectedAvatar != null &&
+                                              _selectedAvatar
+                                                      ?.image.assetName !=
+                                                  _userState!
+                                                      .avatar.assetName) {
+                                            ref
+                                                .read(
+                                                    userStateProvider.notifier)
+                                                .selectItemReward(
+                                                    _selectedAvatar!);
+                                          }
+                                          if (_newLogin != null &&
+                                              _newLogin != _userState!.login) {
+                                            ref
+                                                .read(
+                                                    userStateProvider.notifier)
+                                                .updateLogin(_newLogin!);
+                                          }
+                                          if (_imageFile != null &&
+                                              _imageFileChanged) {
+                                            ref
+                                                .read(
+                                                    userStateProvider.notifier)
+                                                .updateProfileImage(
+                                                    _imageFile!);
+                                          }
+                                        },
+                                  child: const Text("Сохранить"),
                                 )
                               ],
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 32.0),
-                              child: TextFormField(
-                                initialValue: _userState?.login,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _newLogin = value ?? _newLogin;
-                                  });
-                                },
-                                maxLength: 16,
-                                decoration: InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
-                                  ),
-                                  labelText: "Имя пользователя",
-                                  labelStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          "Баннеры",
-                          style: TextStyle(
-                              letterSpacing: 2,
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: bannerListWidget(context: context),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          "Аватары",
-                          style: TextStyle(
-                              letterSpacing: 2,
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: avatarListWidget(context: context),
-                      ),
-                      ElevatedButton(
-                        onPressed: checkForChanges()
-                            ? null
-                            : () {
-                                if (_selectedBanner != null &&
-                                    _selectedBanner!.image.assetName !=
-                                        _userState!.banner.assetName) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .selectItemReward(_selectedBanner!);
-                                }
-                                if (_selectedAvatar != null &&
-                                    _selectedAvatar?.image.assetName !=
-                                        _userState!.avatar.assetName) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .selectItemReward(_selectedAvatar!);
-                                }
-                                if (_newLogin != null &&
-                                    _newLogin != _userState!.login) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .updateLogin(_newLogin!);
-                                }
-                                if (_imageFile != null && _imageFileChanged) {
-                                  ref
-                                      .read(userStateProvider.notifier)
-                                      .updateProfileImage(_imageFile!);
-                                }
-                              },
-                        child: const Text("Сохранить"),
-                      )
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
