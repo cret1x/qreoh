@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qreoh/entities/customisation/custom_avatar.dart';
 import 'package:qreoh/entities/customisation/custom_banner.dart';
+import 'package:qreoh/entities/customisation/custom_item.dart';
 import 'package:qreoh/entities/customisation/reward_item.dart';
 import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/global_providers.dart';
@@ -38,37 +39,26 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     _loginController.dispose();
   }
 
-  Widget buyButton(RewardItem item) {
-    if (_userState!.collection.contains(item.item)) {
-      if (_selectedBanner?.id == item.id || _selectedAvatar?.id == item.id) {
-        return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
-      }
-      return ElevatedButton(
-          onPressed: () {
-            if (item.item is CustomBanner) {
-              setState(() {
-                _selectedBanner = item.item as CustomBanner;
-              });
-            } else {
-              setState(() {
-                _selectedAvatar = item.item as CustomAvatar;
-              });
-            }
-          },
-          child: const Text("Выбрать"));
+  Widget selectButton(CustomItem item) {
+    if (_selectedBanner?.id == item.id || _selectedAvatar?.id == item.id) {
+      return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
     }
-    if (_userState!.level >= item.level) {
-      return ElevatedButton(
-          onPressed: () {
-            ref.read(userStateProvider.notifier).collectReward(item);
-          },
-          child: const Text("Получить"));
-    } else {
-      return ElevatedButton(onPressed: null, child: Text("Lvl ${item.level}"));
-    }
+    return ElevatedButton(
+        onPressed: () {
+          if (item is CustomBanner) {
+            setState(() {
+              _selectedBanner = item;
+            });
+          } else {
+            setState(() {
+              _selectedAvatar = item as CustomAvatar;
+            });
+          }
+        },
+        child: const Text("Выбрать"));
   }
 
-  Widget rewardIcon(RewardItem item) {
+  Widget collectionItem(CustomItem item) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -77,34 +67,72 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
               color: Theme.of(context).colorScheme.primary, width: 5),
-          image: DecorationImage(image: item.item.asset, fit: BoxFit.cover),
+          image: DecorationImage(image: item.asset, fit: BoxFit.cover),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            buyButton(item),
+            selectButton(item),
           ],
         ),
       ),
     );
   }
 
-  Widget avatarListWidget({required BuildContext context}) {
+  Widget rewardItem(RewardItem item) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+          width: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: Theme.of(context).colorScheme.primary, width: 5),
+            image: DecorationImage(image: item.item.asset, fit: BoxFit.cover),
+          ),
+          child: (_userState!.level >= item.level)
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        ref.read(userStateProvider.notifier).collectReward(item);
+                      },
+                      child: const Text("Получить"),
+                    ),
+                  ],
+                )
+              : Container(
+                  color: Colors.black.withOpacity(0.7),
+                  child: Center(
+                    child: Text(
+                      "${item.level}",
+                      style: TextStyle(fontSize: 32),
+                    ),
+                  ),
+                )),
+    );
+  }
+
+  Widget rewardsList({required BuildContext context}) {
     return SizedBox(
       height: 200,
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: _rewardItems
-              .where((element) => element.item is CustomAvatar)
-              .map((item) => rewardIcon(item))
+              .where(
+                  (element) => !_userState!.collection.contains(element.item))
+              .map((item) => rewardItem(item))
               .toList()),
     );
   }
 
   bool checkForChanges() {
-    return
-        (_selectedBanner == null || _selectedBanner?.id == _userState!.banner.id) &&
-        (_selectedAvatar == null || _selectedAvatar?.id == _userState!.avatar.id) &&
+    return (_selectedBanner == null ||
+            _selectedBanner?.id == _userState!.banner.id) &&
+        (_selectedAvatar == null ||
+            _selectedAvatar?.id == _userState!.avatar.id) &&
+        (_newLogin == null || _userState!.login == _newLogin) &&
         !_imageFileChanged;
   }
 
@@ -128,14 +156,13 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
     );
   }
 
-  Widget bannerListWidget({required BuildContext context}) {
+  Widget collectionList({required BuildContext context}) {
     return SizedBox(
       height: 200,
       child: ListView(
           scrollDirection: Axis.horizontal,
-          children: _rewardItems
-              .where((element) => element.item is CustomBanner)
-              .map((item) => rewardIcon(item))
+          children: _userState!.collection
+              .map((item) => collectionItem(item))
               .toList()),
     );
   }
@@ -242,7 +269,8 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       height: 250,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: _selectedBanner?.asset ?? _userState!.banner.asset,
+                              image: _selectedBanner?.asset ??
+                                  _userState!.banner.asset,
                               fit: BoxFit.cover)),
                     ),
                     ClipRect(
@@ -254,8 +282,8 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                               color: Colors.black.withOpacity(0.4)),
                           child: Center(
                             child: Image(
-                              image:
-                                  _selectedAvatar?.asset ?? _userState!.avatar.asset,
+                              image: _selectedAvatar?.asset ??
+                                  _userState!.avatar.asset,
                               fit: BoxFit.contain,
                             ),
                           ),
@@ -340,7 +368,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          "Баннеры",
+                          "Моя коллекция",
                           style: TextStyle(
                               letterSpacing: 2,
                               color: Theme.of(context).colorScheme.secondary,
@@ -350,12 +378,12 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: bannerListWidget(context: context),
+                        child: collectionList(context: context),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          "Аватары",
+                          "Награды за уровень",
                           style: TextStyle(
                               letterSpacing: 2,
                               color: Theme.of(context).colorScheme.secondary,
@@ -365,15 +393,18 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: avatarListWidget(context: context),
+                        child: rewardsList(context: context),
                       ),
                       ElevatedButton(
                         onPressed: checkForChanges()
                             ? null
                             : () {
-                            ref.read(userStateProvider.notifier).selectRewardItem(_selectedBanner, _selectedAvatar);
-
-                                  if(  _newLogin != _userState!.login) {
+                                ref
+                                    .read(userStateProvider.notifier)
+                                    .selectRewardItem(
+                                        _selectedBanner, _selectedAvatar);
+                                print(_newLogin);
+                                if (_newLogin != _userState!.login) {
                                   ref
                                       .read(userStateProvider.notifier)
                                       .updateLogin(_newLogin!);

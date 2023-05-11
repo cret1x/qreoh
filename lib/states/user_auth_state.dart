@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/auth.dart';
+import 'package:qreoh/firebase_functions/user.dart';
 
 enum AuthState { anonymous, registered, verified }
 
@@ -19,8 +20,9 @@ class UserAuthState {
 
 class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
   final firebaseAuthManager = FirebaseAuthManager();
+  final Ref ref;
 
-  UserAuthStateNotifier() : super(UserAuthState.anonymous()) {
+  UserAuthStateNotifier(this.ref) : super(UserAuthState.anonymous()) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null || user.isAnonymous) {
         state = UserAuthState.anonymous();
@@ -28,6 +30,7 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
         state = UserAuthState.registered();
       } else {
         state = UserAuthState.verified();
+
       }
     });
   }

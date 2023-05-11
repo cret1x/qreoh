@@ -51,10 +51,10 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
   }
 
   Future<void> toggleTask(Task task) async {
-    state = [
-      for (final todo in state)
-        if (todo.id == task.id) todo.copyWith(done: task.done) else todo,
-    ];
+    // state = [
+    //   for (final todo in state)
+    //     if (todo.id == task.id) todo.copyWith(done: task.done) else todo,
+    // ];
     firebaseTaskManager.changeTaskState(task);
     if (_user == null) {
       return;

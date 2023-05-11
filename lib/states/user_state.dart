@@ -196,6 +196,7 @@ class UserStateNotifier extends StateNotifier<UserState?> {
 
   void updateLogin(String login) async {
     if (state != null) {
+      firebaseUserManager.updateLogin(login);
       state = state!.copyWith(login: login);
     }
   }
