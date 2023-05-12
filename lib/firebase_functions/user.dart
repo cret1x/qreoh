@@ -7,6 +7,7 @@ import 'package:qreoh/entities/customisation/custom_item.dart';
 import 'package:qreoh/entities/customisation/reward_item.dart';
 import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:qreoh/strings.dart';
 
 class FirebaseUserManager {
   final db = FirebaseFirestore.instance;
@@ -57,6 +58,13 @@ class FirebaseUserManager {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     db.collection('users').doc(uid).update({
       'login': newLogin,
+    });
+  }
+
+  Future<void> updateBalance(int amount) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    db.collection('users').doc(uid).update({
+      'balance': amount,
     });
   }
 

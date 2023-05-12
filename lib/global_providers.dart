@@ -43,6 +43,6 @@ final rewardsStateProvider = StateNotifierProvider<RewardsStateNotifier, List<Re
 
 final folderStateProvider = StateNotifierProvider<FolderStateNotifier, Folder>((ref) => FolderStateNotifier());
 
-final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier());
+final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier(ref));
 final friendsFilterProvider = StateProvider<FriendsFilterType>((ref) => FriendsFilterType.asc);
 final tasksListRebuildProvider = ChangeNotifierProvider<TaskListRebuildNotifier>((ref) => TaskListRebuildNotifier());

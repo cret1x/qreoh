@@ -290,7 +290,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                               BorderRadius.circular(5),
                                           child: LinearProgressIndicator(
                                             value: widget.profile.experience /
-                                                (widget.profile.level * 100),
+                                                Strings.xpToNewLevel,
                                             valueColor:
                                                 AlwaysStoppedAnimation<Color>(
                                                     Theme.of(context)

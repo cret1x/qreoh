@@ -5,6 +5,7 @@ import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/strings.dart';
 
 class TaskListRebuildNotifier with ChangeNotifier {
   void notify() {
@@ -47,18 +48,20 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
     if (task.from == null) {
       final completed = ref.read(userStateProvider)!.tasksCompleted;
       if (task.done) {
-        await ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed + 1);
-        await ref.read(userStateProvider.notifier).addXp(50);
+        ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed + 1);
+        ref.read(userStateProvider.notifier).addXp(Strings.xpRewardTask);
+        ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardTask);
       } else {
-        await ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed - 1);
+        ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed - 1);
       }
     } else {
       final completed = ref.read(userStateProvider)!.tasksFriendsCompleted;
       if (task.done) {
-        await ref.read(userStateProvider.notifier).addXp(100);
-        await ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed + 1);
+        ref.read(userStateProvider.notifier).addXp(Strings.xpRewardFriendTask);
+        ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardFriendTask);
+        ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed + 1);
       } else {
-        await ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed - 1);
+        ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed - 1);
       }
     }
     state = [

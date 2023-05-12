@@ -9,7 +9,7 @@ class Strings {
   static const String enterLogin = "Введите ваш логин";
   static const String enterPassword = "Введите ваш пароль";
   static const String repeatPassword = "Повторный пароль";
-  static const String welcomeMessage = "Выберете вход или регистрацию";
+  static const String welcomeMessage = "Выберете способ входа";
   static const String loginLabel = "Вход";
   static const String actionLogin = "Войти";
   static const String registerLabel = "Регистрация";
@@ -41,7 +41,7 @@ class Strings {
 
   static const String addFriend = "Добавить друга";
   static const String friendLogin = "Логин друга";
-  static const String friendTag = "Тэг друга";
+  static const String friendTag = "Тег друга";
   static const String friendNotFound = "Такого пользователя нет";
   static const String search = "Поиск";
   static const String sentFriendRequest = "Запрос отправлен";
@@ -60,4 +60,12 @@ class Strings {
   static const String logOut = "Выйти из аккаунта";
   static const String areYouSure = "Вы уверены?";
 
+  static const int xpToNewLevel = 1000;
+  static const int xpRewardTask = 100;
+  static const int xpRewardFriendTask = 200;
+  static const int xpRewardAchievement = 500;
+
+  static const int moneyRewardAchievement = 300;
+  static const int moneyRewardTask = 50;
+  static const int moneyRewardFriendTask = 100;
 }

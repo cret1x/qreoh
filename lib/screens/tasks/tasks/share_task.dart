@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -518,11 +519,11 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusDirectional.circular(12),
                           )),
-                          onPressed: _textEditingController.text.isNotEmpty
+                          onPressed: _receivers.isEmpty ? null : _textEditingController.text.isNotEmpty
                               ? () {
                                   final fff =
                                       Folder(id: "friends", name: "От друзей");
-                                  for (final reciever in _receivers) {
+                                  for (final receiver in _receivers) {
                                     var taskToSend = Task(
                                       id: uuid.v1(),
                                       parent: fff,
@@ -531,14 +532,14 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                                       done: false,
                                       haveTime: _haveTime,
                                       tags: [],
-                                      from: reciever.uid,
+                                      from: FirebaseAuth.instance.currentUser!.uid,
                                       deadline: _deadline,
                                       description: _description,
                                       timeRequired: _timeRequired,
                                       place: _location,
                                     );
                                     firebaseTaskManager.sendTaskToFriend(
-                                        taskToSend, reciever);
+                                        taskToSend, receiver);
                                   }
                                   Navigator.pop(context);
                                 }

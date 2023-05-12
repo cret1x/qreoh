@@ -8,6 +8,7 @@ import 'package:qreoh/entities/customisation/reward_item.dart';
 import 'package:qreoh/entities/customisation/shop_item.dart';
 import 'package:qreoh/firebase_functions/storage.dart';
 import 'package:qreoh/firebase_functions/user.dart';
+import 'package:qreoh/strings.dart';
 
 class UserState {
   final String uid;
@@ -58,7 +59,7 @@ class UserState {
             type: CustomItemType.banner),
       ],
       uid: uid,
-      balance: 100,
+      balance: 0,
       avatar: CustomAvatar(
           id: "Uz6gZ1t3pSnGqOHvAD13",
           res: "dino_red.png",
@@ -200,6 +201,13 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     }
   }
 
+  Future<void> addMoney(int amount) async {
+    if (state != null) {
+      state = state!.copyWith(balance: state!.balance + amount);
+      firebaseUserManager.updateBalance(state!.balance);
+    }
+  }
+
   void updateProfileImage(File image) async {
     if (state != null) {
       final url = await firebaseStorageManager.uploadProfilePicture(image);
@@ -276,25 +284,25 @@ class UserStateNotifier extends StateNotifier<UserState?> {
         tasksCompleted: tasksCompleted);
     // Achievements
     if ((tasksCompleted ?? 0) >= 5) {
-      firebaseUserManager.getAchievement("O2odVXVywvNwMQIY5bnh");
+      getAchievement("O2odVXVywvNwMQIY5bnh");
     }
     if ((tasksCompleted ?? 0) >= 25) {
-      firebaseUserManager.getAchievement("fx82rivViNdrOxUWlDsH");
+      getAchievement("fx82rivViNdrOxUWlDsH");
     }
     if ((tasksCreated ?? 0) >= 30) {
-      firebaseUserManager.getAchievement("YCaZyKpkYCl02ijZTCPP");
+      getAchievement("YCaZyKpkYCl02ijZTCPP");
     }
     if ((tasksCreated ?? 0) >= 50) {
-      firebaseUserManager.getAchievement("PudEGukirhWiwa1nIkku");
+      getAchievement("PudEGukirhWiwa1nIkku");
     }
     if ((tasksFriendsCreated ?? 0) >= 20) {
-      firebaseUserManager.getAchievement("GrYAn0VDPtHaGSdmBTtC");
+      getAchievement("GrYAn0VDPtHaGSdmBTtC");
     }
     if ((tasksFriendsCompleted ?? 0) >= 10) {
-      firebaseUserManager.getAchievement("Nwcqbn0bC5E5lkWbZA86");
+      getAchievement("Nwcqbn0bC5E5lkWbZA86");
     }
     if ((tasksFriendsCompleted ?? 0) >= 25) {
-      firebaseUserManager.getAchievement("wAkHXdvXxwg6v61l9iOF");
+      getAchievement("wAkHXdvXxwg6v61l9iOF");
     }
     if (state != null) {
       state = state!.copyWith(
@@ -302,6 +310,14 @@ class UserStateNotifier extends StateNotifier<UserState?> {
           tasksFriendsCreated: tasksFriendsCreated,
           tasksCreated: tasksCreated,
           tasksCompleted: tasksCompleted);
+    }
+  }
+
+  Future<void> getAchievement(String id) async {
+    if (state != null && !state!.achievements.contains(id)) {
+      firebaseUserManager.getAchievement(id);
+      addMoney(Strings.moneyRewardAchievement);
+      addXp(Strings.xpRewardAchievement);
     }
   }
 }

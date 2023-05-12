@@ -3,7 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/friends.dart';
 import 'package:qreoh/firebase_functions/user.dart';
+import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
+import 'package:qreoh/strings.dart';
 
 enum FriendsFilterType {asc, desc}
 
@@ -32,8 +34,9 @@ class FriendsState {
 class FriendListStateNotifier extends StateNotifier<FriendsState> {
   final firebaseFriendsManager = FirebaseFriendsManager();
   final firebaseUserManager = FirebaseUserManager();
+  final Ref ref;
 
-  FriendListStateNotifier()
+  FriendListStateNotifier(this.ref)
       : super(FriendsState(friends: [], inRequests: [], outRequests: [])) {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     FirebaseDatabase.instance
@@ -122,10 +125,10 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     });
     state = state.copyWith(friends: friends);
     if (state.friends.length >= 10) {
-      firebaseUserManager.getAchievement("wAkHXdvXxwg6v61l9iOF");
+      ref.read(userStateProvider.notifier).getAchievement("wAkHXdvXxwg6v61l9iOF");
     }
     if (state.friends.length >= 30) {
-      firebaseUserManager.getAchievement("RrTvf6eeIk7KbVuskIOD");
+      ref.read(userStateProvider.notifier).getAchievement("RrTvf6eeIk7KbVuskIOD");
     }
     return friends;
   }
