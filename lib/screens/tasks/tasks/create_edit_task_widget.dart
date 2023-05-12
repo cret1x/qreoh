@@ -109,7 +109,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context).colorScheme.secondary)),
-                    hintText: "Task name",
+                    hintText: "Название задачи",
                     hintStyle: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
@@ -168,7 +168,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                 ],
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text("Deadline",
+                Text("Дедлайн",
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                     TextButton(
                       child: Text(
                         _deadline == null
-                            ? "Add"
+                            ? "Добавить"
                             : _deadline
                                 .toString()
                                 .substring(0, _haveTime ? 16 : 10),
@@ -190,6 +190,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           firstDate: DateTime.now(),
                           lastDate:
                               DateTime.now().add(const Duration(days: 2 * 365)),
+                          confirmText: "Сохранить",
+                          cancelText: "Отменить",
                         );
                         if (_deadline == null) {
                           return;
@@ -197,7 +199,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                         TimeOfDay? time = await showTimePicker(
                             context: context,
                             initialTime: const TimeOfDay(hour: 0, minute: 0),
-                            cancelText: "SKIP");
+                            cancelText: "Пропустить",
+                            confirmText: "Сохранить");
                         _haveTime = time != null;
                         if (time != null) {
                           _deadline = _deadline!.add(
@@ -227,7 +230,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Required time",
+                  Text("Необходимое время",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -236,7 +239,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                     Visibility(
                         visible: _timeRequired == null,
                         child: TextButton(
-                          child: const Text("Add"),
+                          child: const Text("Добавить"),
                           onPressed: () {
                             _timeRequired = Duration.zero;
                             setState(() {});
@@ -247,7 +250,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                       child: Row(
                         children: [
                           TextButton(
-                            child: Text("${_daysRequired} days"),
+                            child: Text("${_daysRequired} д."),
                             onPressed: () {
                               showCupertinoModalPopup(
                                 context: context,
@@ -344,7 +347,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Priority",
+                  Text("Приоритет",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -354,37 +357,39 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                     iconEnabledColor: Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.circular(12),
                     value: _priority,
-                    items:
-                        List<DropdownMenuItem<Priority>>.generate(4, (index) {
-                      String text;
-                      switch (Priority.values[index]) {
-                        case Priority.high:
-                          text = "High";
-                          break;
-                        case Priority.medium:
-                          text = "Medium";
-                          break;
-                        case Priority.low:
-                          text = "Low";
-                          break;
-                        case Priority.none:
-                          text = "None";
-                          break;
-                      }
-                      return DropdownMenuItem(
+                    items: List<DropdownMenuItem<Priority>>.generate(
+                      4,
+                      (index) {
+                        String text;
+                        switch (Priority.values[index]) {
+                          case Priority.high:
+                            text = "Высокий";
+                            break;
+                          case Priority.medium:
+                            text = "Средний";
+                            break;
+                          case Priority.low:
+                            text = "Низкий";
+                            break;
+                          case Priority.none:
+                            text = "Без приоритета";
+                            break;
+                        }
+                        return DropdownMenuItem(
                           value: Priority.values[index],
                           child: Container(
-                              alignment: Alignment.center,
-                              width: 60,
-                              child: Text(
-                                text,
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500),
-                              )));
-                    }),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              text,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                     onChanged: (Priority? value) {
                       _priority = value!;
                       setState(() {});
@@ -397,7 +402,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                 children: [
                   SizedBox(
                     width: 120,
-                    child: Text("Location",
+                    child: Text("Место",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -432,7 +437,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                 children: [
                   SizedBox(
                     width: 120,
-                    child: Text("Description",
+                    child: Text("Описание",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -464,7 +469,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text("Tags",
+                child: Text("Теги",
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -556,18 +561,18 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     content: const Text(
-                                        "Are you sure you want to discard all changes?"),
+                                        "Вы уверены, что хотите сбросить все изменения?"),
                                     actions: [
                                       TextButton(
                                           onPressed: () {
                                             Navigator.pop(context, true);
                                           },
-                                          child: const Text("YES")),
+                                          child: const Text("Да")),
                                       TextButton(
                                           onPressed: () {
                                             Navigator.pop(context, false);
                                           },
-                                          child: const Text("NO")),
+                                          child: const Text("Нет")),
                                     ],
                                   );
                                 });
@@ -579,59 +584,63 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   ),
                   Expanded(
                     child: Container(
-                        padding: const EdgeInsets.only(left: 6),
-                        height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusDirectional.circular(12),
-                          )),
-                          onPressed: _textEditingController.text.isEmpty ? null : () {
-                            if (widget._task == null) {
-                              final newTask = Task(
-                                  id: widget.uuid.v1(),
-                                  parent: _current,
-                                  name: _textEditingController.text,
-                                  done: false,
-                                  priority: _priority,
-                                  tags: _selectedTags,
-                                  deadline: _deadline,
-                                  haveTime: _haveTime,
-                                  timeRequired: _timeRequired != null
-                                      ? _timeRequired! +
-                                          Duration(days: _daysRequired)
-                                      : null,
-                                  description: _description,
-                                  place: _location);
-                              ref
-                                  .read(taskListStateProvider.notifier)
-                                  .addTask(widget._folder, newTask);
-                            } else {
-                              widget._task!.update(
-                                  parent: _current,
-                                  name: _textEditingController.text,
-                                  priority: _priority,
-                                  tags: _selectedTags,
-                                  deadline: _deadline,
-                                  haveTime: _haveTime,
-                                  timeRequired: _timeRequired,
-                                  description: _description,
-                                  place: _location);
-                              ref
-                                  .read(taskListStateProvider.notifier)
-                                  .updateTask(widget._folder, widget._task!);
-                            }
-                            ref.read(tasksListRebuildProvider).notify();
-                            Navigator.pop(
-                                context, widget._task == null ? 1 : 0);
-                          },
-                          child: const Text(
-                            "Save",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                      padding: const EdgeInsets.only(left: 6),
+                      height: 40,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusDirectional.circular(12),
+                        )),
+                        onPressed: _textEditingController.text.isEmpty
+                            ? null
+                            : () {
+                                if (widget._task == null) {
+                                  final newTask = Task(
+                                      id: widget.uuid.v1(),
+                                      parent: _current,
+                                      name: _textEditingController.text,
+                                      done: false,
+                                      priority: _priority,
+                                      tags: _selectedTags,
+                                      deadline: _deadline,
+                                      haveTime: _haveTime,
+                                      timeRequired: _timeRequired != null
+                                          ? _timeRequired! +
+                                              Duration(days: _daysRequired)
+                                          : null,
+                                      description: _description,
+                                      place: _location);
+                                  ref
+                                      .read(taskListStateProvider.notifier)
+                                      .addTask(widget._folder, newTask);
+                                } else {
+                                  widget._task!.update(
+                                      parent: _current,
+                                      name: _textEditingController.text,
+                                      priority: _priority,
+                                      tags: _selectedTags,
+                                      deadline: _deadline,
+                                      haveTime: _haveTime,
+                                      timeRequired: _timeRequired,
+                                      description: _description,
+                                      place: _location);
+                                  ref
+                                      .read(taskListStateProvider.notifier)
+                                      .updateTask(
+                                          widget._folder, widget._task!);
+                                }
+                                ref.read(tasksListRebuildProvider).notify();
+                                Navigator.pop(
+                                    context, widget._task == null ? 1 : 0);
+                              },
+                        child: const Text(
+                          "Сохранить",
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
-                        ),),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -649,7 +658,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                           ),
                           child: TextButton(
                             child: const Text(
-                              "Delete",
+                              "Удалить",
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -659,19 +668,19 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                 context: context,
                                 builder: (BuildContext context) => AlertDialog(
                                   content: const Text(
-                                      "Are you sure you want to delete task?\n"
-                                      "You will not be able to restore it."),
+                                      "Вы уверены, что хотите удалить задачу?\n"
+                                      "После удаления восстановление будет невозможным."),
                                   actions: [
                                     TextButton(
                                         onPressed: () {
                                           Navigator.pop(context, true);
                                         },
-                                        child: const Text("YES")),
+                                        child: const Text("Да")),
                                     TextButton(
                                         onPressed: () {
                                           Navigator.pop(context, false);
                                         },
-                                        child: const Text("NO")),
+                                        child: const Text("Нет")),
                                   ],
                                 ),
                               );
