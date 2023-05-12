@@ -14,9 +14,16 @@ class ButtonDanger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            minimumSize: const Size.fromHeight(48)),
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all<double>(0),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          backgroundColor: const MaterialStatePropertyAll<Color>(Colors.red),
+          minimumSize: MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
+        ),
         onPressed: () => showDialog(
             context: context,
             barrierDismissible: false,
@@ -25,15 +32,17 @@ class ButtonDanger extends StatelessWidget {
                 title: Text(buttonText),
                 content: Text(warningText),
                 actions: [
-                  TextButton(onPressed: () {
-                    Navigator.of(context).pop();
-                    if (action != null) {
-                      action!();
-                    }
-                  }, child: const Text("Yes")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        if (action != null) {
+                          action!();
+                        }
+                      },
+                      child: const Text("Да")),
                   TextButton(
                       onPressed: Navigator.of(context).pop,
-                      child: const Text("No")),
+                      child: const Text("Нет")),
                 ],
               );
             }),
@@ -51,9 +60,16 @@ class ButtonDefault extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            minimumSize: const Size.fromHeight(48)),
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all<double>(0),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+          minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
+        ),
         onPressed: action,
         child: Text(buttonText));
   }

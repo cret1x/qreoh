@@ -50,15 +50,24 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
                           }
                           return null;
                         },
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: Strings.enterEmail)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(64),
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all<double>(0),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+                        minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -76,7 +85,6 @@ class _ResetPasswordState extends ConsumerState<ResetPassword> {
                       },
                       child: const Text(
                         Strings.actionPasswordReset,
-                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                   ),

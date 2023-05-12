@@ -24,7 +24,7 @@ class FriendItem extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         image: DecorationImage(
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
           image: friendState.banner.asset,
         ),
       ),

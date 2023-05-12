@@ -52,8 +52,10 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                             }
                             return null;
                           },
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               labelText: Strings.friendLogin),
                         ),
                       ),
@@ -72,8 +74,10 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                             }
                             return null;
                           },
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               labelText: Strings.friendTag),
                         ),
                       ),
@@ -99,9 +103,15 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                     },
                     icon: const Icon(Icons.search),
                     label: const Text(Strings.search),
-                    style: ElevatedButton.styleFrom(
-                     // backgroundColor: Colors.blue,
-                      minimumSize: const Size.fromHeight(48),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all<double>(0),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+                      minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
                     ),
                   ),
                 )

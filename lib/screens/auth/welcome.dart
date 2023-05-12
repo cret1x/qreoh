@@ -19,8 +19,15 @@ class WelcomeWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all<double>(0),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+                      minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -33,8 +40,15 @@ class WelcomeWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all<double>(0),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+                      minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
                     ),
                     onPressed: () {
                       Navigator.push(

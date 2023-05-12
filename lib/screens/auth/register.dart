@@ -68,8 +68,10 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                           }
                           return null;
                         },
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: Strings.enterLogin)),
                   ),
                   Padding(
@@ -82,8 +84,10 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                           }
                           return null;
                         },
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: Strings.enterEmail)),
                   ),
                   Padding(
@@ -115,7 +119,9 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                                     : Icons.visibility_off,
                               ),
                             ),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: Strings.enterPassword)),
                   ),
                   Padding(
@@ -150,7 +156,9 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                                     : Icons.visibility_off,
                               ),
                             ),
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             labelText: Strings.repeatPassword)),
                   ),
                   Padding(
@@ -179,7 +187,16 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                           });
                         }
                       },
-                      style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(64),),
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all<double>(0),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
+                        minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
+                      ),
                       icon: _isLoading
                           ? Container(
                         width: 24,
