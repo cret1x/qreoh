@@ -158,6 +158,15 @@ class UserState {
         tasksCompleted: tasksCompleted ?? this.tasksCompleted,
         achievements: achievements ?? this.achievements);
   }
+
+  bool hasShopItem(ShopItem item) {
+    for (var collectionItem in collection) {
+      if (item.id == collectionItem.id) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class UserStateNotifier extends StateNotifier<UserState?> {

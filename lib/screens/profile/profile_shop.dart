@@ -87,28 +87,40 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
   }
 
   Widget avatarListWidget({required BuildContext context}) {
+    final list = _shopItems
+        .where((element) => element.item is CustomAvatar)
+        .where((element) => !_userState!.hasShopItem(element))
+        .map((item) => shopItem(item))
+        .toList();
     return SizedBox(
       height: 200,
-      child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          scrollDirection: Axis.horizontal,
-          children: _shopItems
-              .where((element) => element.item is CustomAvatar)
-              .map((item) => shopItem(item))
-              .toList()),
+      child: list.isEmpty
+          ? const Center(
+              child: Text("Вы купили всех персонажей на данный момент"),
+            )
+          : ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              scrollDirection: Axis.horizontal,
+              children: list),
     );
   }
 
   Widget bannerListWidget({required BuildContext context}) {
+    final list = _shopItems
+        .where((element) => element.item is CustomBanner)
+        .where((element) => !_userState!.hasShopItem(element))
+        .map((item) => shopItem(item))
+        .toList();
     return SizedBox(
       height: 200,
-      child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          scrollDirection: Axis.horizontal,
-          children: _shopItems
-              .where((element) => element.item is CustomBanner)
-              .map((item) => shopItem(item))
-              .toList()),
+      child: list.isEmpty
+          ? const Center(
+              child: Text("Вы купили все баннеры на данный момент"),
+            )
+          : ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              scrollDirection: Axis.horizontal,
+              children: list),
     );
   }
 
@@ -159,19 +171,19 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
                     ),
                   ),
                   avatarListWidget(context: context),
-            Padding(
-              padding:
-              const EdgeInsets.only(left: 12, right: 12, top: 24),
-              child: Text(
-                "Баннеры",
-                style: TextStyle(
-                  letterSpacing: 1,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
-            ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 12, right: 12, top: 24),
+                    child: Text(
+                      "Баннеры",
+                      style: TextStyle(
+                        letterSpacing: 1,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
                   bannerListWidget(context: context),
                 ],
         ),
