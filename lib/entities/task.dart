@@ -182,10 +182,10 @@ class Task {
     Duration duration = deadline!.difference(DateTime.now());
     int measure = duration.inDays;
     if (measure.abs() > 0) {
-      return "$measure days";
+      return "$measure д.";
     }
     measure = duration.inMinutes - duration.inHours * 60;
-    return "${duration.inHours} hours $measure minutes";
+    return "${duration.inHours} ч. $measure м.";
   }
 
   String? get stringTimeRequired {
@@ -194,10 +194,24 @@ class Task {
     }
     StringBuffer stringBuffer = StringBuffer();
     if (timeRequired!.inDays != 0) {
-      stringBuffer.write("${timeRequired!.inDays} days ");
+      stringBuffer.write("${timeRequired!.inDays} д. ");
     }
-    stringBuffer.write(timeRequired.toString().substring(0, 5));
-    return stringBuffer.toString().substring(0, stringBuffer.length - 1);
+    if (timeRequired!.inMinutes - 60 * 24 * timeRequired!.inDays == 0) {
+      return stringBuffer.toString().substring(0, stringBuffer.length - 1);
+    }
+    int hours = timeRequired!.inHours - 24 * timeRequired!.inDays;
+    int minutes = timeRequired!.inMinutes - 60 * timeRequired!.inHours;
+    if (hours < 10) {
+      stringBuffer.write('0');
+    }
+    stringBuffer.write(hours);
+    stringBuffer.write(":");
+    if (minutes < 10) {
+      stringBuffer.write('0');
+    }
+    stringBuffer.write(minutes);
+
+    return stringBuffer.toString();
   }
 
   DateTime? get estimation {

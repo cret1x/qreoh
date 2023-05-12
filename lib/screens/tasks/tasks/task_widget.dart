@@ -111,7 +111,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Deadline",
+                      "Дедлайн",
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -129,7 +129,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Time left",
+                      "Осталось",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -149,7 +149,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Required time",
+                      "Необходимое время",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -169,7 +169,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Location",
+                      "Место",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -191,7 +191,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Description",
+                        "Описание",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -207,7 +207,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Path",
+                    "Путь",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -225,7 +225,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                 child: const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Tags",
+                    "Теги",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -319,7 +319,7 @@ class TaskState extends ConsumerState<TaskWidget> {
                           }
                         },
                         child: const Text(
-                          "Edit",
+                          "Редактировать",
                           style: TextStyle(
                             color: Colors.white,
                           ),
