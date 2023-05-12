@@ -85,7 +85,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
     _allTags = ref.watch(userTagsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Task"),
+        title: const Text("Создать задачу"),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
