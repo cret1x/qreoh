@@ -63,7 +63,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       title: 'Qreoh app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: const Color.fromARGB(255, 250, 250, 250),
+          background: Color.fromARGB(255, 250, 250, 250),
           primary: Colors.deepOrangeAccent,
           onSurface: Colors.black38,
           secondary: Colors.deepOrangeAccent.shade100,
@@ -83,15 +83,15 @@ class _MyAppState extends ConsumerState<MyApp> {
           surface: Colors.grey.shade900,
           onSurface: Colors.white,
           primary: Colors.deepOrangeAccent,
-          secondary: Colors.orange.shade800,
+          secondary: Colors.deepOrangeAccent.shade100,
           primaryContainer: Colors.black26,
           brightness: Brightness.dark,
         ),
-          checkboxTheme: CheckboxThemeData(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
-            ),
+        checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
           ),
+        ),
       ),
       themeMode: _appThemeState.themeMode,
       home: const StartupPage(),
