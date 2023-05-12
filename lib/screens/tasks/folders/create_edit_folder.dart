@@ -54,7 +54,7 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text("Discard"),
+          child: const Text("Отменить"),
         ),
         TextButton(
           onPressed: _controller.text.isNotEmpty
@@ -62,7 +62,7 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
                   Navigator.pop(context, _controller.text);
                 }
               : null,
-          child: const Text("Save"),
+          child: const Text("Сохранить"),
         ),
       ],
     );
