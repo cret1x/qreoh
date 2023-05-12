@@ -191,10 +191,10 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     if (state != null) {
       state = state!.copyWith(experience: state!.experience + xp);
       firebaseUserManager.updateXp(state!.experience);
-      if (state!.experience >= state!.level * 100) {
+      if (state!.experience >= Strings.xpToNewLevel) {
         state = state!.copyWith(
             level: state!.level + 1,
-            experience: state!.experience - state!.level * 100);
+            experience: state!.experience - Strings.xpToNewLevel);
         firebaseUserManager.updateLevel(state!.level);
         firebaseUserManager.updateXp(state!.experience);
       }
