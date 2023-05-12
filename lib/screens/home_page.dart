@@ -51,7 +51,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   MaterialPageRoute(
                       builder: (context) => const MyProfileSettings()));
             },
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.edit),
           ),
         ];
       case 2:
