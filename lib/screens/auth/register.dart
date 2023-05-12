@@ -66,6 +66,9 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                           if (value == null || value.isEmpty) {
                             return Strings.requiredField;
                           }
+                          if (value.length < 3) {
+                            return Strings.shortLogin;
+                          }
                           return null;
                         },
                         decoration: InputDecoration(
@@ -82,6 +85,10 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                           if (value == null || value.isEmpty) {
                             return Strings.requiredField;
                           }
+                          RegExp regex = RegExp(r'\S+@\S+\.\S+');
+                          if (!regex.hasMatch(value)) {
+                            return Strings.wrongEmail;
+                          }
                           return null;
                         },
                         decoration: InputDecoration(
@@ -95,12 +102,18 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                     child: TextFormField(
                         keyboardType: TextInputType.visiblePassword,
                         obscureText: _obscurePassword.value,
+                        maxLength: 64,
                         enableSuggestions: false,
                         autocorrect: false,
                         controller: _passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return Strings.requiredField;
+                          }
+                          RegExp regex =
+                          RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+                          if (!regex.hasMatch(value)) {
+                            return Strings.weakPassword;
                           }
                           return null;
                         },
@@ -131,6 +144,7 @@ class _RegisterWidgetState extends ConsumerState<RegisterWidget> with Restoratio
                         obscureText: _obscurePassword.value,
                         enableSuggestions: false,
                         autocorrect: false,
+                        maxLength: 64,
                         controller: _passwordCheckController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {

@@ -10,6 +10,8 @@ class Strings {
   static const String enterPassword = "Введите ваш пароль";
   static const String repeatPassword = "Повторный пароль";
   static const String welcomeMessage = "Выберете способ входа";
+  static const String shortLogin = "Логин должен быть больше 2 символов";
+  static const String wrongEmail = "Неверный формат почты";
   static const String loginLabel = "Вход";
   static const String actionLogin = "Войти";
   static const String registerLabel = "Регистрация";
