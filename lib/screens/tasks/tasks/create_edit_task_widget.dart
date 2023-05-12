@@ -85,7 +85,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
     _allTags = ref.watch(userTagsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Создать задачу"),
+        title: Text(widget._task == null ? "Создать задачу" : "Изменить задачу"),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -550,7 +550,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             borderRadius: BorderRadiusDirectional.circular(12),
                           )),
                           child: const Text(
-                            "Discard",
+                            "Отменить",
                             style: TextStyle(
                               color: Colors.white,
                             ),
