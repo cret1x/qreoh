@@ -59,7 +59,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+        backgroundColor: _userState!.balance < item.price ? MaterialStatePropertyAll<Color>(Colors.grey) : MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
       ),
       child: Text("${item.price}\$"),
     );
