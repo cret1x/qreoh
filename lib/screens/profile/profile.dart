@@ -111,7 +111,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 3.0),
                     borderRadius:
-                    const BorderRadius.all(Radius.elliptical(12, 10)),
+                        const BorderRadius.all(Radius.elliptical(12, 10)),
                     image: DecorationImage(image: achievement.image),
                   ),
                 ),
@@ -234,7 +234,10 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Image.asset(Strings.defaultPfp, fit: BoxFit.cover,),
+                                      child: Image.asset(
+                                        Strings.defaultPfp,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                             ),
                           ),
@@ -415,7 +418,11 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                       ),
                     ),
                     if (widget.profile.uid !=
-                        FirebaseAuth.instance.currentUser!.uid)
+                            FirebaseAuth.instance.currentUser!.uid &&
+                        ref
+                            .read(friendsListStateProvider)
+                            .friends.map((e) => e.uid)
+                            .contains(widget.profile.uid))
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ButtonDanger(

@@ -66,6 +66,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final friends = ref.watch(friendsListStateProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Отправить задание другу'),
@@ -404,7 +405,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                 direction: Axis.horizontal,
                 runSpacing: 12,
                 children: [
-                  for (var friend in ref.read(friendsListStateProvider).friends)
+                  for (var friend in friends.friends)
                     InkWell(
                       onTap: () {
                         if (_receivers.contains(friend)) {
