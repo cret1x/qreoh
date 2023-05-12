@@ -18,9 +18,6 @@ class _FilterState extends ConsumerState<FilterWidget> {
   late bool _statuses;
   late bool _tags;
   List<Tag> _allTags = [];
-  List<String> _selectedTags = [];
-  List<Priority> _selectedPriorities = [];
-  List<bool> _selectedStatuses = [];
 
   @override
   Widget build(BuildContext context) {

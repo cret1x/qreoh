@@ -32,7 +32,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
   Priority _priority = Priority.none;
   String? _location;
   String? _description;
-  List<UserState> _receievers = [];
+  final List<UserState> _receivers = [];
 
   String _durationToString(Duration? duration) {
     if (duration == null) {
@@ -403,10 +403,10 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                   for (var friend in ref.read(friendsListStateProvider).friends)
                     InkWell(
                       onTap: () {
-                        if (_receievers.contains(friend)) {
-                          _receievers.remove(friend);
+                        if (_receivers.contains(friend)) {
+                          _receivers.remove(friend);
                         } else {
-                          _receievers.add(friend);
+                          _receivers.add(friend);
                         }
                         setState(() {});
                       },
@@ -432,13 +432,13 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                                         .colorScheme
                                         .surface
                                         .withOpacity(
-                                            _receievers.contains(friend)
+                                            _receivers.contains(friend)
                                                 ? 0.7
                                                 : 0),
                                     radius: 32,
                                   ),
                                   Visibility(
-                                      visible: _receievers.contains(friend),
+                                      visible: _receivers.contains(friend),
                                       child: Center(
                                           child: Icon(
                                         Icons.done,
@@ -522,7 +522,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               ? () {
                                   final fff =
                                       Folder(id: "friends", name: "От друзей");
-                                  for (final reciever in _receievers) {
+                                  for (final reciever in _receivers) {
                                     var taskToSend = Task(
                                       id: uuid.v1(),
                                       parent: fff,

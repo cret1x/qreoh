@@ -170,7 +170,11 @@ class UserStateNotifier extends StateNotifier<UserState?> {
   }
 
   Future<void> loadFromDB() async {
-    state = await firebaseUserManager.getUser();
+    firebaseUserManager.getUser().then((value) {
+      if (mounted) {
+        state = value;
+      }
+    });
   }
 
   Future<void> addXp(int xp) async {

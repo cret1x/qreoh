@@ -15,6 +15,7 @@ class FirebaseTagManager {
   FirebaseTagManager._internal();
 
   Future<List<Tag>> getAllTags() async {
+    print('REQUEST TO DB, get tags!');
     List<Tag> tags = [];
     final tasksRef = db
         .collection('users')

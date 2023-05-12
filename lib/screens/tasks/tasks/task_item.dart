@@ -26,7 +26,6 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('TASK ITEM REBUILD');
     _allTags = ref.watch(userTagsProvider);
     final tags = _allTags
         .where((element) => widget.task.tags.contains(element.id))
@@ -46,6 +45,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
             return false;
           }
           ref.read(taskListStateProvider.notifier).deleteTask(widget.task);
+          ref.read(tasksListRebuildProvider).notify();
           return true;
         },
         secondaryBackground: const Align(
@@ -84,11 +84,9 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                 Checkbox(
                   value: widget.task.done,
                   onChanged: (bool? state) {
-
-                    setState(() {
-                      widget.task.done = state ?? false;
-                    });
+                    widget.task.done = state ?? false;
                     ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
+                    ref.read(tasksListRebuildProvider).notify();
                   },
                 ),
                 Expanded(
@@ -110,7 +108,7 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                                 Flexible(
                                   child: SizedBox(
                                     height: 20,
-                                    child: TagsWidget(tags),
+                                    child: TagsListWidget(tags),
                                   ),
                                 ),
                                 SizedBox(

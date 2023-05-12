@@ -4,9 +4,7 @@ import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/firebase_functions/tags.dart';
 
 class TagListStateNotifier extends StateNotifier<List<Tag>> {
-  TagListStateNotifier() : super([]) {
-    loadTags();
-  }
+  TagListStateNotifier() : super([]);
   final firebaseTagManager = FirebaseTagManager();
 
   void addTag(Tag tag) async {

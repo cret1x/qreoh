@@ -45,12 +45,4 @@ final folderStateProvider = StateNotifierProvider<FolderStateNotifier, Folder>((
 
 final friendsListStateProvider = StateNotifierProvider<FriendListStateNotifier, FriendsState>((ref) => FriendListStateNotifier());
 final friendsFilterProvider = StateProvider<FriendsFilterType>((ref) => FriendsFilterType.asc);
-final filteredFriendsListProvider = Provider((ref) {
-  final FriendsFilterType filter = ref.watch(friendsFilterProvider);
-});
-
-final taskListFilteredProvider = Provider<List<Task>>((ref) {
-  final filter = ref.watch(tasksFilterProvider);
-  final tasks = ref.watch(taskListStateProvider);
-  return tasks.where(filter.check).toList();
-});
+final tasksListRebuildProvider = ChangeNotifierProvider<TaskListRebuildNotifier>((ref) => TaskListRebuildNotifier());

@@ -13,10 +13,10 @@ class TagItem extends StatelessWidget {
   }
 }
 
-class TagsWidget extends ConsumerWidget {
+class TagsListWidget extends ConsumerWidget {
   final List<Tag> _tags;
 
-  const TagsWidget(this._tags, {super.key});
+  const TagsListWidget(this._tags, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

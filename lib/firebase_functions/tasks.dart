@@ -26,6 +26,7 @@ class FirebaseTaskManager {
   }
 
   Future<List<Task>> getTasksInFolder(Folder folder) async {
+    print('REQUEST TO DB, folder: ${folder.name}');
     List<Task> tasks = [];
     final tasksRef = db
         .collection('users')

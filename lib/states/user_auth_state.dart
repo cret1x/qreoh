@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/firebase_functions/auth.dart';
 import 'package:qreoh/firebase_functions/user.dart';
+import 'package:qreoh/global_providers.dart';
 
 enum AuthState { anonymous, registered, verified }
 
@@ -30,7 +31,7 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
         state = UserAuthState.registered();
       } else {
         state = UserAuthState.verified();
-
+        ref.read(userStateProvider.notifier).loadFromDB();
       }
     });
   }
@@ -50,6 +51,7 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
     if (response == "OK") {
       if (FirebaseAuth.instance.currentUser!.emailVerified) {
         state = UserAuthState.verified();
+        ref.read(userStateProvider.notifier).loadFromDB();
       } else {
         state = UserAuthState.registered();
       }
@@ -67,6 +69,7 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
 
   void setUserAsVerified() async {
     state = UserAuthState.verified();
+    ref.read(userStateProvider.notifier).loadFromDB();
   }
 
   void signOutUser() {
