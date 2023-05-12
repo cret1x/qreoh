@@ -102,7 +102,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Text(
-                  "Deadline",
+                  "Дедлайн",
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                     TextButton(
                       child: Text(
                         _deadline == null
-                            ? "Add"
+                            ? "Добавить"
                             : _deadline
                                 .toString()
                                 .substring(0, _haveTime ? 16 : 10),
@@ -124,7 +124,9 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                           initialDate: DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate:
-                              DateTime.now().add(const Duration(days: 2 * 365)),
+                              DateTime.now().add(const Duration(days: 2 * 365),),
+                          confirmText: "Сохранить",
+                          cancelText: "Отменить",
                         );
                         if (_deadline == null) {
                           return;
@@ -132,7 +134,8 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                         TimeOfDay? time = await showTimePicker(
                             context: context,
                             initialTime: const TimeOfDay(hour: 0, minute: 0),
-                            cancelText: "SKIP");
+                            cancelText: "Пропустить",
+                            confirmText: "Сохранить");
                         _haveTime = time != null;
                         if (time != null) {
                           _deadline = _deadline!.add(
@@ -162,7 +165,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Required time",
+                  Text("Необходимое время",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -171,7 +174,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                     Visibility(
                         visible: _timeRequired == null,
                         child: TextButton(
-                          child: const Text("Add"),
+                          child: const Text("Добавить"),
                           onPressed: () {
                             _timeRequired = Duration.zero;
                             setState(() {});
@@ -182,7 +185,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                       child: Row(
                         children: [
                           TextButton(
-                            child: Text("${_daysRequired} days"),
+                            child: Text("${_daysRequired} д."),
                             onPressed: () {
                               showCupertinoModalPopup(
                                 context: context,
@@ -279,7 +282,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Priority",
+                  Text("Приоритет",
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -294,16 +297,16 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                       String text;
                       switch (Priority.values[index]) {
                         case Priority.high:
-                          text = "High";
+                          text = "Высокий";
                           break;
                         case Priority.medium:
-                          text = "Medium";
+                          text = "Средний";
                           break;
                         case Priority.low:
-                          text = "Low";
+                          text = "Низкий";
                           break;
                         case Priority.none:
-                          text = "None";
+                          text = "Без приоритета";
                           break;
                       }
                       return DropdownMenuItem(
@@ -332,7 +335,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                 children: [
                   SizedBox(
                     width: 120,
-                    child: Text("Location",
+                    child: Text("Место",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -367,7 +370,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                 children: [
                   SizedBox(
                     width: 120,
-                    child: Text("Description",
+                    child: Text("Описание",
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
