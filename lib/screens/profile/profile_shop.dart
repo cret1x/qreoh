@@ -19,20 +19,50 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
 
   Widget buyButton(ShopItem item) {
     if (_userState!.collection.contains(item.item)) {
-      if (_userState!.banner.id == item.id || _userState!.avatar.id == item.id) {
-        return const ElevatedButton(onPressed: null, child: Text("Выбрано"));
+      if (_userState!.banner.id == item.id ||
+          _userState!.avatar.id == item.id) {
+        return ElevatedButton(
+            onPressed: null,
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all<double>(0),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            child: Text("Выбрано"));
       }
       return ElevatedButton(
           onPressed: () {
             ref.read(userStateProvider.notifier).selectShopItem(item);
           },
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.all<double>(0),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
           child: const Text("Выбрать"));
     }
     return ElevatedButton(
-        onPressed: () {
-          ref.read(userStateProvider.notifier).buyItem(item);
-        },
-        child: Text("${item.price}\$"));
+      onPressed: _userState!.balance < item.price
+          ? null
+          : () {
+              ref.read(userStateProvider.notifier).buyItem(item);
+            },
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
+      ),
+      child: Text("${item.price}\$"),
+    );
   }
 
   Widget shopItem(ShopItem item) {
@@ -57,10 +87,10 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
   }
 
   Widget avatarListWidget({required BuildContext context}) {
-    return Container(
-      color: Colors.cyan,
+    return SizedBox(
       height: 200,
       child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           scrollDirection: Axis.horizontal,
           children: _shopItems
               .where((element) => element.item is CustomAvatar)
@@ -70,10 +100,10 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
   }
 
   Widget bannerListWidget({required BuildContext context}) {
-    return Container(
-      color: Colors.greenAccent,
+    return SizedBox(
       height: 200,
       child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           scrollDirection: Axis.horizontal,
           children: _shopItems
               .where((element) => element.item is CustomBanner)
@@ -94,26 +124,56 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
         title: const Text("Магазин"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: (_userState == null || _shopItems.isEmpty)
-                ? [
-                    const Center(
-                      child: CircularProgressIndicator(),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Wrap(
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          children: (_userState == null || _shopItems.isEmpty)
+              ? [
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ]
+              : [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Chip(
+                        label: Text("Баланс: ${_userState!.balance}\$"),
+                        backgroundColor: Colors.lightGreen,
+                      ),
                     ),
-                  ]
-                : [
-                    Chip(
-                      label: Text("Баланс: ${_userState!.balance}\$"),
-                      backgroundColor: Colors.lightGreen,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 12, right: 12, top: 12),
+                    child: Text(
+                      "Персонажи",
+                      style: TextStyle(
+                        letterSpacing: 1,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
                     ),
-                    bannerListWidget(context: context),
-                    avatarListWidget(context: context),
-                  ],
-          ),
+                  ),
+                  avatarListWidget(context: context),
+            Padding(
+              padding:
+              const EdgeInsets.only(left: 12, right: 12, top: 24),
+              child: Text(
+                "Баннеры",
+                style: TextStyle(
+                  letterSpacing: 1,
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+                  bannerListWidget(context: context),
+                ],
         ),
       ),
     );
