@@ -85,20 +85,36 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                   value: widget.task.done,
                   onChanged: (bool? state) {
                     widget.task.done = state ?? false;
-                    ref.read(taskListStateProvider.notifier).toggleTask(widget.task);
+                    ref
+                        .read(taskListStateProvider.notifier)
+                        .toggleTask(widget.task);
                     ref.read(tasksListRebuildProvider).notify();
                   },
                 ),
                 Expanded(
-                  child: widget.task.deadline != null ||
-                          tags.isNotEmpty
+                  child: widget.task.deadline != null || tags.isNotEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(widget.task.name),
+                                Row(
+                                  children: [
+                                    Text(widget.task.name),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Visibility(
+                                        visible: widget.task.from != null,
+                                        child: const Icon(
+                                          Icons.person,
+                                          color: Colors.blue,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 widget.task.textPriority,
                               ],
                             ),

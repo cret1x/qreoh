@@ -88,4 +88,9 @@ class FirebaseUserManager {
       "collection": FieldValue.arrayUnion([item.item.toFirestore()]),
     });
   }
+
+  Future<String?> findUser(String id) async {
+    final userData = await db.collection('users').doc(id).get();
+    return userData.data()!['login'];
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
+import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/tasks/share_task.dart';
 import 'create_edit_task_widget.dart';
@@ -11,6 +12,7 @@ import '../../../entities/task.dart';
 class TaskWidget extends ConsumerStatefulWidget {
   final Task task;
   final firebaseTaskManager = FirebaseTaskManager();
+  final firebaseUserManager = FirebaseUserManager();
 
   TaskWidget({super.key, required this.task});
 
@@ -41,7 +43,12 @@ class TaskState extends ConsumerState<TaskWidget> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ShareTaskWidget(widget.task),),);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShareTaskWidget(widget.task),
+                  ),
+                );
               },
               icon: const Icon(Icons.share)),
         ],
@@ -78,8 +85,13 @@ class TaskState extends ConsumerState<TaskWidget> {
                         onChanged: (bool? state) {
                           setState(() {
                             widget.task.done = state!;
-                            ref.read(taskListStateProvider.notifier).toggleTask(widget.task).then((value) {
-                              ref.read(tasksListRebuildProvider.notifier).notify();
+                            ref
+                                .read(taskListStateProvider.notifier)
+                                .toggleTask(widget.task)
+                                .then((value) {
+                              ref
+                                  .read(tasksListRebuildProvider.notifier)
+                                  .notify();
                             });
                             _isSelected = widget.task.done;
                           });
@@ -226,22 +238,51 @@ class TaskState extends ConsumerState<TaskWidget> {
                 children: tags.map(
                   (tag) {
                     return InputChip(
-                        avatar: CircleAvatar(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.background,
-                          foregroundColor: tag.color,
-                          child: Icon(
-                            tag.icon,
-                            size: 20,
-                          ),
-                        ),
-                        label: Text(tag.name),
-                        onPressed: () {},
+                      avatar: CircleAvatar(
                         backgroundColor:
-                            Theme.of(context).chipTheme.backgroundColor,);
+                            Theme.of(context).colorScheme.background,
+                        foregroundColor: tag.color,
+                        child: Icon(
+                          tag.icon,
+                          size: 20,
+                        ),
+                      ),
+                      label: Text(tag.name),
+                      onPressed: () {},
+                      backgroundColor:
+                          Theme.of(context).chipTheme.backgroundColor,
+                    );
                   },
                 ).toList(),
               ),
+              Visibility(
+                visible: widget.task.from != null,
+                child: const Divider(),
+              ),
+              if (widget.task.from != null)
+                Visibility(
+                  visible: widget.task.from != null,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Отправитель",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      FutureBuilder(
+                        future: widget.firebaseUserManager
+                            .findUser(widget.task.from!),
+                        builder: (context, snapshot) =>
+                            snapshot.hasData && snapshot.data != null
+                                ? Text(snapshot.data!)
+                                : const CircularProgressIndicator(),
+                      ),
+                    ],
+                  ),
+                ),
               const SizedBox(
                 height: 60,
               ),
