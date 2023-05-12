@@ -140,7 +140,22 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(widget.task.name),
+                            Row(
+                              children: [
+                                Text(widget.task.name),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
+                                  child: Visibility(
+                                    visible: widget.task.from != null,
+                                    child: const Icon(
+                                      Icons.person,
+                                      color: Colors.blue,
+                                      size: 18,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                             widget.task.textPriority,
                           ],
                         ),
