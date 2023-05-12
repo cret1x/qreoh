@@ -6,10 +6,22 @@ import 'package:qreoh/global_providers.dart';
 import 'package:uuid/uuid.dart';
 
 const List<IconData> icons = [
-  Icons.ac_unit,
-  Icons.access_alarm,
+  Icons.account_balance_outlined,
   Icons.access_time,
-  //TODO: add icons
+  Icons.account_box_outlined,
+  Icons.account_balance_wallet_outlined,
+  Icons.shopping_bag_outlined,
+  Icons.flag_outlined,
+  Icons.work_outline,
+  Icons.newspaper,
+  Icons.phone,
+  Icons.child_friendly_outlined,
+  Icons.church_outlined,
+  Icons.local_hospital_outlined,
+  Icons.food_bank_outlined,
+  Icons.coffee_outlined,
+  Icons.local_activity_outlined,
+  Icons.health_and_safety_rounded,
 ];
 
 class CreateEditTagWidget extends ConsumerStatefulWidget {
