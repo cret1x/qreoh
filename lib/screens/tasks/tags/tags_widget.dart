@@ -37,7 +37,8 @@ class TagsState extends ConsumerState<TagsWidget> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: Theme.of(context).colorScheme.brightness == Brightness.light
+                  image: Theme.of(context).colorScheme.brightness ==
+                          Brightness.light
                       ? _appThemeState.lightBackground
                       : _appThemeState.darkBackground,
                   fit: BoxFit.cover,
@@ -67,7 +68,7 @@ class TagsState extends ConsumerState<TagsWidget> {
                   child: const Center(
                     child: Padding(
                       padding: EdgeInsets.all(12),
-                      child: Text('Create Tag'),
+                      child: Text('Создать тег'),
                     ),
                   ),
                 ),
@@ -85,70 +86,84 @@ class TagsState extends ConsumerState<TagsWidget> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: SizedBox(
-                          child: ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Dismissible(
-                                key: UniqueKey(),
-                                confirmDismiss: (direction) async {
-                                  if (direction ==
-                                      DismissDirection.startToEnd) {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (context) =>
-                                          CreateEditTagWidget(_allTags[index]),
-                                    );
-                                    return false;
-                                  }
-                                  return true;
-                                },
-                                onDismissed: (direction) => ref
-                                    .read(userTagsProvider.notifier)
-                                    .deleteTag(_allTags[index]),
-                                secondaryBackground: const Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 16),
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                                background: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: Icon(
-                                      Icons.mode_edit_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12),
+                          child: _allTags.isEmpty
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
                                   child: Row(
-                                    children: [
-                                      Icon(
-                                        _allTags[index].icon,
-                                        color: _allTags[index].color,
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Text(_allTags[index].name),
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: const [
+                                      Text('У вас пока нет тегов.',),
                                     ],
                                   ),
+                                )
+                              : ListView.separated(
+                                  shrinkWrap: true,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Dismissible(
+                                      key: UniqueKey(),
+                                      confirmDismiss: (direction) async {
+                                        if (direction ==
+                                            DismissDirection.startToEnd) {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (context) =>
+                                                CreateEditTagWidget(
+                                                    _allTags[index]),
+                                          );
+                                          return false;
+                                        }
+                                        return true;
+                                      },
+                                      onDismissed: (direction) => ref
+                                          .read(userTagsProvider.notifier)
+                                          .deleteTag(_allTags[index]),
+                                      secondaryBackground: const Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 16),
+                                          child: Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ),
+                                      background: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 16),
+                                          child: Icon(
+                                            Icons.mode_edit_outlined,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              _allTags[index].icon,
+                                              color: _allTags[index].color,
+                                            ),
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            Text(_allTags[index].name),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          const Divider(),
+                                  itemCount: _allTags.length,
                                 ),
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) =>
-                                    const Divider(),
-                            itemCount: _allTags.length,
-                          ),
                         ),
                       ),
                     ),

@@ -22,6 +22,10 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: Text(
+        widget._oldName == null ? "Создание папки" : "Изменение папки",
+        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+      ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(12),
