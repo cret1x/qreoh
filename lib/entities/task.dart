@@ -143,20 +143,20 @@ class Task {
     Color? color;
     switch (priority) {
       case Priority.high:
-        name = "High";
+        name = "Высокий";
         color = Colors.red[500];
         break;
       case Priority.medium:
-        name = "Medium";
+        name = "Средний";
         color = Colors.orange[400];
         break;
       case Priority.low:
-        name = "Low";
+        name = "Низкий";
         color = Colors.green[500];
         break;
       case Priority.none:
-        name = "None";
-        color = Colors.grey[700];
+        name = "Без приоритета";
+        color = Colors.grey;
         break;
     }
     return Text(name, style: TextStyle(color: color));

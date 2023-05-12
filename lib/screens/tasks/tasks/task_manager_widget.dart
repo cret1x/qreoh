@@ -29,19 +29,19 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
   SortRule _sortRule = SortRule.leftAsc;
   static final List<DropdownMenuItem<SortRule>> _menuItems = [
     DropdownMenuItem(
-        value: SortRule.leftAsc, child: getDropdownListItem("Time left ▲")),
+        value: SortRule.leftAsc, child: getDropdownListItem("Осталось ▲")),
     DropdownMenuItem(
-        value: SortRule.leftDesc, child: getDropdownListItem("Time left ▼")),
+        value: SortRule.leftDesc, child: getDropdownListItem("Осталось ▼")),
     DropdownMenuItem(
-        value: SortRule.nameAZ, child: getDropdownListItem("Name A-Z")),
+        value: SortRule.nameAZ, child: getDropdownListItem("Название ▲")),
     DropdownMenuItem(
-        value: SortRule.nameZA, child: getDropdownListItem("Name Z-A")),
+        value: SortRule.nameZA, child: getDropdownListItem("Название ▼")),
     DropdownMenuItem(
-        value: SortRule.priorityAsc, child: getDropdownListItem("Priority ▲")),
+        value: SortRule.priorityAsc, child: getDropdownListItem("Приоритет ▲")),
     DropdownMenuItem(
-        value: SortRule.priorityDesc, child: getDropdownListItem("Priority ▼")),
+        value: SortRule.priorityDesc, child: getDropdownListItem("Приоритет ▼")),
     DropdownMenuItem(
-        value: SortRule.estimation, child: getDropdownListItem("Estimated"))
+        value: SortRule.estimation, child: getDropdownListItem("Оценка"))
   ];
 
   static Widget getDropdownListItem(String text) {
@@ -128,7 +128,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
                                               0, 0, 12, 0),
                                           child: Center(
                                             child: snapshot.hasData
-                                                ? Text(snapshot.data!.name)
+                                                ? Text(snapshot.data!.name, style: const TextStyle( fontSize: 16),)
                                                 : Transform.scale(
                                                     scale: 0.6,
                                                     child:

@@ -60,7 +60,7 @@ class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "Создание тега",
+        widget._tag == null ? "Создание тега" : "Изменение тега",
         style: TextStyle(color: Theme.of(context).colorScheme.primary),
       ),
       shape: const RoundedRectangleBorder(

@@ -28,7 +28,6 @@ class TaskListState extends ConsumerState<TaskListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('TASK LIST WIDGET BUILD');
     ref.read(tasksListRebuildProvider).addListener(() { 
       setState(() {});
     });
