@@ -9,13 +9,13 @@ class Strings {
   static const String enterLogin = "Введите ваш логин";
   static const String enterPassword = "Введите ваш пароль";
   static const String repeatPassword = "Повторный пароль";
-  static const String welcomeMessage = "Выберете способ входа";
+  static const String welcomeMessage = "Выберите способ входа";
   static const String shortLogin = "Логин должен быть больше 2 символов";
   static const String wrongEmail = "Неверный формат почты";
   static const String loginLabel = "Вход";
   static const String actionLogin = "Войти";
   static const String registerLabel = "Регистрация";
-  static const String actionRegister = "Зарегестрироваться";
+  static const String actionRegister = "Зарегистрироваться";
   static const String forgotPassword = "Забыл пароль";
   static const String successLogin = "Успешный вход";
   static const String errorOccurred = "Произошла ошибка";
