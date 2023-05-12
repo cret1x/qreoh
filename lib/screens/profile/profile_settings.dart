@@ -49,6 +49,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
+          backgroundColor: MaterialStatePropertyAll<Color>(Colors.grey),
         ),
         onPressed: null,
         child: Text("Выбрано"),
