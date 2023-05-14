@@ -47,7 +47,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           enableSuggestions: false,
                           autocorrect: false,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if ((value == null || value.isEmpty) && _tagController.text.isEmpty) {
                               return Strings.requiredField;
                             }
                             return null;
@@ -69,7 +69,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           enableSuggestions: false,
                           autocorrect: false,
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if ((value == null || value.isEmpty) && (_loginController.text.isEmpty)) {
                               return Strings.requiredField;
                             }
                             return null;
@@ -89,7 +89,9 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        ref.read(friendsListStateProvider.notifier).searchFriend(_loginController.text, int.parse(_tagController.text)).then((value) {
+                        String? login = _loginController.text.isEmpty ? null : _loginController.text;
+                        int? tag = _tagController.text.isEmpty ? null : int.parse(_tagController.text);
+                        ref.read(friendsListStateProvider.notifier).searchFriend(login, tag).then((value) {
                           if (value != null) {
                             setState(() {
                               _foundFriend.clear();

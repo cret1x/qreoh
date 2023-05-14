@@ -16,6 +16,7 @@ class UserState {
   final int balance;
   final String login;
   final int tag;
+  final String? realName;
   final String? profileImageUrl;
   final CustomAvatar avatar;
   final CustomBanner banner;
@@ -40,6 +41,7 @@ class UserState {
       required this.banner,
       required this.tasksFromFriendsReceived,
       this.profileImageUrl,
+        this.realName,
       required this.tasksFriendsCompleted,
       required this.tasksFriendsCreated,
       required this.tasksCreated,
@@ -91,6 +93,7 @@ class UserState {
       'achievements': achievements,
       'collection': collection.map((e)=>e.toFirestore()).toList(),
       'friends': [],
+      'realName': realName,
       'tasksFriendsCompleted': tasksFriendsCompleted,
       'tasksFriendsCreated': tasksFriendsCreated,
       'tasksCreated': tasksCreated,
@@ -110,6 +113,7 @@ class UserState {
         login: data['login'],
         tag: data['tag'],
         level: data['level'],
+        realName: data['realName'],
         experience: data['experience'],
         avatar: CustomItem.fromMap(data['avatar']) as CustomAvatar,
         banner: CustomItem.fromMap(data['banner']) as CustomBanner,
@@ -126,6 +130,7 @@ class UserState {
       {int? balance,
       String? login,
       int? tag,
+        String? realName,
       CustomBanner? banner,
       CustomAvatar? avatar,
       String? profileImage,
@@ -147,6 +152,7 @@ class UserState {
         balance: balance ?? this.balance,
         login: login ?? this.login,
         tag: tag ?? this.tag,
+        realName: realName ?? this.realName,
         banner: banner ?? this.banner,
         profileImageUrl: profileImage,
         tasksFromFriendsReceived:
@@ -219,6 +225,13 @@ class UserStateNotifier extends StateNotifier<UserState?> {
     if (state != null) {
       firebaseUserManager.updateLogin(login);
       state = state!.copyWith(login: login);
+    }
+  }
+
+  void updateRealName(String name) async {
+    if (state != null) {
+      firebaseUserManager.updateRealName(name);
+      state = state!.copyWith(realName: name);
     }
   }
 
