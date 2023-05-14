@@ -22,6 +22,18 @@ class ProfileWidget extends ConsumerStatefulWidget {
 class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
   List<Achievement> _achievements = [];
 
+  int _myAchievementsComparison(Achievement a, Achievement b) {
+    final propertyA = widget.profile.achievements.contains(a.id);
+    final propertyB = widget.profile.achievements.contains(b.id);
+    if (!propertyA & propertyB) {
+      return 1;
+    } else if (propertyA & !propertyB) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
   void _showAchievementTip(Achievement achievement) async {
     await showDialog(
       context: context,
@@ -132,6 +144,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
   }
 
   Widget achievementsList() {
+    _achievements.sort(_myAchievementsComparison);
     return SizedBox(
         height: 180,
         child: ListView(
