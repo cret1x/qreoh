@@ -7,8 +7,10 @@ import 'package:qreoh/screens/tasks/folders/create_edit_folder.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../common_widgets/delete_confimation.dart';
 import '../../../entities/folder.dart';
 import '../../../global_providers.dart';
+import '../../../strings.dart';
 
 class FoldersWidget extends ConsumerStatefulWidget {
   final Folder _initialFolder;
@@ -328,6 +330,10 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                                 .reload();
                                                           }
                                                           setState(() {});
+                                                          return false;
+                                                        }
+                                                        bool? result = await showDialog(context: context, builder: (_) => const DeleteConfirmation(Strings.folder));
+                                                        if (result == null || !result) {
                                                           return false;
                                                         }
                                                         ref

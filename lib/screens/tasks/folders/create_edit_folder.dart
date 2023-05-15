@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../common_widgets/discard_confirmation.dart';
 import '../../../global_providers.dart';
 
 class CreateEditFolderWidget extends StatefulWidget {
@@ -51,7 +52,11 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
       ),
       actions: [
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            bool? result = await showDialog(context: context, builder: (_) => const DiscardConfirmation());
+            if (result == null || !result) {
+              return;
+            }
             Navigator.pop(context);
           },
           child: const Text("Отменить"),

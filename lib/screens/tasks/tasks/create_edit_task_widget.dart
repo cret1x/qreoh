@@ -6,9 +6,12 @@ import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/screens/tasks/folders/folders_widget.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../common_widgets/delete_confimation.dart';
+import '../../../common_widgets/discard_confirmation.dart';
 import '../../../entities/tag.dart';
 import '../../../entities/folder.dart';
 import '../../../entities/task.dart';
+import '../../../strings.dart';
 
 class EditCreateTaskWidget extends ConsumerStatefulWidget {
   final uuid = const Uuid();
@@ -500,7 +503,11 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                         .onBackground,
                               ),
                             ),
-                            onDeleted: () {
+                            onDeleted: () async {
+                              bool? result = await showDialog(context: context, builder: (_) => const DeleteConfirmation(Strings.tag));
+                              if (result == null || !result) {
+                                return;
+                              }
                               ref
                                   .read(userTagsProvider.notifier)
                                   .deleteTag(tag);
@@ -559,23 +566,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             bool result = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: const Text(
-                                        "Вы уверены, что хотите сбросить все изменения?"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, true);
-                                          },
-                                          child: const Text("Да")),
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context, false);
-                                          },
-                                          child: const Text("Нет")),
-                                    ],
-                                  );
-                                });
+                                  return const DiscardConfirmation();
+                                },
+                            );
                             if (result) {
                               Navigator.pop(context, 0);
                             }
@@ -664,28 +657,12 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                               ),
                             ),
                             onPressed: () async {
-                              bool result = await showDialog(
+                              bool? result = await showDialog(
                                 context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                  content: const Text(
-                                      "Вы уверены, что хотите удалить задачу?\n"
-                                      "После удаления восстановление будет невозможным."),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, true);
-                                        },
-                                        child: const Text("Да")),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, false);
-                                        },
-                                        child: const Text("Нет")),
-                                  ],
-                                ),
+                                builder: (BuildContext context) => const DeleteConfirmation(Strings.task),
                               );
                               ref.read(tasksListRebuildProvider).notify();
-                              if (result) {
+                              if (result != null && result) {
                                 ref
                                     .read(taskListStateProvider.notifier)
                                     .deleteTask(widget._task!);

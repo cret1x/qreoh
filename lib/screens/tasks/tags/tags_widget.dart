@@ -7,8 +7,10 @@ import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/states/app_theme_state.dart';
 import 'package:qreoh/states/user_tags_state.dart';
 
+import '../../../common_widgets/delete_confimation.dart';
 import '../../../entities/tag.dart';
 import '../../../global_providers.dart';
+import '../../../strings.dart';
 
 class TagsWidget extends ConsumerStatefulWidget {
   @override
@@ -112,6 +114,10 @@ class TagsState extends ConsumerState<TagsWidget> {
                                                 CreateEditTagWidget(
                                                     _allTags[index]),
                                           );
+                                          return false;
+                                        }
+                                        bool? result = await showDialog(context: context, builder: (_) => const DeleteConfirmation(Strings.tag));
+                                        if (result == null || !result) {
                                           return false;
                                         }
                                         return true;

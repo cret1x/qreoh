@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/common_widgets/delete_confimation.dart';
 import 'package:qreoh/entities/folder.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/entities/task.dart';
@@ -9,6 +10,8 @@ import 'package:qreoh/screens/tasks/tasks/create_edit_task_widget.dart';
 import 'package:qreoh/screens/tasks/tags/tag_widget.dart';
 import 'package:qreoh/screens/tasks/tasks/task_widget.dart';
 import 'package:qreoh/states/user_tags_state.dart';
+
+import '../../../strings.dart';
 
 class TaskItemWidget extends ConsumerStatefulWidget {
   final Task task;
@@ -42,6 +45,10 @@ class _TaskItemWidgetState extends ConsumerState<TaskItemWidget> {
                     EditCreateTaskWidget(widget.task.parent, widget.task),
               ),
             );
+            return false;
+          }
+          bool? result = await showDialog(context: context, builder: (_) => const DeleteConfirmation(Strings.task));
+          if (result == null || !result) {
             return false;
           }
           ref.read(taskListStateProvider.notifier).deleteTask(widget.task);

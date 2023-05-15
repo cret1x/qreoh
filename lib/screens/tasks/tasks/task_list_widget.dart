@@ -60,7 +60,7 @@ class TaskListState extends ConsumerState<TaskListWidget> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
-                    Text('У вас пока нет заданий.'),
+                    Text('У вас пока нет заданий'),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qreoh/common_widgets/discard_confirmation.dart';
 import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:uuid/uuid.dart';
@@ -203,7 +204,11 @@ class _CreateEditTagState extends ConsumerState<CreateEditTagWidget> {
                 : null,
             child: const Text("Сохранить")),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            bool? result = await showDialog(context: context, builder: (_) => const DiscardConfirmation());
+            if (result == null || !result) {
+              return;
+            }
             Navigator.pop(context);
           },
           child: const Text("Отменить"),

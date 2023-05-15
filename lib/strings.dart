@@ -62,6 +62,12 @@ class Strings {
   static const String logOut = "Выйти из аккаунта";
   static const String areYouSure = "Вы уверены?";
 
+  static const String yes = "Да";
+  static const String no = "Нет";
+
+  static const String save = "Сохранить";
+  static const String cancel = "Отменить";
+
   static const int xpToNewLevel = 1000;
   static const int xpRewardTask = 100;
   static const int xpRewardFriendTask = 200;
@@ -70,4 +76,15 @@ class Strings {
   static const int moneyRewardAchievement = 300;
   static const int moneyRewardTask = 50;
   static const int moneyRewardFriendTask = 100;
+
+  static const String task = "задачу";
+  static const String folder = "папку";
+  static const String tag = "тег";
+
+  static String deleteConfirmationText(String object) {
+    return "Вы уверены, что хотите удалить ${object}?\n"
+        "После удаления восстановление будет невозможным.";
+  }
+
+  static const String discardConfirmation = "Вы уверены, что хотите сбросить все изменения?";
 }
