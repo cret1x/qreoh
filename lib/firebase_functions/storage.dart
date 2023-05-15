@@ -29,4 +29,16 @@ class FirebaseStorageManager {
     });
     return url;
   }
+
+  Future<List<String>> uploadAttachments(String taskId, List<File> files) async {
+    List<String> urls = [];
+    final storageRef = storage.ref();
+    for (final file in files) {
+      final pfp = storageRef.child('files/$taskId/${file.path}');
+      await pfp.putFile(file);
+      final url = await pfp.getDownloadURL();
+      urls.add(url);
+    }
+    return urls;
+  }
 }
