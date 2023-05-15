@@ -51,7 +51,7 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
       onPressed: _userState!.balance < item.price
           ? null
           : () {
-              ref.read(userStateProvider.notifier).buyItem(item);
+               _dialogBuilder(context, item);
             },
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -62,6 +62,39 @@ class _ProfileShopState extends ConsumerState<ProfileShop> {
         backgroundColor: _userState!.balance < item.price ? MaterialStatePropertyAll<Color>(Colors.grey) : MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
       ),
       child: Text("${item.price}\$"),
+    );
+  }
+
+  Future<void> _dialogBuilder(BuildContext context, ShopItem item) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Вы уверены в покупке?",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Нет"),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.read(userStateProvider.notifier).buyItem(item);;
+              },
+              child: const Text("Купить"),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -22,6 +22,18 @@ class ProfileWidget extends ConsumerStatefulWidget {
 class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
   List<Achievement> _achievements = [];
 
+  int myAchievementComparison(Achievement a, Achievement b) {
+    final propertyA = widget.profile.achievements.contains(a.id);
+    final propertyB = widget.profile.achievements.contains(b.id);
+    if (propertyA & !propertyB) {
+      return -1;
+    } else if (!propertyA & propertyB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
   void _showAchievementTip(Achievement achievement) async {
     await showDialog(
       context: context,
@@ -132,6 +144,7 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
   }
 
   Widget achievementsList() {
+    _achievements.sort(myAchievementComparison);
     return SizedBox(
         height: 180,
         child: ListView(
@@ -242,8 +255,9 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 14),
-                            child: Column(
+                            padding: const EdgeInsets.only(left: 16, top: 8),
+                            child: widget.profile.realName == null
+                            ?Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
@@ -299,6 +313,81 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                                                     Theme.of(context)
                                                         .colorScheme
                                                         .secondary),
+                                            backgroundColor: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                            :Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.profile.realName.toString(),
+                                  style: TextStyle(
+                                      letterSpacing: 2,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      widget.profile.login,
+                                      style: TextStyle(
+                                          letterSpacing: 2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                    Text(
+                                      "#${widget.profile.tag}",
+                                      style: const TextStyle(
+                                          letterSpacing: 2,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 22),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 8, top: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${widget.profile.level} ур.",
+                                        style: const TextStyle(
+                                            fontSize: 24,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(
+                                        width: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                        height: 15,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(5),
+                                          child: LinearProgressIndicator(
+                                            value: widget.profile.experience /
+                                                Strings.xpToNewLevel,
+                                            valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
                                             backgroundColor: Colors.grey,
                                           ),
                                         ),
@@ -421,7 +510,8 @@ class _ProfileWidgetState extends ConsumerState<ProfileWidget> {
                             FirebaseAuth.instance.currentUser!.uid &&
                         ref
                             .read(friendsListStateProvider)
-                            .friends.map((e) => e.uid)
+                            .friends
+                            .map((e) => e.uid)
                             .contains(widget.profile.uid))
                       Padding(
                         padding: const EdgeInsets.all(8.0),

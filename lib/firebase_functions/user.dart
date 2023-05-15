@@ -61,6 +61,13 @@ class FirebaseUserManager {
     });
   }
 
+  Future<void> updateRealName(String name) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    db.collection('users').doc(uid).update({
+      'realName': name,
+    });
+  }
+
   Future<void> updateBalance(int amount) async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     db.collection('users').doc(uid).update({

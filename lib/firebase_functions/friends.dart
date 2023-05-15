@@ -17,12 +17,20 @@ class FirebaseFriendsManager {
   FirebaseFriendsManager._internal();
 
 
-  Future<UserState?> searchFriend(String login, int tag) async {
+  Future<UserState?> searchFriend(String? login, int? tag) async {
     final usersRef = db.collection('users');
-    final query =
-    usersRef.where('login', isEqualTo: login).where('tag', isEqualTo: tag);
+    QuerySnapshot<Map<String, dynamic>> value;
+    if (login != null && tag != null) {
+      final query = usersRef.where('login', isEqualTo: login).where('tag', isEqualTo: tag);
+      value = await query.get();
+    } else if (login == null) {
+      final query = usersRef.where('tag', isEqualTo: tag);
+      value = await query.get();
+    } else {
+      final query = usersRef.where('login', isEqualTo: login);
+      value = await query.get();
+    }
     final currentUser = await usersRef.doc(FirebaseAuth.instance.currentUser!.uid).get();
-    final value = await query.get();
     if (value.size != 0) {
       final user = value.docs.first.data();
       if (value.docs.first.id == FirebaseAuth.instance.currentUser!.uid) {

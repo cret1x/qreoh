@@ -27,6 +27,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
   UserState? _userState;
   File? _imageFile;
   String? _newLogin;
+  String? _newName;
   bool _imageFileChanged = false;
   List<RewardItem> _rewardItems = [];
   CustomBanner? _selectedBanner;
@@ -159,6 +160,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
         (_selectedAvatar == null ||
             _selectedAvatar?.id == _userState!.avatar.id) &&
         (_newLogin == null || _userState!.login == _newLogin) &&
+        (_newName == null || _userState!.realName == _newName) &&
         !_imageFileChanged;
   }
 
@@ -415,35 +417,68 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                                         ),
                                       ),
                                       Expanded(
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 32.0),
-                                          child: TextFormField(
-                                            initialValue: _userState?.login,
-                                            onChanged: (String? value) {
-                                              setState(() {
-                                                _newLogin = value ?? _newLogin;
-                                              });
-                                            },
-                                            maxLength: 16,
-                                            decoration: InputDecoration(
-                                              enabledBorder:
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 32.0),
+                                              child: TextFormField(
+                                                initialValue: _userState?.realName,
+                                                onChanged: (String? value) {
+                                                  setState(() {
+                                                    _newName = value ?? _newName;
+                                                  });
+                                                },
+                                                maxLength: 16,
+                                                decoration: InputDecoration(
+                                                  enabledBorder:
                                                   UnderlineInputBorder(
-                                                borderSide: BorderSide(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                  ),
+                                                  labelText: "Имя пользователя",
+                                                  labelStyle: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
-                                                        .secondary),
-                                              ),
-                                              labelText: "Имя пользователя",
-                                              labelStyle: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-                                                fontWeight: FontWeight.bold,
+                                                        .primary,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 32.0),
+                                              child: TextFormField(
+                                                initialValue: _userState?.login,
+                                                onChanged: (String? value) {
+                                                  setState(() {
+                                                    _newLogin = value ?? _newLogin;
+                                                  });
+                                                },
+                                                maxLength: 16,
+                                                decoration: InputDecoration(
+                                                  enabledBorder:
+                                                  UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary),
+                                                  ),
+                                                  labelText: "Логин пользователя",
+                                                  labelStyle: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ),
                                     ],
                                   ),
@@ -540,6 +575,14 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                                                             .notifier)
                                                         .updateLogin(
                                                             _newLogin!);
+                                                  }
+                                                  if (_newName !=
+                                                      _userState!.realName) {
+                                                    ref
+                                                        .read(userStateProvider
+                                                        .notifier)
+                                                        .updateRealName(
+                                                        _newName!);
                                                   }
                                                   if (_imageFile != null &&
                                                       _imageFileChanged) {
