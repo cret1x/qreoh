@@ -67,7 +67,7 @@ class FriendListStateNotifier extends StateNotifier<FriendsState> {
     getAllFriends(false);
   }
 
-  Future<UserState?> searchFriend(String? login, int? tag) async {
+  Future<List<UserState>?> searchFriend(String? login, int? tag) async {
     return firebaseFriendsManager.searchFriend(login, tag);
   }
 

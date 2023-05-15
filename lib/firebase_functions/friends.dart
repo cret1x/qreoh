@@ -17,7 +17,7 @@ class FirebaseFriendsManager {
   FirebaseFriendsManager._internal();
 
 
-  Future<UserState?> searchFriend(String? login, int? tag) async {
+  Future<List<UserState>?> searchFriend(String? login, int? tag) async {
     final usersRef = db.collection('users');
     QuerySnapshot<Map<String, dynamic>> value;
     if (login != null && tag != null) {
@@ -27,16 +27,28 @@ class FirebaseFriendsManager {
       final query = usersRef.where('tag', isEqualTo: tag);
       value = await query.get();
     } else {
-      final query = usersRef.where('login', isEqualTo: login);
+      var next = login.codeUnitAt(0);
+      next                                                                   ++;
+      String nextLogin = String.fromCharCode(next);
+      final query = usersRef.where('login', isGreaterThanOrEqualTo: login).where('login', isLessThan: nextLogin);
       value = await query.get();
     }
-    final currentUser = await usersRef.doc(FirebaseAuth.instance.currentUser!.uid).get();
     if (value.size != 0) {
-      final user = value.docs.first.data();
-      if (value.docs.first.id == FirebaseAuth.instance.currentUser!.uid) {
-        return null;
+      List<UserState> users = [];
+      for (final doc in value.docs) {
+        if (doc.id == FirebaseAuth.instance.currentUser!.uid) {
+          continue;
+        }
+        var user = doc.data();
+        var usr = UserState.fromFirestore(doc.id, user);
+        if (login != null && usr.login.startsWith(login)) {
+          users.add(usr);
+        } else if (tag != null && (login == null || usr.login.startsWith(login))) {
+          users.add(usr);
+        }
+
       }
-      return UserState.fromFirestore(value.docs.first.id, user);
+      return users.isEmpty ? null : users;
     } else {
       return null;
     }

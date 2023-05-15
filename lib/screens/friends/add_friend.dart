@@ -9,7 +9,8 @@ class AddFriendWidget extends ConsumerStatefulWidget {
   const AddFriendWidget({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddFriendWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AddFriendWidgetState();
 }
 
 class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
@@ -27,6 +28,7 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final outRequests = ref.watch(friendsListStateProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(Strings.addFriend),
@@ -47,7 +49,8 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           enableSuggestions: false,
                           autocorrect: false,
                           validator: (value) {
-                            if ((value == null || value.isEmpty) && _tagController.text.isEmpty) {
+                            if ((value == null || value.isEmpty) &&
+                                _tagController.text.isEmpty) {
                               return Strings.requiredField;
                             }
                             return null;
@@ -69,7 +72,8 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           enableSuggestions: false,
                           autocorrect: false,
                           validator: (value) {
-                            if ((value == null || value.isEmpty) && (_loginController.text.isEmpty)) {
+                            if ((value == null || value.isEmpty) &&
+                                (_loginController.text.isEmpty)) {
                               return Strings.requiredField;
                             }
                             return null;
@@ -89,16 +93,28 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        String? login = _loginController.text.isEmpty ? null : _loginController.text;
-                        int? tag = _tagController.text.isEmpty ? null : int.parse(_tagController.text);
-                        ref.read(friendsListStateProvider.notifier).searchFriend(login, tag).then((value) {
+                        String? login = _loginController.text.isEmpty
+                            ? null
+                            : _loginController.text;
+                        int? tag = _tagController.text.isEmpty
+                            ? null
+                            : int.parse(_tagController.text);
+                        ref
+                            .read(friendsListStateProvider.notifier)
+                            .searchFriend(login, tag)
+                            .then((value) {
+                              setState(() {
+                                _foundFriend.clear();
+                              });
                           if (value != null) {
                             setState(() {
-                              _foundFriend.clear();
-                              _foundFriend.add(value);
+
+                              _foundFriend.addAll(value);
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.friendNotFound)));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(Strings.friendNotFound)));
                           }
                         });
                       }
@@ -112,8 +128,10 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary),
-                      minimumSize: const MaterialStatePropertyAll<Size>(Size.fromHeight(48)),
+                      backgroundColor: MaterialStatePropertyAll<Color>(
+                          Theme.of(context).colorScheme.primary),
+                      minimumSize: const MaterialStatePropertyAll<Size>(
+                          Size.fromHeight(48)),
                     ),
                   ),
                 )
@@ -126,10 +144,25 @@ class _AddFriendWidgetState extends ConsumerState<AddFriendWidget> {
               itemBuilder: (context, id) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: FriendItem.withAction(_foundFriend.first, () {
-                    ref.read(friendsListStateProvider.notifier).sendRequest(_foundFriend.first);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text(Strings.sentFriendRequest)));
-                  }, null),
+                  child: FriendItem.withAction(
+                      _foundFriend[id],
+                      outRequests.outRequests
+                                  .map((e) => e.uid)
+                                  .contains(_foundFriend[id].uid) ||
+                              outRequests.friends
+                                  .map((e) => e.uid)
+                                  .contains(_foundFriend[id].uid)
+                          ? null
+                          : () {
+                              ref
+                                  .read(friendsListStateProvider.notifier)
+                                  .sendRequest(_foundFriend[id]);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text(Strings.sentFriendRequest)));
+                            },
+                      null),
                 );
               },
             ),

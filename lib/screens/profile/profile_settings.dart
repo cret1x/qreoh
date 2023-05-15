@@ -284,6 +284,7 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
       _selectedBanner = next?.banner;
       _selectedAvatar = next?.avatar;
       _newLogin ??= _userState?.login;
+      _newName ??= _userState?.realName;
     });
     return Scaffold(
       appBar: AppBar(actions: [
@@ -576,9 +577,10 @@ class _ProfilePageSettings extends ConsumerState<MyProfileSettings> {
                                                         .updateLogin(
                                                             _newLogin!);
                                                   }
-                                                  if (_newName !=
+                                                  if (_newName != null && _newName !=
                                                       _userState!.realName) {
                                                     ref
+
                                                         .read(userStateProvider
                                                         .notifier)
                                                         .updateRealName(
