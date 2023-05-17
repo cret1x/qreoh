@@ -57,14 +57,6 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
 
   Future<void> toggleTask(Task task) async {
     await firebaseTaskManager.changeTaskState(task);
-    if (task.from != null) {
-      await firebaseTaskManager.addSharedAction(
-          myAction.Action(
-            task.done ? myAction.ActionType.done : myAction.ActionType.undone,
-            DateTime.now(),
-          ),
-          task);
-    }
     await ref.read(userStateProvider.notifier).loadFromDB();
     if (task.from == null) {
       final completed = ref.read(userStateProvider)!.tasksCompleted;
@@ -101,6 +93,14 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
         else
           todo,
     ];
+    if (task.from != null) {
+      await firebaseTaskManager.addSharedAction(
+          myAction.Action(
+            task.done ? myAction.ActionType.done : myAction.ActionType.undone,
+            DateTime.now(),
+          ),
+          task);
+    }
   }
 
   void updateTask(Folder folder, Task task) async {
