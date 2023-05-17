@@ -4,6 +4,7 @@ import 'package:qreoh/entities/tag.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/screens/tasks/attachments/attachment_list.dart';
 import 'package:qreoh/screens/tasks/tasks/share_task.dart';
 import 'create_edit_task_widget.dart';
 import 'task_manager_widget.dart';
@@ -228,7 +229,15 @@ class TaskState extends ConsumerState<TaskWidget> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              AttachmentList(widget.task.attachments),
+                        ),
+                      );
+                    },
                     child: Text("Посмотреть"),
                   ),
                 ],

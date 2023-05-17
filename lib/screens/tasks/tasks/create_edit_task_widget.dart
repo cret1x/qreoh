@@ -625,7 +625,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                           : null,
                                       description: _description,
                                       place: _location,
-                                      attachments: [],
+                                      attachments: _attachments,
                                   );
                                   ref
                                       .read(taskListStateProvider.notifier)
@@ -640,7 +640,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                       haveTime: _haveTime,
                                       timeRequired: _timeRequired,
                                       description: _description,
-                                      place: _location);
+                                      place: _location,
+                                      attachments: _attachments,);
                                   ref
                                       .read(taskListStateProvider.notifier)
                                       .updateTask(

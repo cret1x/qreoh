@@ -124,6 +124,7 @@ class Task {
       required String name,
       required Priority priority,
       required List<String> tags,
+      required List<String> attachments,
       DateTime? deadline,
       bool? haveTime,
       Duration? timeRequired,
@@ -140,6 +141,7 @@ class Task {
     this.description = description;
     this.place = place;
     this.from = from;
+    this.attachments = attachments;
   }
 
   void markAsDone() {

@@ -4,20 +4,19 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qreoh/common_widgets/delete_confimation.dart';
 
 import '../../../firebase_functions/storage.dart';
+import 'attachment_item.dart';
 
 class EditAttachmentsWidget extends StatefulWidget {
   final String taskId;
-  final List<String> _attachments = ['https://zagorie.ru/upload/iblock/4ea/4eae10bf98dde4f7356ebef161d365d5.pdf'];
+  late final List<String> _attachments;
   final firebaseStorageManager = FirebaseStorageManager();
 
-  EditAttachmentsWidget(this.taskId, List<String> attachments, {super.key}) {
-    _attachments.addAll(attachments);
-  }
+  EditAttachmentsWidget(this.taskId, this._attachments, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -26,23 +25,6 @@ class EditAttachmentsWidget extends StatefulWidget {
 }
 
 class EditAttachmentsState extends State<EditAttachmentsWidget> {
-  Future<File> createFileOfPdfUrl(String url) async {
-    Completer<File> completer = Completer();
-    try {
-      final filename = url.substring(url.lastIndexOf("/") + 1);
-      var request = await HttpClient().getUrl(Uri.parse(url));
-      var response = await request.close();
-      var bytes = await consolidateHttpClientResponseBytes(response);
-      var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/$filename");
-      await file.writeAsBytes(bytes, flush: true);
-      completer.complete(file);
-    } catch (e) {
-      throw Exception('Error parsing asset file!');
-    }
-
-    return completer.future;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +48,6 @@ class EditAttachmentsState extends State<EditAttachmentsWidget> {
                     'pptx',
                     'ppt',
                     'pdf',
-                    'txt'
                   ]);
 
               if (result != null) {
@@ -89,16 +70,29 @@ class EditAttachmentsState extends State<EditAttachmentsWidget> {
       body: Column(
         children: [
           ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () async {
-                  final path = await createFileOfPdfUrl(widget._attachments[index]).then((f) => f.path);
-                  OpenFilex.open(path);
-                },
-                child: Text(
-                  widget._attachments[index],
+              return Dismissible(
+                background: const Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
                 ),
-              );
+                direction: DismissDirection.endToStart,
+                confirmDismiss: (direction) async {
+                  bool? result = await showDialog(context: context, builder: (_) => DeleteConfirmation("приложение"));
+                  if (result == null || !result) {
+                    return false;
+                  }
+                  return true;
+                },
+                onDismissed: (_) => setState(() {
+                  widget._attachments.removeAt(index);
+                }),
+                key: UniqueKey(),
+                child: AttachmentWidget(widget._attachments[index]),);
             },
             separatorBuilder: (context, index) => const Divider(),
             itemCount: widget._attachments.length,
