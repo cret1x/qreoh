@@ -7,4 +7,15 @@ class Action {
   final DateTime date;
 
   Action(this.type, this.date);
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'type' : type.name,
+      'date': date,
+    };
+  }
+
+  factory Action.fromFirestore(Map<String, dynamic> data) {
+    return Action(ActionType.values.byName(data['type']), data['date']);
+  }
 }

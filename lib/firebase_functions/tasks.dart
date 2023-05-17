@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qreoh/entities/action.dart';
 import 'package:qreoh/entities/folder.dart';
+import 'package:qreoh/entities/shared_task.dart';
 import 'package:qreoh/states/user_state.dart';
 
 import '../entities/task.dart';
@@ -26,7 +28,6 @@ class FirebaseTaskManager {
   }
 
   Future<List<Task>> getTasksInFolder(Folder folder) async {
-    print('REQUEST TO DB, folder: ${folder.name}');
     List<Task> tasks = [];
     final tasksRef = db
         .collection('users')
@@ -151,5 +152,34 @@ class FirebaseTaskManager {
       'tasksFromFriendsReceived': friend.tasksFromFriendsReceived + 1,
     });
     await tasksRef.doc(task.id).set(task.toFirestore());
+  }
+
+  Future<void> addSharedTask(SharedTask task) async {
+    final sharedTasksRef = db.collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("shared_tasks");
+    sharedTasksRef.doc(task.id).set(task.toFirestore());
+  }
+
+  Future<List<SharedTask>> getSharedTasks() async {
+    List<SharedTask> tasks = [];
+    final sharedTasksRef = db.collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("shared_tasks");
+    final tasksCollection = await sharedTasksRef.get();
+    for (var element in tasksCollection.docs) {
+      tasks.add(SharedTask.fromFirestore(element.data()));
+    }
+    return tasks;
+  }
+
+  Future<void> addSharedAction(Action action, Task task) async {
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    final tasksRef = db.collection('users').doc(task.from).collection("shared_tasks");
+    final shared = await tasksRef.doc(task.id).get();
+    final  shtask = SharedTask.fromFirestore(shared.data()!);
+    var x = shtask.receivers.firstWhere((element) => element.receiverId == uid);
+    x.addAction(action);
+    await tasksRef.doc(task.id).set(shtask.toFirestore());
   }
 }
