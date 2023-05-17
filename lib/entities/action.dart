@@ -16,6 +16,6 @@ class Action {
   }
 
   factory Action.fromFirestore(Map<String, dynamic> data) {
-    return Action(ActionType.values.byName(data['type']), data['date']);
+    return Action(ActionType.values.byName(data['type']), (data['date'] as Timestamp).toDate());
   }
 }

@@ -3,11 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/folder.dart';
+import 'package:qreoh/entities/receiver_info.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/states/user_state.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../entities/action.dart' as my_action;
+import '../../../entities/shared_task.dart';
 import '../../../entities/task.dart';
 
 class ShareTaskWidget extends ConsumerStatefulWidget {
@@ -33,6 +36,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
   Priority _priority = Priority.none;
   String? _location;
   String? _description;
+  List<String> _attachments = [];
   final List<UserState> _receivers = [];
 
   String _durationToString(Duration? duration) {
@@ -124,8 +128,9 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime.now(),
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 2 * 365),),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 2 * 365),
+                          ),
                           confirmText: "Сохранить",
                           cancelText: "Отменить",
                         );
@@ -426,20 +431,19 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               child: Stack(
                                 children: [
                                   CircleAvatar(
-                                    backgroundImage:
-                                        (friend.profileImageUrl != null)
-                                            ? NetworkImage(friend.profileImageUrl!)
-                                            : null,
+                                    backgroundImage: (friend.profileImageUrl !=
+                                            null)
+                                        ? NetworkImage(friend.profileImageUrl!)
+                                        : null,
                                     radius: 32,
                                   ),
                                   CircleAvatar(
                                     backgroundColor: Theme.of(context)
                                         .colorScheme
                                         .surface
-                                        .withOpacity(
-                                            _receivers.contains(friend)
-                                                ? 0.7
-                                                : 0),
+                                        .withOpacity(_receivers.contains(friend)
+                                            ? 0.7
+                                            : 0),
                                     radius: 32,
                                   ),
                                   Visibility(
@@ -523,32 +527,57 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                               shape: RoundedRectangleBorder(
                             borderRadius: BorderRadiusDirectional.circular(12),
                           )),
-                          onPressed: _receivers.isEmpty ? null : _textEditingController.text.isNotEmpty
-                              ? () {
-                                  final fff =
-                                      Folder(id: "friends", name: "От друзей");
-                                  for (final receiver in _receivers) {
-                                    var taskToSend = Task(
-                                      id: uuid.v1(),
-                                      parent: fff,
-                                      name: _textEditingController.text,
-                                      priority: _priority,
-                                      done: false,
-                                      haveTime: _haveTime,
-                                      tags: [],
-                                      from: FirebaseAuth.instance.currentUser!.uid,
-                                      deadline: _deadline,
-                                      description: _description,
-                                      timeRequired: _timeRequired,
-                                      place: _location,
-                                      attachments: [],
-                                    );
-                                    firebaseTaskManager.sendTaskToFriend(
-                                        taskToSend, receiver);
-                                  }
-                                  Navigator.pop(context);
-                                }
-                              : null,
+                          onPressed: _receivers.isEmpty
+                              ? null
+                              : _textEditingController.text.isNotEmpty
+                                  ? () {
+                                      final fff = Folder(
+                                          id: "friends", name: "От друзей");
+                                      for (final receiver in _receivers) {
+                                        var taskToSend = Task(
+                                          id: uuid.v1(),
+                                          parent: fff,
+                                          name: _textEditingController.text,
+                                          priority: _priority,
+                                          done: false,
+                                          haveTime: _haveTime,
+                                          tags: [],
+                                          from: FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          deadline: _deadline,
+                                          description: _description,
+                                          timeRequired: _timeRequired,
+                                          place: _location,
+                                          attachments: _attachments,
+                                        );
+                                        firebaseTaskManager.sendTaskToFriend(
+                                            taskToSend, receiver);
+                                      }
+                                      DateTime sent = DateTime.now();
+                                      final shtask = SharedTask(
+                                        id: uuid.v1(),
+                                        name: _textEditingController.text,
+                                        priority: _priority,
+                                        haveTime: _haveTime,
+                                        deadline: _deadline,
+                                        description: _description,
+                                        timeRequired: _timeRequired,
+                                        place: _location,
+                                        attachments: _attachments,
+                                        receivers: _receivers.map((e) {
+                                          var r = ReceiverInfo(e.uid);
+                                          r.addAction(
+                                            my_action.Action(
+                                                my_action.ActionType.sent,
+                                                sent),
+                                          );
+                                          return r;
+                                        }).toList(),
+                                      );
+                                      firebaseTaskManager.addSharedTask(shtask);
+                                      Navigator.pop(context);
+                                    }
+                                  : null,
                           child: const Text(
                             "Отправить",
                             style: TextStyle(

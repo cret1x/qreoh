@@ -14,7 +14,6 @@ class SharedTask {
   Duration? timeRequired;
   String? place;
   bool haveTime;
-  List<String> tags;
   List<String> attachments;
   List<ReceiverInfo> receivers;
 
@@ -23,7 +22,6 @@ class SharedTask {
     required this.name,
     required this.priority,
     required this.haveTime,
-    required this.tags,
     required this.attachments,
     required this.receivers,
     this.deadline,
@@ -43,8 +41,7 @@ class SharedTask {
       if (timeRequired != null) "timeRequired": timeRequired!.inMinutes,
       if (place != null) "place": place,
       "attachments": attachments,
-      "tags": tags,
-      "receivers": receivers,
+      "receivers": receivers.map((e) => e.toFirestore()),
     };
   }
 
@@ -64,7 +61,6 @@ class SharedTask {
           ? Duration(minutes: data['timeRequired'])
           : null,
       place: data['place'],
-      tags: List.from(data['tags']),
       attachments: List.from(data['attachments']),
       receivers: data['receivers'],
     );
@@ -78,7 +74,6 @@ class SharedTask {
         Duration? timeRequired,
         String? description,
         String? place,
-        List<String>? tags,
         List<String>? attachments,
         List<ReceiverInfo>? receivers}) {
     return SharedTask(
@@ -86,7 +81,6 @@ class SharedTask {
       name: name ?? this.name,
       priority: priority ?? this.priority,
       haveTime: haveTime ?? this.haveTime,
-      tags: tags ?? this.tags,
       deadline: deadline ?? this.deadline,
       timeRequired: timeRequired ?? this.timeRequired,
       description: description ?? this.description,

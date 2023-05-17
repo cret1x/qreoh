@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/entities/folder.dart';
@@ -6,6 +5,8 @@ import 'package:qreoh/entities/task.dart';
 import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/strings.dart';
+
+import '../entities/action.dart' as myAction;
 
 class TaskListRebuildNotifier with ChangeNotifier {
   void notify() {
@@ -15,6 +16,7 @@ class TaskListRebuildNotifier with ChangeNotifier {
 
 class TaskListStateNotifier extends StateNotifier<List<Task>> {
   final Ref ref;
+
   TaskListStateNotifier(this.ref) : super([]);
   final FirebaseTaskManager firebaseTaskManager = FirebaseTaskManager();
 
@@ -26,16 +28,27 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
     await ref.read(userStateProvider.notifier).loadFromDB();
     if (task.from == null) {
       final created = ref.read(userStateProvider)!.tasksCreated;
-      await ref.read(userStateProvider.notifier).updateStats(tasksCreated: created + 1);
+      await ref
+          .read(userStateProvider.notifier)
+          .updateStats(tasksCreated: created + 1);
     } else {
       final created = ref.read(userStateProvider)!.tasksFriendsCreated;
-      await ref.read(userStateProvider.notifier).updateStats(tasksFriendsCreated: created + 1);
+      await ref
+          .read(userStateProvider.notifier)
+          .updateStats(tasksFriendsCreated: created + 1);
     }
-
   }
 
   void deleteTask(Task task) async {
     await firebaseTaskManager.deleteTask(task);
+    if (task.from != null) {
+      await firebaseTaskManager.addSharedAction(
+          myAction.Action(
+            myAction.ActionType.deleted,
+            DateTime.now(),
+          ),
+          task);
+    }
     state = [
       for (final todo in state)
         if (todo.id != task.id) todo,
@@ -44,11 +57,21 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
 
   Future<void> toggleTask(Task task) async {
     await firebaseTaskManager.changeTaskState(task);
+    if (task.from != null) {
+      await firebaseTaskManager.addSharedAction(
+          myAction.Action(
+            task.done ? myAction.ActionType.done : myAction.ActionType.undone,
+            DateTime.now(),
+          ),
+          task);
+    }
     await ref.read(userStateProvider.notifier).loadFromDB();
     if (task.from == null) {
       final completed = ref.read(userStateProvider)!.tasksCompleted;
       if (task.done && !task.rewarded) {
-        ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed + 1);
+        ref
+            .read(userStateProvider.notifier)
+            .updateStats(tasksCompleted: completed + 1);
         ref.read(userStateProvider.notifier).addXp(Strings.xpRewardTask);
         ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardTask);
         task.reward();
@@ -58,8 +81,12 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
       final completed = ref.read(userStateProvider)!.tasksFriendsCompleted;
       if (task.done && !task.rewarded) {
         ref.read(userStateProvider.notifier).addXp(Strings.xpRewardFriendTask);
-        ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardFriendTask);
-        ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed + 1);
+        ref
+            .read(userStateProvider.notifier)
+            .addMoney(Strings.moneyRewardFriendTask);
+        ref
+            .read(userStateProvider.notifier)
+            .updateStats(tasksFriendsCompleted: completed + 1);
         task.reward();
         await firebaseTaskManager.markRewarded(task);
       }
@@ -71,7 +98,8 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
             todo.copyWith(done: task.done)
           else
             todo.copyWith(done: task.done, rewarded: true)
-        else todo,
+        else
+          todo,
     ];
   }
 
