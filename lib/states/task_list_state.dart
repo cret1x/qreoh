@@ -41,6 +41,10 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
 
   void deleteTask(Task task) async {
     await firebaseTaskManager.deleteTask(task);
+    state = [
+      for (final todo in state)
+        if (todo.id != task.id) todo,
+    ];
     if (task.from != null) {
       await firebaseTaskManager.addSharedAction(
           myAction.Action(
@@ -49,10 +53,6 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
           ),
           task);
     }
-    state = [
-      for (final todo in state)
-        if (todo.id != task.id) todo,
-    ];
   }
 
   Future<void> toggleTask(Task task) async {
