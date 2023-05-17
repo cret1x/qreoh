@@ -5,7 +5,7 @@ import 'package:qreoh/firebase_functions/tasks.dart';
 import 'package:qreoh/firebase_functions/user.dart';
 import 'package:qreoh/global_providers.dart';
 import 'package:qreoh/screens/tasks/attachments/attachment_list.dart';
-import 'package:qreoh/screens/tasks/tasks/share_task.dart';
+import 'package:qreoh/screens/tasks/share/share_task.dart';
 import 'create_edit_task_widget.dart';
 import 'task_manager_widget.dart';
 import '../../../entities/task.dart';
