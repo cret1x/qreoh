@@ -34,7 +34,7 @@ class FirebaseStorageManager {
     List<String> urls = [];
     final storageRef = storage.ref();
     for (final file in files) {
-      final pfp = storageRef.child('files/$taskId/${file.path}');
+      final pfp = storageRef.child('files/$taskId/${basename(file.path)}');
       await pfp.putFile(file);
       final url = await pfp.getDownloadURL();
       urls.add(url);
