@@ -5,8 +5,6 @@ import 'tag.dart';
 
 enum Priority { high, medium, low, none }
 
-enum Notification { week, threeDays, aDay, threeHours, anHour, atm }
-
 class Task {
   String id;
   String? from;
@@ -20,7 +18,8 @@ class Task {
   String? place;
   bool haveTime;
   List<String> tags;
-  List<Notification>? notifications;
+  List<String> attachments;
+  bool rewarded = false;
 
   Task({
     required this.id,
@@ -30,13 +29,18 @@ class Task {
     required this.done,
     required this.haveTime,
     required this.tags,
+    required this.attachments,
     this.from,
     this.deadline,
     this.description,
     this.timeRequired,
     this.place,
-    this.notifications,
-  });
+    bool? rewarded,
+  }) {
+    if (rewarded != null) {
+      this.rewarded = rewarded;
+    }
+  }
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -51,7 +55,9 @@ class Task {
       if (description != null) "description": description,
       if (timeRequired != null) "timeRequired": timeRequired!.inMinutes,
       if (place != null) "place": place,
+      "attachments": attachments,
       "tags": tags,
+      "rewarded": rewarded,
     };
   }
 
@@ -76,6 +82,8 @@ class Task {
           : null,
       place: data['place'],
       tags: List.from(data['tags']),
+      attachments: List.from(data['attachments']),
+      rewarded: data['rewarded'],
     );
   }
 
@@ -90,7 +98,9 @@ class Task {
       Duration? timeRequired,
       String? description,
       String? place,
-      List<String>? tags}) {
+      List<String>? tags,
+      List<String>? attachments,
+      bool? rewarded}) {
     return Task(
       id: id,
       parent: parent ?? this.parent,
@@ -104,6 +114,8 @@ class Task {
       timeRequired: timeRequired ?? this.timeRequired,
       description: description ?? this.description,
       place: place ?? this.place,
+      attachments: attachments ?? this.attachments,
+      rewarded: rewarded,
     );
   }
 
@@ -136,6 +148,10 @@ class Task {
 
   void markAsNotDone() {
     done = false;
+  }
+
+  void reward() {
+    rewarded = true;
   }
 
   Text get textPriority {

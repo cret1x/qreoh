@@ -216,6 +216,23 @@ class TaskState extends ConsumerState<TaskWidget> {
                   Text(widget.task.path)
                 ],
               ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Приложения",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text("Посмотреть"),
+                  ),
+                ],
+              ),
               Visibility(
                 visible: tags.isNotEmpty,
                 child: const Divider(),

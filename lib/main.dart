@@ -60,6 +60,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     _appThemeState = ref.watch(appThemeProvider);
     return MaterialApp(
+
       title: 'Qreoh app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(

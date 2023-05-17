@@ -47,26 +47,31 @@ class TaskListStateNotifier extends StateNotifier<List<Task>> {
     await ref.read(userStateProvider.notifier).loadFromDB();
     if (task.from == null) {
       final completed = ref.read(userStateProvider)!.tasksCompleted;
-      if (task.done) {
+      if (task.done && !task.rewarded) {
         ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed + 1);
         ref.read(userStateProvider.notifier).addXp(Strings.xpRewardTask);
         ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardTask);
-      } else {
-        ref.read(userStateProvider.notifier).updateStats(tasksCompleted: completed - 1);
+        task.reward();
+        await firebaseTaskManager.markRewarded(task);
       }
     } else {
       final completed = ref.read(userStateProvider)!.tasksFriendsCompleted;
-      if (task.done) {
+      if (task.done && !task.rewarded) {
         ref.read(userStateProvider.notifier).addXp(Strings.xpRewardFriendTask);
         ref.read(userStateProvider.notifier).addMoney(Strings.moneyRewardFriendTask);
         ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed + 1);
-      } else {
-        ref.read(userStateProvider.notifier).updateStats(tasksFriendsCompleted: completed - 1);
+        task.reward();
+        await firebaseTaskManager.markRewarded(task);
       }
     }
     state = [
       for (final todo in state)
-        if (todo.id == task.id) todo.copyWith(done: task.done) else todo,
+        if (todo.id == task.id)
+          if (task.rewarded)
+            todo.copyWith(done: task.done)
+          else
+            todo.copyWith(done: task.done, rewarded: true)
+        else todo,
     ];
   }
 

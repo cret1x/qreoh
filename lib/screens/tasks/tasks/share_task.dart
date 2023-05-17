@@ -541,6 +541,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                                       description: _description,
                                       timeRequired: _timeRequired,
                                       place: _location,
+                                      attachments: [],
                                     );
                                     firebaseTaskManager.sendTaskToFriend(
                                         taskToSend, receiver);

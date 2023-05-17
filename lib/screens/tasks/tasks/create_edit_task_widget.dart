@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qreoh/global_providers.dart';
+import 'package:qreoh/screens/tasks/attachments/edit_attachments.dart';
 import 'package:qreoh/screens/tasks/tags/create_edit_tag.dart';
 import 'package:qreoh/screens/tasks/folders/folders_widget.dart';
 import 'package:uuid/uuid.dart';
@@ -38,10 +39,11 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   List<Tag> _allTags = [];
   List<String> _selectedTags = [];
   Folder _current;
+  List<String> _attachments = [];
 
   EditCreateTaskWidgetState(this._current, Task? task) {
     _textEditingController =
-        TextEditingController(text: task != null ? task!.name : null);
+        TextEditingController(text: task?.name);
     if (task != null) {
       _deadline = task.deadline;
       _haveTime = task.haveTime;
@@ -55,6 +57,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
       for (String tag in task.tags) {
         _selectedTags.add(tag);
       }
+      _attachments.addAll(task.attachments);
     }
   }
 
@@ -470,6 +473,25 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: Text("Приложения",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onBackground)),
+                  ),
+                  TextButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => EditAttachmentsWidget(widget._task!.id, _attachments)));
+                    },
+                    child: Text("Посмотреть"),
+                  )
+                ],
+              ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Теги",
@@ -602,7 +624,9 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                                               Duration(days: _daysRequired)
                                           : null,
                                       description: _description,
-                                      place: _location);
+                                      place: _location,
+                                      attachments: [],
+                                  );
                                   ref
                                       .read(taskListStateProvider.notifier)
                                       .addTask(widget._folder, newTask);

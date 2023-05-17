@@ -51,6 +51,17 @@ class FirebaseTaskManager {
     });
   }
 
+  Future<void> markRewarded(Task task) async {
+    final taskRef = db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("tasks")
+        .doc(task.id);
+    taskRef.update({
+      "rewarded": true,
+    });
+  }
+
   Future<void> updateTask(Task task) async {
     final tasksRef = db
         .collection('users')
