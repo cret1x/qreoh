@@ -48,6 +48,10 @@ class SharedTask {
   factory SharedTask.fromFirestore(
       Map<String, dynamic> data,
       ) {
+    List<ReceiverInfo> receivers = [];
+    for (var receiver in data['receivers']) {
+      receivers.add(ReceiverInfo.fromFirestore(receiver));
+    }
     return SharedTask(
       id: data['id'],
       name: data['name'],
@@ -62,7 +66,7 @@ class SharedTask {
           : null,
       place: data['place'],
       attachments: List.from(data['attachments']),
-      receivers: data['receivers'],
+      receivers: receivers,
     );
   }
 

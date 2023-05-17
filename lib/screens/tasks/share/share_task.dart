@@ -533,29 +533,29 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                                   ? () {
                                       final fff = Folder(
                                           id: "friends", name: "От друзей");
+                                      final taskToSend = Task(
+                                        id: uuid.v1(),
+                                        parent: fff,
+                                        name: _textEditingController.text,
+                                        priority: _priority,
+                                        done: false,
+                                        haveTime: _haveTime,
+                                        tags: [],
+                                        from: FirebaseAuth
+                                            .instance.currentUser!.uid,
+                                        deadline: _deadline,
+                                        description: _description,
+                                        timeRequired: _timeRequired,
+                                        place: _location,
+                                        attachments: _attachments,
+                                      );
                                       for (final receiver in _receivers) {
-                                        var taskToSend = Task(
-                                          id: uuid.v1(),
-                                          parent: fff,
-                                          name: _textEditingController.text,
-                                          priority: _priority,
-                                          done: false,
-                                          haveTime: _haveTime,
-                                          tags: [],
-                                          from: FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          deadline: _deadline,
-                                          description: _description,
-                                          timeRequired: _timeRequired,
-                                          place: _location,
-                                          attachments: _attachments,
-                                        );
                                         firebaseTaskManager.sendTaskToFriend(
                                             taskToSend, receiver);
                                       }
                                       DateTime sent = DateTime.now();
                                       final shtask = SharedTask(
-                                        id: uuid.v1(),
+                                        id: taskToSend.id,
                                         name: _textEditingController.text,
                                         priority: _priority,
                                         haveTime: _haveTime,

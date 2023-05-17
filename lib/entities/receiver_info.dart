@@ -19,7 +19,7 @@ class ReceiverInfo {
 
   factory ReceiverInfo.fromFirestore(Map<String, dynamic> data) {
     var ri = ReceiverInfo(data['receiverId']);
-    for (final a in List.from(data['actions'].cast(Iterable).map((e) => Action.fromFirestore(e)))) {
+    for (final a in List.from(data['actions'].map((e) => Action.fromFirestore(e)))) {
       ri.addAction(a);
     }
     return ri;
