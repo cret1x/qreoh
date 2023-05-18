@@ -4,7 +4,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
+const Map<String, String> fileTypeMap = {
+'.pdf' : "application/pdf",
+'.jpg' : "image/jpeg",
+'.png' : "image/png",
+'.docx': "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+'.doc' : "application/msword",
+'.xlsx': "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+'.xls' : "application/vnd.ms-excel",
+'.pptx': "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+'.ppt' : "application/vnd.ms-powerpoint",
+};
 
 Future<File> createFileOfPdfUrl(String url) async {
   Completer<File> completer = Completer();
@@ -38,7 +51,9 @@ class AttachmentWidget extends StatelessWidget {
     return InkWell(
       onTap: () async {
         final path = await createFileOfPdfUrl(_attachment).then((f) => f.path);
-        OpenFilex.open(path);
+        var ext = extension(path);
+        ext = ext.substring(0, ext.indexOf('?'));
+        OpenFilex.open(path, type: fileTypeMap[ext]);
       },
       child: Padding(
         padding: const EdgeInsets.all(12),
