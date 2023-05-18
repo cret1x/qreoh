@@ -41,7 +41,7 @@ class _TaskManagerState extends ConsumerState<TaskManagerWidget>
     DropdownMenuItem(
         value: SortRule.priorityDesc, child: getDropdownListItem("Приоритет ▼")),
     DropdownMenuItem(
-        value: SortRule.estimation, child: getDropdownListItem("Оценка"))
+        value: SortRule.estimation, child: getDropdownListItem("Рекомендация"))
   ];
 
   static Widget getDropdownListItem(String text) {
