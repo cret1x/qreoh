@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../common_widgets/discard_confirmation.dart';
-import '../../../global_providers.dart';
+import '../../../entities/folder.dart';
 
 class CreateEditFolderWidget extends StatefulWidget {
+  final List<Folder> _folders;
   final String? _oldName;
-  CreateEditFolderWidget(this._oldName, {super.key});
+
+  CreateEditFolderWidget(this._oldName, this._folders, {super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -53,7 +55,8 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
       actions: [
         TextButton(
           onPressed: () async {
-            bool? result = await showDialog(context: context, builder: (_) => const DiscardConfirmation());
+            bool? result = await showDialog(
+                context: context, builder: (_) => const DiscardConfirmation());
             if (result == null || !result) {
               return;
             }
@@ -64,6 +67,27 @@ class CreateEditFolderState extends State<CreateEditFolderWidget> {
         TextButton(
           onPressed: _controller.text.isNotEmpty
               ? () {
+                  final res = widget._folders
+                      .where((element) => element.name == _controller.text);
+                  if (res.isNotEmpty &&
+                      (widget._oldName == null ||
+                          widget._oldName != _controller.text)) {
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                              content: const Text(
+                                  "Папка с таким именем уже существует"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('ОК'),
+                                )
+                              ],
+                            ));
+                    return;
+                  }
                   Navigator.pop(context, _controller.text);
                 }
               : null,

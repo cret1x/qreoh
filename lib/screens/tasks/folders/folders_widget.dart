@@ -135,7 +135,7 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                     builder: (BuildContext
                                                             context) =>
                                                         CreateEditFolderWidget(
-                                                            null),
+                                                            null, snapshot.data!),
                                                   );
                                                   if (result != null) {
                                                     Folder newFolder = Folder(
@@ -312,7 +312,7 @@ class FoldersWidgetState extends ConsumerState<FoldersWidget> {
                                                                     snapshot
                                                                         .data![
                                                                             index]
-                                                                        .name),
+                                                                        .name, snapshot.data!),
                                                           );
                                                           if (result != null) {
                                                             snapshot
