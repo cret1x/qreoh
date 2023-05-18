@@ -167,6 +167,7 @@ class TaskState extends ConsumerState<TaskWidget> {
               Visibility(
                 visible: widget.task.place != null,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
@@ -176,7 +177,8 @@ class TaskState extends ConsumerState<TaskWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(widget.task.place ?? ""),
+                    SizedBox(width: 44),
+                    Flexible(child: Text(widget.task.place ?? ""),),
                   ],
                 ),
               ),
@@ -186,21 +188,24 @@ class TaskState extends ConsumerState<TaskWidget> {
               ),
               Visibility(
                 visible: widget.task.description != null,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Описание",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Описание",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(widget.task.description ?? ""),
-                    ],
-                  ),
+                    ),
+                    SizedBox(width: 20),
+                    Flexible(
+                      child: Text(
+                        widget.task.description ?? "",
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const Divider(),
