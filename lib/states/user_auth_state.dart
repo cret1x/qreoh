@@ -51,7 +51,9 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
     if (response == "OK") {
       if (FirebaseAuth.instance.currentUser!.emailVerified) {
         state = UserAuthState.verified();
+        await FirebaseAuth.instance.currentUser?.reload();
         ref.read(userStateProvider.notifier).loadFromDB();
+        ref.read(friendsListStateProvider.notifier).loadFromDB();
       } else {
         state = UserAuthState.registered();
       }
@@ -69,7 +71,9 @@ class UserAuthStateNotifier extends StateNotifier<UserAuthState> {
 
   void setUserAsVerified() async {
     state = UserAuthState.verified();
+    await FirebaseAuth.instance.currentUser?.reload();
     ref.read(userStateProvider.notifier).loadFromDB();
+    ref.read(friendsListStateProvider.notifier).loadFromDB();
   }
 
   void signOutUser() {
