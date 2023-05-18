@@ -15,7 +15,6 @@ import '../../../entities/task.dart';
 import '../../../strings.dart';
 
 class EditCreateTaskWidget extends ConsumerStatefulWidget {
-  final uuid = const Uuid();
   final Folder _folder;
   final Task? _task;
 
@@ -29,6 +28,8 @@ class EditCreateTaskWidget extends ConsumerStatefulWidget {
 
 class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
   late final TextEditingController _textEditingController;
+  late final String _id;
+  final uuid = const Uuid();
   DateTime? _deadline;
   bool _haveTime = false;
   Duration? _timeRequired;
@@ -45,6 +46,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
     _textEditingController =
         TextEditingController(text: task?.name);
     if (task != null) {
+      _id = task.id;
       _deadline = task.deadline;
       _haveTime = task.haveTime;
       _daysRequired = task.timeRequired == null ? 0 : task.timeRequired!.inDays;
@@ -58,6 +60,8 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
         _selectedTags.add(tag);
       }
       _attachments.addAll(task.attachments);
+    } else {
+      _id = uuid.v1();
     }
   }
 
@@ -486,7 +490,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                   ),
                   TextButton(
                     onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => EditAttachmentsWidget(widget._task!.id, _attachments)));
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => EditAttachmentsWidget(_id, _attachments)));
                     },
                     child: Text("Посмотреть"),
                   )
@@ -611,7 +615,7 @@ class EditCreateTaskWidgetState extends ConsumerState<EditCreateTaskWidget> {
                             : () {
                                 if (widget._task == null) {
                                   final newTask = Task(
-                                      id: widget.uuid.v1(),
+                                      id: _id,
                                       parent: _current,
                                       name: _textEditingController.text,
                                       done: false,
