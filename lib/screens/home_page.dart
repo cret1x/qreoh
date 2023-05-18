@@ -7,6 +7,7 @@ import 'package:qreoh/screens/friends/friends_widget.dart';
 import 'package:qreoh/screens/profile/profile_settings.dart';
 import 'package:qreoh/screens/profile/user_profile.dart';
 import 'package:qreoh/screens/settings/settings.dart';
+import 'package:qreoh/screens/tasks/share/shared_task_list.dart';
 import 'package:qreoh/screens/tasks/tasks/task_manager_widget.dart';
 import 'package:qreoh/strings.dart';
 
@@ -42,6 +43,15 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   List<Widget> getActionsByPage(int index) {
     switch (index) {
+      case 0:
+        return[
+          IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => SharedTaskListWidget()));
+            },
+            icon: Icon(Icons.send),
+          )
+        ];
       case 1:
         return [
           IconButton(

@@ -12,6 +12,7 @@ import 'package:uuid/uuid.dart';
 import '../../../entities/action.dart' as my_action;
 import '../../../entities/shared_task.dart';
 import '../../../entities/task.dart';
+import '../attachments/edit_attachments.dart';
 
 class ShareTaskWidget extends ConsumerStatefulWidget {
   final Task? _task;
@@ -36,7 +37,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
   Priority _priority = Priority.none;
   String? _location;
   String? _description;
-  List<String> _attachments = [];
+  final List<String> _attachments = [];
   final List<UserState> _receivers = [];
 
   String _durationToString(Duration? duration) {
@@ -65,6 +66,7 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
       _priority = _task!.priority;
       _location = _task!.place;
       _description = _task!.description;
+      _attachments.addAll(_task!.attachments);
     }
   }
 
@@ -406,6 +408,25 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    child: Text("Приложения",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onBackground)),
+                  ),
+                  TextButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => EditAttachmentsWidget(widget._task!.id, _attachments)));
+                    },
+                    child: Text("Посмотреть"),
+                  )
+                ],
+              ),
               Wrap(
                 direction: Axis.horizontal,
                 runSpacing: 12,
@@ -421,8 +442,8 @@ class ShareTaskState extends ConsumerState<ShareTaskWidget> {
                         setState(() {});
                       },
                       child: SizedBox(
-                        height: 85,
-                        width: 60,
+                        height: 90,
+                        width: 90,
                         child: Column(
                           children: [
                             SizedBox(

@@ -87,4 +87,9 @@ class Strings {
   }
 
   static const String discardConfirmation = "Вы уверены, что хотите сбросить все изменения?";
+
+  static const String sent = "Отправлено";
+  static const String done = 'Помечено "Выполнено"';
+  static const String undone = 'Помечено "Не выполнено"';
+  static const String deleted = "Удалено";
 }

@@ -13,7 +13,7 @@ import 'attachment_item.dart';
 
 class EditAttachmentsWidget extends StatefulWidget {
   final String taskId;
-  late final List<String> _attachments;
+  final List<String> _attachments;
   final firebaseStorageManager = FirebaseStorageManager();
 
   EditAttachmentsWidget(this.taskId, this._attachments, {super.key});
